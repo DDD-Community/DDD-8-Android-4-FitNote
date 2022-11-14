@@ -1,4 +1,4 @@
-package com.dogandpigs.fitnote.ui.theme
+package com.dogandpigs.fitnote.presentation.ui.theme
 
 import androidx.compose.ui.graphics.Color
 

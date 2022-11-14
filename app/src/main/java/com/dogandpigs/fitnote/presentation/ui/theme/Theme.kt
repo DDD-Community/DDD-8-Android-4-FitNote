@@ -1,4 +1,4 @@
-package com.dogandpigs.fitnote.ui.theme
+package com.dogandpigs.fitnote.presentation.ui.theme
 
 import android.app.Activity
 import android.os.Build
