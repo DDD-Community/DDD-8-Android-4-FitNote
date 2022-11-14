@@ -1,3 +1,7 @@
 <resources>
     <string name="app_name">FitNote</string>
+    <string name="title_home">Home</string>
+    <string name="title_first">First</string>
+    <string name="title_second">Second</string>
+    <string name="title_third">Third</string>
 </resources>
