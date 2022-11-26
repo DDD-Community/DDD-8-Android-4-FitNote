@@ -7,7 +7,7 @@ plugins {
 
 android {
     namespace 'com.dogandpigs.fitnote'
-    compileSdk 32
+    compileSdk 33
 
     defaultConfig {
         applicationId "com.dogandpigs.fitnote"
@@ -81,7 +81,6 @@ dependencies {
     implementation("androidx.navigation:navigation-compose:$nav_version")
 
     // Hilt
-
     implementation "com.google.dagger:hilt-android:2.44"
     kapt "com.google.dagger:hilt-compiler:2.44"
 }
