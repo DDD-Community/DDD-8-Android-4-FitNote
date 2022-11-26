@@ -39,5 +39,6 @@ internal sealed class NavRoutes(
         const val ROUTE_NAME_FIRST = "route_first"
         const val ROUTE_NAME_SECOND = "route_second"
         const val ROUTE_NAME_THIRD = "route_third"
+        const val ROUTE_SPLASH = "route_splash"
     }
 }

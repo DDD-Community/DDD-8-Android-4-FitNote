@@ -10,9 +10,16 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.style.TextAlign
+import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.navigation.NavController
+import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavHostController
+import androidx.navigation.NavOptions
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
+import com.dogandpigs.fitnote.presentation.navigation.NavRoutes.Companion.ROUTE_SPLASH
+import com.dogandpigs.fitnote.presentation.splash.SplashScreen
+import com.dogandpigs.fitnote.presentation.splash.SplashViewModel
 
 @Composable
 internal fun NavigationGraph(navController: NavHostController) {
@@ -29,6 +36,7 @@ internal fun NavigationGraph(navController: NavHostController) {
         composable(NavRoutes.ThirdPage.route) {
             ThirdPage()
         }
+        addSplash()
     }
 }
 
@@ -98,4 +106,21 @@ private fun ThirdPage() {
             modifier = Modifier.align(Alignment.Center)
         )
     }
+}
+
+fun NavGraphBuilder.addSplash() {
+    composable(route = ROUTE_SPLASH) {
+        SplashRoute()
+    }
+}
+
+@Composable
+internal fun SplashRoute(
+    viewModel: SplashViewModel = hiltViewModel()
+) {
+    SplashScreen(viewModel)
+}
+
+fun NavController.navigateToScreen(navOptions: NavOptions? = null) {
+    this.navigate(ROUTE_SPLASH, navOptions)
 }
