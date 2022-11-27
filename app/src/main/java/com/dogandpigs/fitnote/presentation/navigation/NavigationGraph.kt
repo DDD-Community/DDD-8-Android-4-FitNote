@@ -23,7 +23,10 @@ import com.dogandpigs.fitnote.presentation.splash.SplashViewModel
 
 @Composable
 internal fun NavigationGraph(navController: NavHostController) {
-    NavHost(navController = navController, startDestination = NavRoutes.Home.route) {
+    NavHost(
+        navController = navController,
+        startDestination = ROUTE_SPLASH
+    ) {
         composable(NavRoutes.Home.route) {
             HomePage()
         }
@@ -36,7 +39,10 @@ internal fun NavigationGraph(navController: NavHostController) {
         composable(NavRoutes.ThirdPage.route) {
             ThirdPage()
         }
-        addSplash()
+        addSplash(
+            route = ROUTE_SPLASH,
+            navigateToHome = { navController.navigate(NavRoutes.Home.route) }
+        )
     }
 }
 
@@ -108,17 +114,26 @@ private fun ThirdPage() {
     }
 }
 
-fun NavGraphBuilder.addSplash() {
-    composable(route = ROUTE_SPLASH) {
-        SplashRoute()
+fun NavGraphBuilder.addSplash(
+    route: String,
+    navigateToHome: () -> Unit,
+) {
+    composable(route = route) {
+        SplashRoute(
+            navigateToHome = navigateToHome
+        )
     }
 }
 
 @Composable
 internal fun SplashRoute(
-    viewModel: SplashViewModel = hiltViewModel()
+    viewModel: SplashViewModel = hiltViewModel(),
+    navigateToHome: () -> Unit,
 ) {
-    SplashScreen(viewModel)
+    SplashScreen(
+        viewModel = viewModel,
+        navigateToHome = navigateToHome,
+    )
 }
 
 fun NavController.navigateToScreen(navOptions: NavOptions? = null) {
