@@ -1,6 +1,6 @@
 package com.dogandpigs.fitnote.core.di
 
-import com.dogandpigs.fitnote.data.source.remote.api.JoinApi
+import com.dogandpigs.fitnote.data.source.remote.api.AccountApi
 import com.dogandpigs.fitnote.data.source.remote.httpbuilder.RetrofitBuilder
 import dagger.Module
 import dagger.Provides
@@ -13,5 +13,5 @@ import javax.inject.Singleton
 object NetworkModule {
     @Provides
     @Singleton
-    fun provideJoinApi(): JoinApi = RetrofitBuilder().getRetrofit().create(JoinApi::class.java)
+    fun provideJoinApi(): AccountApi = RetrofitBuilder().getRetrofit().create(AccountApi::class.java)
 }

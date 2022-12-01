@@ -1,16 +1,19 @@
 package com.dogandpigs.fitnote.data.source.remote.httpbuilder
 
+import android.util.Log
 import com.dogandpigs.fitnote.core.TokenManager
 import okhttp3.Interceptor
 import okhttp3.OkHttpClient
+import okhttp3.Protocol
 import okhttp3.Response
+import okhttp3.ResponseBody.Companion.toResponseBody
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import java.util.concurrent.TimeUnit
 
 class RetrofitBuilder {
-    private val baseUrl = "http://52.79.105.64/"
+    private val baseUrl = "http://52.79.105.64"
     
     fun getRetrofit(): Retrofit {
         return Retrofit.Builder().addConverterFactory(GsonConverterFactory.create()).apply {
@@ -32,9 +35,19 @@ class RetrofitBuilder {
                 TokenManager.accessToken?.let { token ->
                     addHeader("Authorization", token)
                 }
-                
             }
-            return chain.proceed(builder.build())
+            try {
+                return chain.proceed(builder.build())
+            } catch (e: Exception) {
+                Log.d("test", "intercept: ")
+                return Response.Builder()
+                    .request(chain.request())
+                    .protocol(Protocol.HTTP_1_1)
+                    .code(599)
+                    .message(e.message ?: "Network Interceptor exception")
+                    .body(e.message?.toResponseBody(null))
+                    .build()
+            }
         }
     }
 }
