@@ -10,8 +10,8 @@ import retrofit2.http.POST
 
 interface AccountApi {
     @POST("/accounts/")
-    suspend fun join(@Body data: JoinRequestDTO): Flow<Response<UserDTO>>
+    suspend fun join(@Body data: JoinRequestDTO): Response<UserDTO>
     
     @POST("/accounts/login")
-    suspend fun login(@Body data: LoginRequestDTO): Flow<Response<UserDTO>>
+    suspend fun login(@Body data: LoginRequestDTO): Response<UserDTO>
 }
