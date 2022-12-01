@@ -19,8 +19,10 @@ import androidx.navigation.NavOptions
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import com.dogandpigs.fitnote.presentation.navigation.NavRoutes.Companion.ROUTE_JOIN
+import com.dogandpigs.fitnote.presentation.navigation.NavRoutes.Companion.ROUTE_LOGIN
 import com.dogandpigs.fitnote.presentation.navigation.NavRoutes.Companion.ROUTE_SPLASH
 import com.dogandpigs.fitnote.presentation.splash.JoinRoute
+import com.dogandpigs.fitnote.presentation.splash.LoginRoute
 import com.dogandpigs.fitnote.presentation.splash.SplashScreen
 import com.dogandpigs.fitnote.presentation.splash.SplashViewModel
 
@@ -50,6 +52,10 @@ internal fun NavigationGraph(navController: NavHostController) {
         )
         addJoin(
             route = ROUTE_JOIN,
+            navigateToHome = { navController.navigate(NavRoutes.Home.route) }
+        )
+        addLogin(
+            route = ROUTE_LOGIN,
             navigateToHome = { navController.navigate(NavRoutes.Home.route) }
         )
     }
@@ -144,6 +150,17 @@ fun NavGraphBuilder.addJoin(
 ) {
     composable(route = route) {
         JoinRoute(
+            navigateToHome = navigateToHome
+        )
+    }
+}
+
+fun NavGraphBuilder.addLogin(
+    route: String,
+    navigateToHome: () -> Unit,
+) {
+    composable(route = route) {
+        LoginRoute(
             navigateToHome = navigateToHome
         )
     }

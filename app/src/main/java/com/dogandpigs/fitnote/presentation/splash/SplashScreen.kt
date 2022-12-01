@@ -22,6 +22,8 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import com.dogandpigs.fitnote.presentation.base.FigmaPreview
 import com.dogandpigs.fitnote.presentation.join.JoinScreen
 import com.dogandpigs.fitnote.presentation.join.JoinViewModel
+import com.dogandpigs.fitnote.presentation.login.LoginScreen
+import com.dogandpigs.fitnote.presentation.login.LoginViewModel
 import com.dogandpigs.fitnote.presentation.ui.theme.FitNoteTheme
 import kotlinx.coroutines.delay
 
@@ -69,7 +71,7 @@ private fun Splash(
             Text(text = "가입하기")
         }
         Button(
-            onClick = { navigateToLogin },
+            onClick = { navigateToLogin() },
             modifier = Modifier
                 .width(300.dp)
                 .padding(0.dp, 5.dp)
@@ -95,6 +97,17 @@ internal fun JoinRoute(
     navigateToHome: () -> Unit
 ) {
     JoinScreen(
+        viewModel = viewModel,
+        navigateToHome = navigateToHome
+    )
+}
+
+@Composable
+internal fun LoginRoute(
+    viewModel: LoginViewModel = hiltViewModel(),
+    navigateToHome: () -> Unit
+) {
+    LoginScreen(
         viewModel = viewModel,
         navigateToHome = navigateToHome
     )
