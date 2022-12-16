@@ -1,6 +1,6 @@
 package com.dogandpigs.fitnote.data.source.remote.model
 
-import com.dogandpigs.fitnote.core.ResCode
+import com.dogandpigs.fitnote.core.ResponseCode
 import com.google.gson.annotations.SerializedName
 
 /**
@@ -14,7 +14,7 @@ data class ResBase<T>(
 ) {
 
     fun isSuccess(): Boolean {
-        return code == ResCode.SUCCESS
+        return code == ResponseCode.SUCCESS
     }
 }
 

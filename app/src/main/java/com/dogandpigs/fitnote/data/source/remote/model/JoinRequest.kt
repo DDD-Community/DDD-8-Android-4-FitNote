@@ -2,7 +2,7 @@ package com.dogandpigs.fitnote.data.source.remote.model
 
 import com.google.gson.annotations.SerializedName
 
-data class JoinRequestDTO(
+data class JoinRequest(
     @SerializedName("name")
     var name: String? = null,
     

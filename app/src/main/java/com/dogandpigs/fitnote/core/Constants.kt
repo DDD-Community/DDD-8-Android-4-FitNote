@@ -7,6 +7,6 @@ object Constants {
 
 }
 
-object ResCode {
+object ResponseCode {
     const val SUCCESS = 0
 }

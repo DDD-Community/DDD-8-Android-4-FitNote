@@ -1,17 +1,16 @@
 package com.dogandpigs.fitnote.data.source.remote.api
 
-import com.dogandpigs.fitnote.data.source.remote.model.JoinRequestDTO
-import com.dogandpigs.fitnote.data.source.remote.model.LoginRequestDTO
+import com.dogandpigs.fitnote.data.source.remote.model.JoinRequest
+import com.dogandpigs.fitnote.data.source.remote.model.LoginRequest
 import com.dogandpigs.fitnote.data.source.remote.model.UserDTO
-import kotlinx.coroutines.flow.Flow
 import retrofit2.Response
 import retrofit2.http.Body
 import retrofit2.http.POST
 
 interface AccountApi {
     @POST("/accounts/")
-    suspend fun join(@Body data: JoinRequestDTO): Response<UserDTO>
+    suspend fun join(@Body data: JoinRequest): Response<UserDTO>
     
     @POST("/accounts/login")
-    suspend fun login(@Body data: LoginRequestDTO): Response<UserDTO>
+    suspend fun login(@Body data: LoginRequest): Response<UserDTO>
 }

@@ -5,9 +5,8 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.viewModelScope
 import com.dogandpigs.fitnote.data.repository.AccountRepository
-import com.dogandpigs.fitnote.data.source.remote.model.LoginRequestDTO
+import com.dogandpigs.fitnote.data.source.remote.model.LoginRequest
 import com.dogandpigs.fitnote.presentation.base.BaseViewModel
-import com.dogandpigs.fitnote.presentation.join.JoinUiState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
@@ -21,20 +20,16 @@ internal class LoginViewModel @Inject constructor(
         private set
     
     fun login(email: String, pwd: String) {
-        val data = LoginRequestDTO().apply {
+        val data = LoginRequest().apply {
             this.email = email
             this.password = pwd
         }
         viewModelScope.launch {
-            accountRepo.login(data)
-                .onEach { user ->
-                    user ?: kotlin.run {
-                        uiState = LoginUiState("login")
-                        // TODO: uiState failed?
-                        return@run
-                    }
-                    // TODO: uiState success
-                }
+            accountRepo.login(data)?.let { user ->
+                uiState = LoginUiState("login")
+            } ?: kotlin.run {
+                uiState = LoginUiState("failed")
+            }
         }
     }
 }
