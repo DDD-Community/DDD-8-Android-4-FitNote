@@ -1,5 +1,6 @@
 package com.dogandpigs.fitnote.presentation.navigation
 
+import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
@@ -17,7 +18,11 @@ import androidx.navigation.NavHostController
 import androidx.navigation.NavOptions
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
+import com.dogandpigs.fitnote.presentation.navigation.NavRoutes.Companion.ROUTE_JOIN
+import com.dogandpigs.fitnote.presentation.navigation.NavRoutes.Companion.ROUTE_LOGIN
 import com.dogandpigs.fitnote.presentation.navigation.NavRoutes.Companion.ROUTE_SPLASH
+import com.dogandpigs.fitnote.presentation.splash.JoinRoute
+import com.dogandpigs.fitnote.presentation.splash.LoginRoute
 import com.dogandpigs.fitnote.presentation.splash.SplashScreen
 import com.dogandpigs.fitnote.presentation.splash.SplashViewModel
 
@@ -41,6 +46,16 @@ internal fun NavigationGraph(navController: NavHostController) {
         }
         addSplash(
             route = ROUTE_SPLASH,
+            navigateToHome = { navController.navigate(NavRoutes.Home.route) },
+            navigateToJoin = { navController.navigate(NavRoutes.Join.route) },
+            navigateToLogin = { navController.navigate(NavRoutes.Login.route) }
+        )
+        addJoin(
+            route = ROUTE_JOIN,
+            navigateToHome = { navController.navigate(NavRoutes.Home.route) }
+        )
+        addLogin(
+            route = ROUTE_LOGIN,
             navigateToHome = { navController.navigate(NavRoutes.Home.route) }
         )
     }
@@ -117,9 +132,35 @@ private fun ThirdPage() {
 fun NavGraphBuilder.addSplash(
     route: String,
     navigateToHome: () -> Unit,
+    navigateToJoin: () -> Unit,
+    navigateToLogin: () -> Unit
 ) {
     composable(route = route) {
         SplashRoute(
+            navigateToHome = navigateToHome,
+            navigateToJoin = navigateToJoin,
+            navigateToLogin = navigateToLogin
+        )
+    }
+}
+
+fun NavGraphBuilder.addJoin(
+    route: String,
+    navigateToHome: () -> Unit,
+) {
+    composable(route = route) {
+        JoinRoute(
+            navigateToHome = navigateToHome
+        )
+    }
+}
+
+fun NavGraphBuilder.addLogin(
+    route: String,
+    navigateToHome: () -> Unit,
+) {
+    composable(route = route) {
+        LoginRoute(
             navigateToHome = navigateToHome
         )
     }
@@ -129,10 +170,14 @@ fun NavGraphBuilder.addSplash(
 internal fun SplashRoute(
     viewModel: SplashViewModel = hiltViewModel(),
     navigateToHome: () -> Unit,
+    navigateToJoin: () -> Unit,
+    navigateToLogin: () -> Unit
 ) {
     SplashScreen(
         viewModel = viewModel,
         navigateToHome = navigateToHome,
+        navigateToJoin,
+        navigateToLogin
     )
 }
 
