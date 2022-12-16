@@ -6,8 +6,9 @@ package com.dogandpigs.fitnote.core
 object TokenManager {
     var accessToken: String? = null
         private set
+        get() = FNApplication.pref.getString(PreferenceManager.KEY_ACCESS_TOKEN)
     
     fun setAccessToken(token: String) {
-        accessToken = token
+        FNApplication.pref.setString(PreferenceManager.KEY_ACCESS_TOKEN, token)
     }
 }
