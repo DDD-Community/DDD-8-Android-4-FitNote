@@ -1,5 +1,6 @@
 package com.dogandpigs.fitnote.data.repository
 
+import com.dogandpigs.fitnote.core.TokenManager
 import com.dogandpigs.fitnote.data.source.remote.api.AccountApi
 import com.dogandpigs.fitnote.data.source.remote.model.JoinRequest
 import com.dogandpigs.fitnote.data.source.remote.model.LoginRequest
@@ -20,8 +21,11 @@ class AccountRepository @Inject constructor(
     
     suspend fun login(data: LoginRequest): UserDTO? {
         api.login(data).run {
-            if (!isSuccessful || body() == null) {
+            if (!isSuccessful || body() == null || body()?.accessToken == null) {
                 return null
+            }
+            body()?.accessToken?.let {
+                TokenManager.setAccessToken(it)
             }
             return body()
         }

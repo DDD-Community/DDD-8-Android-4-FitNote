@@ -36,11 +36,11 @@ class RetrofitBuilder {
                     addHeader("Authorization", token)
                 }
             }
-            try {
-                return chain.proceed(builder.build())
+            return try {
+                chain.proceed(builder.build())
             } catch (e: Exception) {
                 Log.d("test", "intercept: ")
-                return Response.Builder()
+                Response.Builder()
                     .request(chain.request())
                     .protocol(Protocol.HTTP_1_1)
                     .code(599)

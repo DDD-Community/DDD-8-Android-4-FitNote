@@ -1,9 +1,8 @@
 package com.dogandpigs.fitnote.core
 
 import android.content.Context
-import javax.inject.Inject
 
-class PreferenceManager(private val application: FNApplication) {
+class PreferenceManager(application: FNApplication) {
     private val pref = application.getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE)
     
     fun getString(key: String, defValue: String? = null): String {
