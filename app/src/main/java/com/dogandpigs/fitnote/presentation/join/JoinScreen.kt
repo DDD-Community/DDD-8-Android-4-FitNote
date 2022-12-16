@@ -38,7 +38,9 @@ private fun Join(
     var pwd by remember { mutableStateOf(TextFieldValue("")) }
     
     Column(
-        modifier = Modifier.fillMaxSize(),
+        modifier = Modifier
+            .fillMaxSize()
+            .background(color = Color.White),
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
