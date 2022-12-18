@@ -1,21 +1,30 @@
 package com.dogandpigs.fitnote.presentation.join
 
+import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.BasicTextField
-import androidx.compose.material3.ButtonDefaults
-import androidx.compose.material3.OutlinedButton
-import androidx.compose.material3.Text
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.Outline
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.navigation.compose.rememberNavController
 import com.dogandpigs.fitnote.presentation.base.FigmaPreview
+import com.dogandpigs.fitnote.presentation.navigation.NavRoutes
+import com.dogandpigs.fitnote.presentation.navigation.navigateToScreen
 import com.dogandpigs.fitnote.presentation.ui.theme.FitNoteTheme
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 
 @Composable
 internal fun JoinScreen(
@@ -23,112 +32,155 @@ internal fun JoinScreen(
     navigateToHome: () -> Unit
 ) {
     Join(
-        viewModel = viewModel,
+//        viewModel = viewModel,
         uiState = viewModel.uiState,
         navigateToHome = navigateToHome
     )
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 private fun Join(
-    viewModel: JoinViewModel, uiState: JoinUiState, navigateToHome: () -> Unit
+//    viewModel: JoinViewModel,
+    uiState: JoinUiState,
+    navigateToHome: () -> Unit
 ) {
     var name by remember { mutableStateOf(TextFieldValue("")) }
     var email by remember { mutableStateOf(TextFieldValue("")) }
     var pwd by remember { mutableStateOf(TextFieldValue("")) }
-    
-    Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .background(color = Color.White),
-        verticalArrangement = Arrangement.Center,
-        horizontalAlignment = Alignment.CenterHorizontally
-    ) {
-        BasicTextField(
-            modifier = Modifier
-                .width(300.dp)
-                .padding(0.dp, 10.dp)
-                .background(Color.Transparent),
-            value = name,
-            onValueChange = {
-                name = it
-            },
-            decorationBox = { innerTextField ->
-                Row(
-                    Modifier
-                        .background(Color.LightGray, RoundedCornerShape(percent = 30))
-                        .padding(16.dp)
-                ) {
-                    if (name.text.isEmpty()) {
-                        Text("name")
-                    }
-                    innerTextField()
-                }
-            },
-        )
-        BasicTextField(
-            modifier = Modifier
-                .width(300.dp)
-                .padding(0.dp, 10.dp)
-                .background(Color.Transparent),
-            value = email,
-            onValueChange = {
-                email = it
-            },
-            decorationBox = { innerTextField ->
-                Row(
-                    Modifier
-                        .background(Color.LightGray, RoundedCornerShape(percent = 30))
-                        .padding(16.dp)
-                ) {
-                    if (email.text.isEmpty()) {
-                        Text("email")
-                    }
-                    innerTextField()
-                }
-            },
-        )
-        BasicTextField(
-            modifier = Modifier
-                .width(300.dp)
-                .padding(0.dp, 10.dp)
-                .background(Color.Transparent),
-            value = pwd,
-            onValueChange = {
-                pwd = it
-            },
-            decorationBox = { innerTextField ->
-                Row(
-                    Modifier
-                        .background(Color.LightGray, RoundedCornerShape(percent = 30))
-                        .padding(16.dp)
-                ) {
-                    if (pwd.text.isEmpty()) {
-                        Text("password")
-                    }
-                    innerTextField()
-                }
-            },
-        )
-        OutlinedButton(
-            modifier = Modifier
-                .width(100.dp)
-                .padding(0.dp, 50.dp)
-                .background(Color.Transparent),
-            onClick = {
-                viewModel.join(
-                    name.text,
-                    email.text,
-                    pwd.text
+
+    val navController = rememberNavController()
+
+    Log.d("TestTAG", "Join: $navController")
+    Scaffold(
+        topBar = {
+            CenterAlignedTopAppBar(title = {
+                Text(
+                    text = "가입하기",
+                    fontWeight = FontWeight.Bold
                 )
-            },
-            colors = ButtonDefaults.buttonColors(
-                containerColor = Color.White, contentColor = Color.Black
+            }, navigationIcon = {
+                IconButton(onClick = {
+                    navController.navigateUp()
+                }) {
+                    Icon(
+                        imageVector = Icons.Filled.ArrowBack,
+                        contentDescription = "Back"
+                    )
+                }
+            }
             )
-        ) {
-            Text(text = "다음")
+        }, content = { paddingValue ->
+            Box {
+                Column(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .padding(paddingValue)
+                        .background(color = Color.White),
+                    horizontalAlignment = Alignment.CenterHorizontally
+                ) {
+                    TextField(
+                        label = {
+                            Text(text = "name")
+                        },
+                        colors = TextFieldDefaults.textFieldColors(
+                            containerColor = Color.Transparent,
+                        ),
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(20.dp, 10.dp)
+                            .background(Color.Transparent),
+                        value = name,
+                        onValueChange = { newText ->
+                            name = newText
+                        },
+                        placeholder = {
+                            Text("name")
+                        },
+                    )
+                    TextField(
+                        label = {
+                            Text(text = "email")
+                        },
+                        colors = TextFieldDefaults.textFieldColors(
+                            containerColor = Color.Transparent,
+                        ),
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(20.dp, 10.dp)
+                            .background(Color.Transparent),
+                        value = email,
+                        onValueChange = { textValue ->
+                            email = textValue
+                        },
+                        placeholder = {
+                            Text("email")
+                        },
+                    )
+                    TextField(
+                        label = {
+                            Text(text = "password")
+                        },
+                        colors = TextFieldDefaults.textFieldColors(
+                            containerColor = Color.Transparent,
+                        ),
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(20.dp, 10.dp)
+                            .background(Color.Transparent),
+                        value = pwd,
+                        onValueChange = { textValue ->
+                            pwd = textValue
+                        },
+                        placeholder = {
+                            Text("password")
+                        }
+                    )
+                    TextField(
+                        label = {
+                            Text(text = "check password")
+                        },
+                        colors = TextFieldDefaults.textFieldColors(
+                            containerColor = Color.Transparent,
+                        ),
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(20.dp, 10.dp)
+                            .background(Color.Transparent),
+                        value = pwd,
+                        onValueChange = { textValue ->
+                            pwd = textValue
+                        },
+                        placeholder = {
+                            Text("check password")
+                        },
+                    )
+                }
+
+                OutlinedButton(
+                    colors = ButtonDefaults.buttonColors(
+                        containerColor = Color.White,
+                        contentColor = Color.Black
+                    ),
+                    modifier = Modifier
+                        .width(100.dp)
+                        .padding(0.dp, 10.dp)
+                        .background(Color.Transparent)
+                        .align(Alignment.BottomCenter),
+                    onClick = {
+//                viewModel.join(
+//                    name.text,
+//                    email.text,
+//                    pwd.text
+//                )
+                    }
+                ) {
+                    Text(text = "다음")
+                }
+            }
         }
-    }
+    )
+
 }
 
 private val mockUiState = JoinUiState(
@@ -139,6 +191,9 @@ private val mockUiState = JoinUiState(
 @Composable
 private fun PreviewJoin() {
     FitNoteTheme {
-        Join(viewModel = hiltViewModel(), uiState = mockUiState) {}
+        Join(
+//            viewModel = hiltViewModel(),
+            uiState = mockUiState
+        ) {}
     }
 }
