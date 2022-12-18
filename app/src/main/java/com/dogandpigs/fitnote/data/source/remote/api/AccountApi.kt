@@ -11,6 +11,6 @@ interface AccountApi {
     @POST("/accounts/")
     suspend fun join(@Body data: JoinRequest): Response<UserDTO>
     
-    @POST("/accounts/login")
+    @POST("/accounts/login/")
     suspend fun login(@Body data: LoginRequest): Response<UserDTO>
 }

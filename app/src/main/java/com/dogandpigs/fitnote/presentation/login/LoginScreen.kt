@@ -29,7 +29,7 @@ internal fun LoginScreen(
     navigateToHome: () -> Unit
 ) {
     Login(
-//        viewModel = viewModel,
+        viewModel = viewModel,
         uiState = viewModel.uiState,
         navigateToHome = navigateToHome
     )
@@ -38,7 +38,7 @@ internal fun LoginScreen(
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 private fun Login(
-//    viewModel: LoginViewModel,
+    viewModel: LoginViewModel,
     uiState: LoginUiState,
     navigateToHome: () -> Unit
 ) {
@@ -137,7 +137,7 @@ private fun Login(
                         .background(Color.Transparent)
                         .align(Alignment.BottomCenter),
                     onClick = {
-//                viewModel.login(email.text, pwd.text)
+                        viewModel.login(email.text, pwd.text)
                         navigateToHome()
                     },
                     colors = ButtonDefaults.buttonColors(
@@ -160,7 +160,7 @@ private val mockUiState = LoginUiState(
 private fun PreviewLogin() {
     FitNoteTheme {
         Login(
-//            viewModel = hiltViewModel(),
+            viewModel = hiltViewModel(),
             uiState = mockUiState
         ) {}
     }
