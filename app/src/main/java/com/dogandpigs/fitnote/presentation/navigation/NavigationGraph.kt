@@ -1,6 +1,5 @@
 package com.dogandpigs.fitnote.presentation.navigation
 
-import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
@@ -18,6 +17,7 @@ import androidx.navigation.NavHostController
 import androidx.navigation.NavOptions
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
+import com.dogandpigs.fitnote.presentation.lesson.addlesson.AddLessonScreen
 import com.dogandpigs.fitnote.presentation.navigation.NavRoutes.Companion.ROUTE_JOIN
 import com.dogandpigs.fitnote.presentation.navigation.NavRoutes.Companion.ROUTE_LOGIN
 import com.dogandpigs.fitnote.presentation.navigation.NavRoutes.Companion.ROUTE_SPLASH
@@ -68,13 +68,10 @@ private fun HomePage() {
             .fillMaxSize()
             .background(Color.White)
     ) {
-        Text(
-            text = "Home",
-            style = MaterialTheme.typography.headlineLarge,
-            textAlign = TextAlign.Center,
-            color = Color.Black,
-            modifier = Modifier.align(Alignment.Center)
-        )
+        AddLessonScreen(
+            viewModel = hiltViewModel(),
+            navigateToHome = {},
+            navigateToLoad = {})
     }
 }
 

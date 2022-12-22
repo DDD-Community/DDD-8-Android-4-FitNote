@@ -38,10 +38,10 @@ private fun FitNoteApp() {
     val screens = listOf(
         NavRoutes.Home, NavRoutes.FirstPage, NavRoutes.SecondPage, NavRoutes.ThirdPage
     )
-    val showBottomBar =
-        navController.currentBackStackEntryAsState().value?.destination?.route in screens.map {
-            it.route
-        }
+    val showBottomBar = false
+//        navController.currentBackStackEntryAsState().value?.destination?.route in screens.map {
+//            it.route
+//        }
     Scaffold(bottomBar = {
         if (showBottomBar) {
             BottomNavigationBar(

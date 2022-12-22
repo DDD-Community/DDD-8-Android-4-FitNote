@@ -16,6 +16,7 @@ import androidx.compose.ui.graphics.Outline
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.compose.rememberNavController
 import com.dogandpigs.fitnote.presentation.base.FigmaPreview
@@ -54,10 +55,15 @@ private fun Join(
     Log.d("TestTAG", "Join: $navController")
     Scaffold(
         topBar = {
-            CenterAlignedTopAppBar(title = {
+            CenterAlignedTopAppBar(
+                colors = TopAppBarDefaults.topAppBarColors(
+                    containerColor = Color.White
+                ),
+                title = {
                 Text(
                     text = "가입하기",
-                    fontWeight = FontWeight.Bold
+                    color = Color.Black,
+                    fontSize = 14.sp
                 )
             }, navigationIcon = {
                 IconButton(onClick = {

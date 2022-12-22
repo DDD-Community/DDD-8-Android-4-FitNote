@@ -1,10 +1,7 @@
 package com.dogandpigs.fitnote.presentation.login
 
-import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material3.*
@@ -15,12 +12,10 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.dogandpigs.fitnote.presentation.base.FigmaPreview
-import com.dogandpigs.fitnote.presentation.navigation.NavRoutes
-import com.dogandpigs.fitnote.presentation.navigation.navigateToScreen
 import com.dogandpigs.fitnote.presentation.ui.theme.FitNoteTheme
 
 @Composable
@@ -29,7 +24,7 @@ internal fun LoginScreen(
     navigateToHome: () -> Unit
 ) {
     Login(
-        viewModel = viewModel,
+//        viewModel = viewModel,
         uiState = viewModel.uiState,
         navigateToHome = navigateToHome
     )
@@ -38,7 +33,7 @@ internal fun LoginScreen(
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 private fun Login(
-    viewModel: LoginViewModel,
+//    viewModel: LoginViewModel,
     uiState: LoginUiState,
     navigateToHome: () -> Unit
 ) {
@@ -47,10 +42,15 @@ private fun Login(
     val navController = rememberNavController()
     Scaffold(
         topBar = {
-            CenterAlignedTopAppBar(title = {
+            CenterAlignedTopAppBar(
+                colors = TopAppBarDefaults.topAppBarColors(
+                    containerColor = Color.White
+                ),
+                title = {
                 Text(
                     text = "로그인",
-                    fontWeight = FontWeight.Bold
+                    color = Color.Black,
+                    fontSize = 14.sp
                 )
             }, navigationIcon = {
                 IconButton(onClick = {
@@ -137,7 +137,7 @@ private fun Login(
                         .background(Color.Transparent)
                         .align(Alignment.BottomCenter),
                     onClick = {
-                        viewModel.login(email.text, pwd.text)
+//                        viewModel.login(email.text, pwd.text)
                         navigateToHome()
                     },
                     colors = ButtonDefaults.buttonColors(
@@ -160,7 +160,7 @@ private val mockUiState = LoginUiState(
 private fun PreviewLogin() {
     FitNoteTheme {
         Login(
-            viewModel = hiltViewModel(),
+//            viewModel = hiltViewModel(),
             uiState = mockUiState
         ) {}
     }
