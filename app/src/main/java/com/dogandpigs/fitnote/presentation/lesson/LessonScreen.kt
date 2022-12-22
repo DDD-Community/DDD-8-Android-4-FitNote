@@ -1,9 +1,11 @@
 package com.dogandpigs.fitnote.presentation.lesson
 
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -11,11 +13,8 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.ButtonDefaults
-import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -28,7 +27,10 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.dogandpigs.fitnote.R
 import com.dogandpigs.fitnote.presentation.base.FigmaPreview
+import com.dogandpigs.fitnote.presentation.ui.component.FitNoteScaffold
+import com.dogandpigs.fitnote.presentation.ui.theme.BrandPrimary
 import com.dogandpigs.fitnote.presentation.ui.theme.FitNoteTheme
+import com.dogandpigs.fitnote.presentation.ui.theme.GrayScaleMidGray2
 
 @Composable
 internal fun LessonScreen(
@@ -51,90 +53,26 @@ private fun Lesson(
     navigateToHome: () -> Unit,
     navigateToSetting: () -> Unit,
 ) {
-    Box {
-        Column {
-            DefaultAppBar(
-                navigateToHome = navigateToHome,
-                navigateToSetting = navigateToSetting,
-            )
-            LessonTabList()
-        }
-        Row(
-            modifier = Modifier.fillMaxSize()
-                .padding(
-                    bottom = 36.dp,
-                ),
-            horizontalArrangement = Arrangement.Center,
-            verticalAlignment = Alignment.Bottom
-        ) {
+    FitNoteScaffold(
+        topBarTitle = "${uiState.userName} ${uiState.title}",
+        topBarTitleFontSize = 20.sp,
+        onClickTopBarNavigationIcon = navigateToHome
+    ) {
+        Box(modifier = Modifier.padding(it)) {
+            Column {
+                Spacer(modifier = Modifier.height(24.dp))
+                LessonTabList()
+            }
+
             AddLessonButton()
         }
-    }
-}
-
-// TODO move To Default component
-@Composable
-private fun DefaultAppBar(
-    title: String = "수업 목록",
-    userName: String = "나초보 회원님",
-    navigateToHome: () -> Unit,
-    navigateToSetting: () -> Unit,
-) {
-    val height = 140.dp
-
-    Column(
-        modifier = Modifier
-            .fillMaxWidth()
-            .height(height)
-            .padding(
-                start = 34.dp,
-            )
-    ) {
-        Spacer(modifier = Modifier.height(50.dp))
-        Row(
-            modifier = Modifier
-                .padding(
-                    end = 19.dp
-                ),
-            verticalAlignment = Alignment.CenterVertically,
-        ) {
-            Text(
-                modifier = Modifier.weight(1F),
-                text = title,
-                fontSize = 24.sp,
-            )
-            IconButton(
-                modifier = Modifier.size(28.dp),
-                onClick = navigateToHome
-            ) {
-                Icon(
-                    painter = painterResource(R.drawable.ic_house),
-                    contentDescription = null,
-                    tint = Color.Unspecified,
-                )
-            }
-            Spacer(modifier = Modifier.width(8.dp))
-            IconButton(
-                modifier = Modifier.size(28.dp),
-                onClick = navigateToSetting
-            ) {
-                Icon(
-                    painter = painterResource(R.drawable.ic_setting),
-                    contentDescription = null,
-                    tint = Color.Unspecified,
-                )
-            }
-        }
-        Text(
-            text = userName,
-            fontSize = 20.sp,
-        )
     }
 }
 
 data class Tab(
     val isSelected: Boolean,
     val name: String,
+    val emptySubText: String = "",
     val list: List<Lesson>
 ) {
     data class Lesson(
@@ -144,10 +82,15 @@ data class Tab(
 
 private val mockTabs = listOf(
     Tab(
-        isSelected = true, name = "예정된 수업", list = listOf()
+        isSelected = true,
+        name = "예정된 수업",
+        emptySubText = "\n 수업을 추가해보세요!",
+        list = listOf()
     ),
     Tab(
-        isSelected = false, name = "완료한 수업", list = listOf()
+        isSelected = false,
+        name = "완료한 수업",
+        list = listOf()
     )
 )
 
@@ -155,18 +98,43 @@ private val mockTabs = listOf(
 private fun LessonTabList(
     tabs: List<Tab> = mockTabs,
 ) {
-    Row {
-        for (tab in tabs) {
-            LessonTab(
-                modifier = Modifier
-                    .weight(1F)
-                    .height(40.dp),
-                title = tab.name,
-                isSelected = tab.isSelected,
-            )
-            if (tab.isSelected) {
-//                LessonList(tab.list)
+    val tabHeight = 42.dp
+
+    Column {
+        Row {
+            for (tab in tabs) {
+                LessonTab(
+                    modifier = Modifier
+                        .weight(1F)
+                        .height(tabHeight),
+                    title = tab.name,
+                    isSelected = tab.isSelected,
+                )
             }
+        }
+        val selectedTab = tabs.first {
+            it.isSelected
+        }
+
+        if (selectedTab.list.isEmpty()) {
+            Column(
+                modifier = Modifier.fillMaxSize(),
+                verticalArrangement = Arrangement.Center,
+                horizontalAlignment = Alignment.CenterHorizontally,
+            ) {
+                Image(
+                    modifier = Modifier.size(123.dp),
+                    painter = painterResource(id = R.drawable.image_lesson_empty),
+                    contentDescription = ""
+                )
+                Text(
+                    text = "${selectedTab.name}이 없습니다!${selectedTab.emptySubText}",
+                    color = GrayScaleMidGray2,
+                    textAlign = TextAlign.Center,
+                )
+            }
+        } else {
+//                LessonList(tab.list)
         }
     }
 }
@@ -177,6 +145,12 @@ private fun LessonTab(
     title: String,
     isSelected: Boolean,
 ) {
+    val color = if (isSelected) {
+        BrandPrimary
+    } else {
+        GrayScaleMidGray2
+    }
+
     Column(
         modifier = modifier,
         verticalArrangement = Arrangement.Center,
@@ -185,6 +159,8 @@ private fun LessonTab(
         Text(
             text = title,
             modifier = Modifier.weight(1F),
+            fontSize = 16.sp,
+            color = color,
             textAlign = TextAlign.Center,
         )
         Spacer(
@@ -197,37 +173,49 @@ private fun LessonTab(
                         1.dp
                     }
                 )
-                .background(
-                    Color.Black
-                )
+                .background(color)
         )
     }
 }
 
 @Composable
 private fun AddLessonButton() {
-    OutlinedButton(
-        onClick = { },
-        modifier = Modifier.size(
-            width = 153.dp,
-            height = 69.dp,
-        ),
-        shape = RoundedCornerShape(12.dp),
-        colors = ButtonDefaults.buttonColors(
-            containerColor = Color.Gray
-        )
+    val paddingValues = PaddingValues(
+        horizontal = 16.dp,
+        vertical = 24.dp,
+    )
+    val buttonHeight = 52.dp
+
+    Row(
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(paddingValues),
+        horizontalArrangement = Arrangement.Center,
+        verticalAlignment = Alignment.Bottom
     ) {
-        Text(
-            text = "수업 추가",
-            textAlign = TextAlign.Center,
-            fontSize = 24.sp,
-            color = Color.Black,
-        )
+        OutlinedButton(
+            onClick = { },
+            modifier = Modifier
+                .height(buttonHeight)
+                .fillMaxWidth(),
+            shape = RoundedCornerShape(5.dp),
+            colors = ButtonDefaults.buttonColors(
+                containerColor = BrandPrimary
+            )
+        ) {
+            Text(
+                text = "수업 추가",
+                textAlign = TextAlign.Center,
+                fontSize = 16.sp,
+                color = Color.White,
+            )
+        }
     }
 }
 
 private val mockUiState = LessonUiState(
-    title = "mock SplashUiState title"
+    title = "수업 목록",
+    userName = "나초보 회원님",
 )
 
 @FigmaPreview
