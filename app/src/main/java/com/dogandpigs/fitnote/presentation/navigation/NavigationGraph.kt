@@ -17,13 +17,13 @@ import androidx.navigation.NavHostController
 import androidx.navigation.NavOptions
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
+import com.dogandpigs.fitnote.presentation.join.addJoin
 import com.dogandpigs.fitnote.presentation.lesson.addLesson
 import com.dogandpigs.fitnote.presentation.lesson.addlesson.AddLessonScreen
 import com.dogandpigs.fitnote.presentation.navigation.NavRoutes.Companion.ROUTE_JOIN
 import com.dogandpigs.fitnote.presentation.navigation.NavRoutes.Companion.ROUTE_LESSON
 import com.dogandpigs.fitnote.presentation.navigation.NavRoutes.Companion.ROUTE_LOGIN
 import com.dogandpigs.fitnote.presentation.navigation.NavRoutes.Companion.ROUTE_SPLASH
-import com.dogandpigs.fitnote.presentation.splash.JoinRoute
 import com.dogandpigs.fitnote.presentation.splash.LoginRoute
 import com.dogandpigs.fitnote.presentation.splash.SplashScreen
 import com.dogandpigs.fitnote.presentation.splash.SplashViewModel
@@ -55,7 +55,7 @@ internal fun NavigationGraph(navController: NavHostController) {
         )
         addJoin(
             route = ROUTE_JOIN,
-            navigateToHome = { navController.navigate(NavRoutes.Home.route) }
+            popBackStack = { navController.popBackStack() }
         )
         addLogin(
             route = ROUTE_LOGIN,
@@ -147,17 +147,6 @@ fun NavGraphBuilder.addSplash(
             navigateToJoin = navigateToJoin,
             navigateToLogin = navigateToLogin,
             navigateToLesson = navigateToLesson,
-        )
-    }
-}
-
-fun NavGraphBuilder.addJoin(
-    route: String,
-    navigateToHome: () -> Unit,
-) {
-    composable(route = route) {
-        JoinRoute(
-            navigateToHome = navigateToHome
         )
     }
 }

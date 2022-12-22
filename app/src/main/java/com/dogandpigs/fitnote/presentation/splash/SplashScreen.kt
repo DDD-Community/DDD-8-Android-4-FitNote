@@ -109,17 +109,6 @@ private val mockUiState = SplashUiState(
 )
 
 @Composable
-internal fun JoinRoute(
-    viewModel: JoinViewModel = hiltViewModel(),
-    navigateToHome: () -> Unit
-) {
-    JoinScreen(
-        viewModel = viewModel,
-        navigateToHome = navigateToHome
-    )
-}
-
-@Composable
 internal fun LoginRoute(
     viewModel: LoginViewModel = hiltViewModel(),
     navigateToHome: () -> Unit

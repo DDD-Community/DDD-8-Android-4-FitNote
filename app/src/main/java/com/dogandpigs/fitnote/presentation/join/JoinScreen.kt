@@ -1,6 +1,5 @@
 package com.dogandpigs.fitnote.presentation.join
 
-import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.*
@@ -10,7 +9,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.unit.dp
-import androidx.navigation.compose.rememberNavController
 import com.dogandpigs.fitnote.presentation.base.FigmaPreview
 import com.dogandpigs.fitnote.presentation.ui.component.FitNoteScaffold
 import com.dogandpigs.fitnote.presentation.ui.theme.FitNoteTheme
@@ -18,12 +16,12 @@ import com.dogandpigs.fitnote.presentation.ui.theme.FitNoteTheme
 @Composable
 internal fun JoinScreen(
     viewModel: JoinViewModel,
-    navigateToHome: () -> Unit
+    popBackStack: () -> Unit
 ) {
     Join(
 //        viewModel = viewModel,
         uiState = viewModel.uiState,
-        navigateToHome = navigateToHome
+        popBackStack = popBackStack
     )
 }
 
@@ -32,19 +30,15 @@ internal fun JoinScreen(
 private fun Join(
 //    viewModel: JoinViewModel,
     uiState: JoinUiState,
-    navigateToHome: () -> Unit
+    popBackStack: () -> Unit
 ) {
     var name by remember { mutableStateOf(TextFieldValue("")) }
     var email by remember { mutableStateOf(TextFieldValue("")) }
     var pwd by remember { mutableStateOf(TextFieldValue("")) }
 
-    val navController = rememberNavController()
-
-    Log.d("TestTAG", "Join: $navController")
-
     FitNoteScaffold(
         topBarTitle = "가입하기",
-        onClickTopBarNavigationIcon = { navController.navigateUp() },
+        onClickTopBarNavigationIcon = popBackStack,
     ) { paddingValue ->
         Box {
             Column(
