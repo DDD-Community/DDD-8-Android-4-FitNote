@@ -3,12 +3,27 @@ package com.dogandpigs.fitnote.presentation.lesson.addlesson
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Close
-import androidx.compose.material3.*
+import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.OutlinedButton
+import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -19,9 +34,10 @@ import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.dogandpigs.fitnote.R
 import androidx.navigation.compose.rememberNavController
+import com.dogandpigs.fitnote.R
 import com.dogandpigs.fitnote.presentation.base.FigmaPreview
+import com.dogandpigs.fitnote.presentation.ui.component.FitNoteScaffold
 import com.dogandpigs.fitnote.presentation.ui.theme.FitNoteTheme
 
 @Composable
@@ -35,71 +51,58 @@ internal fun AddLessonScreen(
     )
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 private fun AddLesson(
-    uiState: AddLessonUiState, navigateToHome: () -> Unit, navigateToLoad: () -> Unit
+    uiState: AddLessonUiState, navigateToHome: () -> Unit,
+    navigateToLoad: () -> Unit
 ) {
     val navController = rememberNavController()
-    Scaffold(
-        topBar = {
-            CenterAlignedTopAppBar(
-                colors = TopAppBarDefaults.topAppBarColors(
-                    containerColor = Color.White
-                ),
-                title = {
-                    Text(
-                        text = "수업 추가",
-                        color = Color.Black,
-                        fontSize = 16.sp
-                    )
-                }, navigationIcon = {
-                    IconButton(onClick = {
-                        navController.navigateUp()
-                    }) {
-                        Icon(
-                            imageVector = Icons.Filled.Close, contentDescription = "Back"
-                        )
-                    }
-                }, actions = {
-                    TextButton(onClick = {}) {
-                        Text(
-                            text = "불러오기", color = colorResource(id = R.color.brand_primary)
-                        )
-                    }
-                })
-        }, content = {
-            Box {
-                Column(
-                    modifier = Modifier
-                        .fillMaxSize()
-                        .padding(it)
-                        .background(color = Color.White),
-                    horizontalAlignment = Alignment.CenterHorizontally
-                ) {
-                    AddLessonCard()
-                }
-                
-                // TODO: 버튼 공통화
-                OutlinedButton(
-                    modifier = Modifier
-                        .width(100.dp)
-                        .padding(0.dp, 10.dp)
-                        .background(Color.Transparent)
-                        .align(Alignment.BottomCenter), onClick = {
-//                        viewModel.login(email.text, pwd.text)
-                        navigateToHome()
-                    }, colors = ButtonDefaults.buttonColors(
-                        containerColor = Color.White, contentColor = Color.Black
-                    )
-                ) {
-                    Text(
-                        text = "다음",
-                        color = Color.Black
-                    )
-                }
+
+    FitNoteScaffold(
+        topBarTitle = "수업 추가",
+        topBarTitleFontSize = 16.sp,
+        onClickTopBarNavigationIcon = { navController.navigateUp() },
+        topBarNavigationIconImageVector = Icons.Filled.Close,
+        topBarActions = {
+            TextButton(onClick = {}) {
+                Text(
+                    text = "불러오기",
+                    color = colorResource(id = R.color.brand_primary)
+                )
             }
-        })
+        },
+    ) {
+        Box {
+            Column(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(it)
+                    .background(color = Color.White),
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+                AddLessonCard()
+            }
+
+            // TODO: 버튼 공통화
+            OutlinedButton(
+                modifier = Modifier
+                    .width(100.dp)
+                    .padding(0.dp, 10.dp)
+                    .background(Color.Transparent)
+                    .align(Alignment.BottomCenter), onClick = {
+//                        viewModel.login(email.text, pwd.text)
+                    navigateToHome()
+                }, colors = ButtonDefaults.buttonColors(
+                    containerColor = Color.White, contentColor = Color.Black
+                )
+            ) {
+                Text(
+                    text = "다음",
+                    color = Color.Black
+                )
+            }
+        }
+    }
 }
 
 @Composable
