@@ -1,7 +1,13 @@
 package com.dogandpigs.fitnote.presentation.splash
 
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Text
@@ -16,6 +22,7 @@ import com.dogandpigs.fitnote.presentation.join.JoinScreen
 import com.dogandpigs.fitnote.presentation.join.JoinViewModel
 import com.dogandpigs.fitnote.presentation.login.LoginScreen
 import com.dogandpigs.fitnote.presentation.login.LoginViewModel
+import com.dogandpigs.fitnote.presentation.ui.theme.BrandPrimary
 import com.dogandpigs.fitnote.presentation.ui.theme.FitNoteTheme
 
 @Composable
@@ -23,14 +30,16 @@ internal fun SplashScreen(
     viewModel: SplashViewModel,
     navigateToHome: () -> Unit,
     navigateToJoin: () -> Unit,
-    navigateToLogin: () -> Unit
+    navigateToLogin: () -> Unit,
+    navigateToLesson: () -> Unit,
 ) {
     Box {
         Splash(
             uiState = viewModel.uiState,
             navigateToHome = navigateToHome,
             navigateToJoin,
-            navigateToLogin
+            navigateToLogin,
+            navigateToLesson,
         )
     }
 }
@@ -40,7 +49,8 @@ private fun Splash(
     uiState: SplashUiState,
     navigateToHome: () -> Unit,
     navigateToJoin: () -> Unit,
-    navigateToLogin: () -> Unit
+    navigateToLogin: () -> Unit,
+    navigateToLesson: () -> Unit,
 ) {
     Column(
         modifier = Modifier
@@ -59,7 +69,7 @@ private fun Splash(
                 containerColor = Color.Black,
                 contentColor = Color.White
             ),
-            
+
             ) {
             Text(text = "가입하기")
         }
@@ -76,6 +86,20 @@ private fun Splash(
             contentPadding = PaddingValues(horizontal = 20.dp)
         ) {
             Text(text = "로그인")
+        }
+        Button(
+            onClick = navigateToLesson,
+            modifier = Modifier
+                .width(300.dp)
+                .padding(0.dp, 5.dp)
+                .background(Color.Transparent),
+            colors = ButtonDefaults.buttonColors(
+                containerColor = BrandPrimary,
+                contentColor = Color.White,
+            ),
+            contentPadding = PaddingValues(horizontal = 20.dp)
+        ) {
+            Text(text = "수업 목록")
         }
     }
 }
@@ -114,7 +138,8 @@ private fun PreviewSplash() {
             uiState = mockUiState,
             navigateToHome = {},
             navigateToJoin = {},
-            navigateToLogin = {}
+            navigateToLogin = {},
+            navigateToLesson = {},
         )
     }
 }

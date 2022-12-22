@@ -46,6 +46,12 @@ internal sealed class NavRoutes(
         0
     )
 
+    object Lesson : NavRoutes(
+        ROUTE_LESSON,
+        R.drawable.ic_fitness_center,
+        0
+    )
+
     companion object {
         const val ROUTE_NAME_HOME = "route_home"
         const val ROUTE_NAME_FIRST = "route_first"
@@ -54,5 +60,6 @@ internal sealed class NavRoutes(
         const val ROUTE_SPLASH = "route_splash"
         const val ROUTE_JOIN = "route_join"
         const val ROUTE_LOGIN = "route_login"
+        const val ROUTE_LESSON = "route_lesson"
     }
 }

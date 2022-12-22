@@ -25,6 +25,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.hilt.navigation.compose.hiltViewModel
 import com.dogandpigs.fitnote.R
 import com.dogandpigs.fitnote.presentation.base.FigmaPreview
 import com.dogandpigs.fitnote.presentation.ui.component.FitNoteScaffold
@@ -34,14 +35,14 @@ import com.dogandpigs.fitnote.presentation.ui.theme.GrayScaleMidGray2
 
 @Composable
 internal fun LessonScreen(
-    viewModel: LessonViewModel,
-    navigateToHome: () -> Unit,
+    viewModel: LessonViewModel = hiltViewModel(),
+    popBackStack: () -> Unit,
     navigateToSetting: () -> Unit,
 ) {
     Box {
         Lesson(
             uiState = viewModel.uiState,
-            navigateToHome = navigateToHome,
+            popBackStack = popBackStack,
             navigateToSetting = navigateToSetting,
         )
     }
@@ -50,13 +51,13 @@ internal fun LessonScreen(
 @Composable
 private fun Lesson(
     uiState: LessonUiState,
-    navigateToHome: () -> Unit,
+    popBackStack: () -> Unit,
     navigateToSetting: () -> Unit,
 ) {
     FitNoteScaffold(
         topBarTitle = "${uiState.userName} ${uiState.title}",
         topBarTitleFontSize = 20.sp,
-        onClickTopBarNavigationIcon = navigateToHome
+        onClickTopBarNavigationIcon = popBackStack
     ) {
         Box(modifier = Modifier.padding(it)) {
             Column {
@@ -224,7 +225,7 @@ private fun PreviewLesson() {
     FitNoteTheme {
         Lesson(
             uiState = mockUiState,
-            navigateToHome = {},
+            popBackStack = {},
             navigateToSetting = {},
         )
     }

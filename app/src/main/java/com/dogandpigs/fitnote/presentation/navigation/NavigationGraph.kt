@@ -17,8 +17,10 @@ import androidx.navigation.NavHostController
 import androidx.navigation.NavOptions
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
+import com.dogandpigs.fitnote.presentation.lesson.addLesson
 import com.dogandpigs.fitnote.presentation.lesson.addlesson.AddLessonScreen
 import com.dogandpigs.fitnote.presentation.navigation.NavRoutes.Companion.ROUTE_JOIN
+import com.dogandpigs.fitnote.presentation.navigation.NavRoutes.Companion.ROUTE_LESSON
 import com.dogandpigs.fitnote.presentation.navigation.NavRoutes.Companion.ROUTE_LOGIN
 import com.dogandpigs.fitnote.presentation.navigation.NavRoutes.Companion.ROUTE_SPLASH
 import com.dogandpigs.fitnote.presentation.splash.JoinRoute
@@ -48,7 +50,8 @@ internal fun NavigationGraph(navController: NavHostController) {
             route = ROUTE_SPLASH,
             navigateToHome = { navController.navigate(NavRoutes.Home.route) },
             navigateToJoin = { navController.navigate(NavRoutes.Join.route) },
-            navigateToLogin = { navController.navigate(NavRoutes.Login.route) }
+            navigateToLogin = { navController.navigate(NavRoutes.Login.route) },
+            navigateToLesson = { navController.navigate(NavRoutes.Lesson.route) },
         )
         addJoin(
             route = ROUTE_JOIN,
@@ -57,6 +60,11 @@ internal fun NavigationGraph(navController: NavHostController) {
         addLogin(
             route = ROUTE_LOGIN,
             navigateToHome = { navController.navigate(NavRoutes.Home.route) }
+        )
+        addLesson(
+            route = ROUTE_LESSON,
+            popBackStack = { navController.popBackStack() },
+            navigateToSetting = {},
         )
     }
 }
@@ -130,13 +138,15 @@ fun NavGraphBuilder.addSplash(
     route: String,
     navigateToHome: () -> Unit,
     navigateToJoin: () -> Unit,
-    navigateToLogin: () -> Unit
+    navigateToLogin: () -> Unit,
+    navigateToLesson: () -> Unit,
 ) {
     composable(route = route) {
         SplashRoute(
             navigateToHome = navigateToHome,
             navigateToJoin = navigateToJoin,
-            navigateToLogin = navigateToLogin
+            navigateToLogin = navigateToLogin,
+            navigateToLesson = navigateToLesson,
         )
     }
 }
@@ -168,13 +178,15 @@ internal fun SplashRoute(
     viewModel: SplashViewModel = hiltViewModel(),
     navigateToHome: () -> Unit,
     navigateToJoin: () -> Unit,
-    navigateToLogin: () -> Unit
+    navigateToLogin: () -> Unit,
+    navigateToLesson: () -> Unit,
 ) {
     SplashScreen(
         viewModel = viewModel,
         navigateToHome = navigateToHome,
         navigateToJoin,
-        navigateToLogin
+        navigateToLogin,
+        navigateToLesson = navigateToLesson,
     )
 }
 
