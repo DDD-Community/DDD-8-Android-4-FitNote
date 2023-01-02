@@ -1,20 +1,19 @@
 package com.dogandpigs.fitnote.presentation.lesson.addlesson
 
+import android.app.DatePickerDialog
+import android.app.FragmentManager
+import android.content.Context
+import android.content.ContextWrapper
+import android.util.Log
+import android.widget.DatePicker
+import androidx.activity.ComponentActivity
+import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.layout.wrapContentWidth
+import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.ClickableText
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Close
@@ -24,21 +23,29 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
-import androidx.compose.runtime.Composable
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.CornerRadius
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.PathEffect
 import androidx.compose.ui.graphics.drawscope.Stroke
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.colorResource
+import androidx.compose.ui.text.AnnotatedString
+import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.compose.rememberNavController
 import com.dogandpigs.fitnote.R
+import com.dogandpigs.fitnote.presentation.MainActivity
 import com.dogandpigs.fitnote.presentation.base.FigmaPreview
 import com.dogandpigs.fitnote.presentation.ui.component.FitNoteScaffold
+import com.dogandpigs.fitnote.presentation.ui.theme.BrandPrimary
 import com.dogandpigs.fitnote.presentation.ui.theme.FitNoteTheme
+import com.google.android.material.datepicker.MaterialDatePicker
+import java.util.*
 
 @Composable
 internal fun AddLessonScreen(
@@ -57,7 +64,7 @@ private fun AddLesson(
     navigateToLoad: () -> Unit
 ) {
     val navController = rememberNavController()
-
+    
     FitNoteScaffold(
         topBarTitle = "수업 추가",
         topBarTitleFontSize = 16.sp,
@@ -70,38 +77,59 @@ private fun AddLesson(
                     color = colorResource(id = R.color.brand_primary)
                 )
             }
-        },
+        }
     ) {
-        Box {
+        Box(
+            modifier = Modifier
+                .padding(it)
+        ) {
             Column(
                 modifier = Modifier
-                    .fillMaxSize()
-                    .padding(it)
                     .background(color = Color.White),
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
                 AddLessonCard()
             }
-
-            // TODO: 버튼 공통화
-            OutlinedButton(
-                modifier = Modifier
-                    .width(100.dp)
-                    .padding(0.dp, 10.dp)
-                    .background(Color.Transparent)
-                    .align(Alignment.BottomCenter), onClick = {
-//                        viewModel.login(email.text, pwd.text)
-                    navigateToHome()
-                }, colors = ButtonDefaults.buttonColors(
-                    containerColor = Color.White, contentColor = Color.Black
-                )
-            ) {
-                Text(
-                    text = "다음",
-                    color = Color.Black
-                )
-            }
+            AddButton()
         }
+    }
+}
+
+@Composable
+private fun AddButton() {
+    val buttonHeight = 52.dp
+    val paddingValues = PaddingValues(
+        horizontal = 16.dp,
+        vertical = 24.dp,
+    )
+    Row(
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(paddingValues),
+        horizontalArrangement = Arrangement.Center,
+        verticalAlignment = Alignment.Bottom
+    ) {
+        // TODO: 버튼 공통화
+        OutlinedButton(
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(buttonHeight)
+//                    .padding(paddingValues)
+                .background(Color.Transparent),
+            onClick = {},
+            shape = RoundedCornerShape(5.dp),
+            colors = ButtonDefaults.buttonColors(
+                containerColor = BrandPrimary
+            )
+        ) {
+            Text(
+                text = "다음",
+                textAlign = TextAlign.Center,
+                fontSize = 16.sp,
+                color = Color.White
+            )
+        }
+        
     }
 }
 
@@ -110,7 +138,6 @@ private fun AddLessonCard() {
     Box(
         modifier = Modifier
             .fillMaxSize()
-            .padding(20.dp, 20.dp)
     ) {
         Column(
             modifier = Modifier
@@ -128,6 +155,7 @@ private fun AddLessonCard() {
 
 @Composable
 private fun DateLabel() {
+    val context = LocalContext.current
     Row(
         modifier = Modifier
             .fillMaxWidth()
@@ -146,12 +174,38 @@ private fun DateLabel() {
             color = Color.Black,
             fontSize = 12.sp
         )
-        Text(
-            text = "2022년 12월 25일",
-            color = Color.Black,
-            fontSize = 12.sp
+        ClickableText(
+            text = AnnotatedString("2022년 12월 25일"),
+            style = TextStyle.Default,
+            onClick = {
+                showDatePicker(context as AppCompatActivity)
+            }
         )
     }
+}
+
+private fun showDatePicker(activity: AppCompatActivity) {
+    Log.d("testTAG", "showDatePicker: ")
+    val fm = activity.supportFragmentManager
+    val picker = MaterialDatePicker.Builder.datePicker().build()
+    fm.let {
+        
+        picker.show(fm, picker.toString())
+        picker.addOnPositiveButtonClickListener {
+        
+        }
+    }
+}
+
+fun Context.getActivity(): AppCompatActivity? {
+    var currentContext = this
+    while (currentContext is ContextWrapper) {
+        if (currentContext is AppCompatActivity) {
+            return currentContext
+        }
+        currentContext = currentContext.baseContext
+    }
+    return null
 }
 
 @Composable
@@ -290,6 +344,34 @@ private fun AddExercise() {
                 color = Color.Black
             )
         }
+    }
+}
+@Composable
+fun Calender() {
+    
+    var datePicked by remember { mutableStateOf("1") }
+    
+    val context = LocalContext.current
+    val year: Int
+    val month: Int
+    val day: Int
+    
+    val calendar = Calendar.getInstance()
+    year = calendar.get(Calendar.YEAR)
+    month = calendar.get(Calendar.MONTH)
+    day = calendar.get(Calendar.DAY_OF_MONTH)
+    calendar.time = Date()
+    
+    
+    val datePickerDialog = DatePickerDialog(
+        context,
+        { _: DatePicker, year: Int, month: Int, dayOfMonth: Int ->
+            datePicked = "$dayOfMonth/$month/$year"
+        }, year, month, day
+    )
+    
+    OutlinedButton(onClick = { datePickerDialog.show() }) {
+        Text(text = "Pick Date")
     }
 }
 
