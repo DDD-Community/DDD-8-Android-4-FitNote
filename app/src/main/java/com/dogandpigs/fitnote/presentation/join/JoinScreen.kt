@@ -10,6 +10,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.unit.dp
 import com.dogandpigs.fitnote.presentation.base.FigmaPreview
+import com.dogandpigs.fitnote.presentation.ui.component.CompleteButton
 import com.dogandpigs.fitnote.presentation.ui.component.FitNoteScaffold
 import com.dogandpigs.fitnote.presentation.ui.theme.FitNoteTheme
 
@@ -125,29 +126,15 @@ private fun Join(
                     },
                 )
             }
-
-            OutlinedButton(
-                colors = ButtonDefaults.buttonColors(
-                    containerColor = Color.White,
-                    contentColor = Color.Black
-                ),
-                modifier = Modifier
-                    .width(100.dp)
-                    .padding(0.dp, 10.dp)
-                    .background(Color.Transparent)
-                    .align(Alignment.BottomCenter),
-                onClick = {
-//                viewModel.join(
-//                    name.text,
-//                    email.text,
-//                    pwd.text
-//                )
-                }
-            ) {
-                Text(text = "다음")
-            }
+    
+            CompleteButton("다음", onClick = {})
         }
     }
+}
+
+@Composable
+private fun addCompleteButton() {
+
 }
 
 private val mockUiState = JoinUiState(

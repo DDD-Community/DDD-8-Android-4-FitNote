@@ -37,6 +37,7 @@ import androidx.navigation.compose.rememberNavController
 import com.dogandpigs.fitnote.R
 import com.dogandpigs.fitnote.core.FormatUtil
 import com.dogandpigs.fitnote.presentation.base.FigmaPreview
+import com.dogandpigs.fitnote.presentation.ui.component.CompleteButton
 import com.dogandpigs.fitnote.presentation.ui.component.FitNoteScaffold
 import com.dogandpigs.fitnote.presentation.ui.theme.BrandPrimary
 import com.dogandpigs.fitnote.presentation.ui.theme.FitNoteTheme
@@ -89,46 +90,8 @@ private fun AddLesson(
             ) {
                 AddLessonCard(viewModel)
             }
-            AddButton()
+            CompleteButton("저장", onClick = {})
         }
-    }
-}
-
-@Composable
-private fun AddButton() {
-    val buttonHeight = 52.dp
-    val paddingValues = PaddingValues(
-        horizontal = 16.dp,
-        vertical = 24.dp,
-    )
-    Row(
-        modifier = Modifier
-            .fillMaxSize()
-            .padding(paddingValues),
-        horizontalArrangement = Arrangement.Center,
-        verticalAlignment = Alignment.Bottom
-    ) {
-        // TODO: 버튼 공통화
-        OutlinedButton(
-            modifier = Modifier
-                .fillMaxWidth()
-                .height(buttonHeight)
-//                    .padding(paddingValues)
-                .background(Color.Transparent),
-            onClick = {},
-            shape = RoundedCornerShape(5.dp),
-            colors = ButtonDefaults.buttonColors(
-                containerColor = BrandPrimary
-            )
-        ) {
-            Text(
-                text = "다음",
-                textAlign = TextAlign.Center,
-                fontSize = 16.sp,
-                color = Color.White
-            )
-        }
-        
     }
 }
 
