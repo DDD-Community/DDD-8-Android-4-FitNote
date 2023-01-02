@@ -9,6 +9,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
 import com.dogandpigs.fitnote.presentation.base.FigmaPreview
 import com.dogandpigs.fitnote.presentation.ui.component.CompleteButton
 import com.dogandpigs.fitnote.presentation.ui.component.FitNoteScaffold
@@ -20,7 +21,7 @@ internal fun JoinScreen(
     popBackStack: () -> Unit
 ) {
     Join(
-//        viewModel = viewModel,
+        viewModel = viewModel,
         uiState = viewModel.uiState,
         popBackStack = popBackStack
     )
@@ -29,14 +30,16 @@ internal fun JoinScreen(
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 private fun Join(
-//    viewModel: JoinViewModel,
+    viewModel: JoinViewModel,
     uiState: JoinUiState,
     popBackStack: () -> Unit
 ) {
     var name by remember { mutableStateOf(TextFieldValue("")) }
     var email by remember { mutableStateOf(TextFieldValue("")) }
     var pwd by remember { mutableStateOf(TextFieldValue("")) }
-
+    var isNameError by remember { mutableStateOf(false) }
+    var isEmailError by remember { mutableStateOf(false) }
+    var isPwdError by remember { mutableStateOf(false) }
     FitNoteScaffold(
         topBarTitle = "가입하기",
         onClickTopBarNavigationIcon = popBackStack,
@@ -50,11 +53,13 @@ private fun Join(
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
                 TextField(
+                    isError = isNameError,
                     label = {
                         Text(text = "name")
                     },
                     colors = TextFieldDefaults.textFieldColors(
                         containerColor = Color.Transparent,
+                        errorIndicatorColor = Color.Red
                     ),
                     modifier = Modifier
                         .fillMaxWidth()
@@ -62,6 +67,7 @@ private fun Join(
                         .background(Color.Transparent),
                     value = name,
                     onValueChange = { newText ->
+                        isNameError = true
                         name = newText
                     },
                     placeholder = {
@@ -69,6 +75,7 @@ private fun Join(
                     },
                 )
                 TextField(
+                    isError = isEmailError,
                     label = {
                         Text(text = "email")
                     },
@@ -107,6 +114,7 @@ private fun Join(
                     }
                 )
                 TextField(
+                    isError = isPwdError,
                     label = {
                         Text(text = "check password")
                     },
@@ -132,11 +140,6 @@ private fun Join(
     }
 }
 
-@Composable
-private fun addCompleteButton() {
-
-}
-
 private val mockUiState = JoinUiState(
     title = "mock JoinUiState title"
 )
@@ -146,7 +149,7 @@ private val mockUiState = JoinUiState(
 private fun PreviewJoin() {
     FitNoteTheme {
         Join(
-//            viewModel = hiltViewModel(),
+            viewModel = hiltViewModel(),
             uiState = mockUiState
         ) {}
     }
