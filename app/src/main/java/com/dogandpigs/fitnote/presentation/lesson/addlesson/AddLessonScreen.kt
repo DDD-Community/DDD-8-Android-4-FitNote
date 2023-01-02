@@ -1,12 +1,7 @@
 package com.dogandpigs.fitnote.presentation.lesson.addlesson
 
 import android.app.DatePickerDialog
-import android.app.FragmentManager
-import android.content.Context
-import android.content.ContextWrapper
-import android.util.Log
 import android.widget.DatePicker
-import androidx.activity.ComponentActivity
 import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
@@ -37,9 +32,10 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.compose.rememberNavController
 import com.dogandpigs.fitnote.R
-import com.dogandpigs.fitnote.presentation.MainActivity
+import com.dogandpigs.fitnote.core.FormatUtil
 import com.dogandpigs.fitnote.presentation.base.FigmaPreview
 import com.dogandpigs.fitnote.presentation.ui.component.FitNoteScaffold
 import com.dogandpigs.fitnote.presentation.ui.theme.BrandPrimary
@@ -52,6 +48,7 @@ internal fun AddLessonScreen(
     viewModel: AddLessonViewModel, navigateToHome: () -> Unit, navigateToLoad: () -> Unit
 ) {
     AddLesson(
+        viewModel,
         uiState = viewModel.uiState,
         navigateToHome = navigateToHome,
         navigateToLoad = navigateToLoad
@@ -60,7 +57,9 @@ internal fun AddLessonScreen(
 
 @Composable
 private fun AddLesson(
-    uiState: AddLessonUiState, navigateToHome: () -> Unit,
+    viewModel: AddLessonViewModel,
+    uiState: AddLessonUiState,
+    navigateToHome: () -> Unit,
     navigateToLoad: () -> Unit
 ) {
     val navController = rememberNavController()
@@ -88,7 +87,7 @@ private fun AddLesson(
                     .background(color = Color.White),
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
-                AddLessonCard()
+                AddLessonCard(viewModel)
             }
             AddButton()
         }
@@ -134,7 +133,7 @@ private fun AddButton() {
 }
 
 @Composable
-private fun AddLessonCard() {
+private fun AddLessonCard(viewModel: AddLessonViewModel) {
     Box(
         modifier = Modifier
             .fillMaxSize()
@@ -144,7 +143,7 @@ private fun AddLessonCard() {
                 .fillMaxSize()
                 .padding(0.dp, 15.dp)
         ) {
-            DateLabel()
+            DateLabel(viewModel)
             Spacer(modifier = Modifier.height(20.dp))
             InputLesson()
             Spacer(modifier = Modifier.height(20.dp))
@@ -154,8 +153,9 @@ private fun AddLessonCard() {
 }
 
 @Composable
-private fun DateLabel() {
+private fun DateLabel(viewModel: AddLessonViewModel) {
     val context = LocalContext.current
+    var dateState = viewModel.dateStringState
     Row(
         modifier = Modifier
             .fillMaxWidth()
@@ -175,37 +175,27 @@ private fun DateLabel() {
             fontSize = 12.sp
         )
         ClickableText(
-            text = AnnotatedString("2022년 12월 25일"),
+            text = AnnotatedString(dateState),
             style = TextStyle.Default,
             onClick = {
-                showDatePicker(context as AppCompatActivity)
+                showDatePicker(viewModel, context as AppCompatActivity)
             }
         )
     }
 }
 
-private fun showDatePicker(activity: AppCompatActivity) {
-    Log.d("testTAG", "showDatePicker: ")
+private fun showDatePicker(viewModel: AddLessonViewModel, activity: AppCompatActivity) {
     val fm = activity.supportFragmentManager
-    val picker = MaterialDatePicker.Builder.datePicker().build()
+    val picker =
+        MaterialDatePicker.Builder.datePicker()
+            .setSelection(viewModel.dateMilliState)
+            .build()
     fm.let {
-        
         picker.show(fm, picker.toString())
         picker.addOnPositiveButtonClickListener {
-        
+            viewModel.setDate(it)
         }
     }
-}
-
-fun Context.getActivity(): AppCompatActivity? {
-    var currentContext = this
-    while (currentContext is ContextWrapper) {
-        if (currentContext is AppCompatActivity) {
-            return currentContext
-        }
-        currentContext = currentContext.baseContext
-    }
-    return null
 }
 
 @Composable
@@ -346,6 +336,7 @@ private fun AddExercise() {
         }
     }
 }
+
 @Composable
 fun Calender() {
     
@@ -383,6 +374,10 @@ private val mockUiState = AddLessonUiState(
 @Composable
 private fun PreviewAddLesson() {
     FitNoteTheme() {
-        AddLesson(uiState = mockUiState, navigateToHome = {}, navigateToLoad = {})
+        AddLesson(
+            viewModel = hiltViewModel(),
+            uiState = mockUiState,
+            navigateToHome = {},
+            navigateToLoad = {})
     }
 }
