@@ -67,7 +67,6 @@ dependencies {
     implementation 'androidx.fragment:fragment-ktx:1.5.5'
     implementation 'androidx.activity:activity-ktx:1.6.1'
     implementation 'androidx.core:core-ktx:1.7.0'
-    implementation 'androidx.lifecycle:lifecycle-runtime-ktx:2.3.1'
 
     implementation 'com.google.android.material:material:1.7.0'
     testImplementation 'junit:junit:4.13.2'
@@ -76,6 +75,14 @@ dependencies {
 
     def nav_version = "2.5.3"
     implementation("androidx.navigation:navigation-compose:$nav_version")
+
+    // lifecycle
+    def lifecycle_version = "2.5.1"
+    // ViewModel
+    implementation "androidx.lifecycle:lifecycle-viewmodel-ktx:$lifecycle_version"
+    // ViewModel utilities for Compose
+    implementation "androidx.lifecycle:lifecycle-viewmodel-compose:$lifecycle_version"
+    implementation "androidx.lifecycle:lifecycle-runtime-compose:2.6.0-alpha03"
 
     // compose
     def composeBom = platform('androidx.compose:compose-bom:2022.10.00')
@@ -95,8 +102,6 @@ dependencies {
 
     // Optional - Integration with activities
     implementation 'androidx.activity:activity-compose:1.5.1'
-    // Optional - Integration with ViewModels
-    implementation 'androidx.lifecycle:lifecycle-viewmodel-compose:2.5.1'
 
     // Hilt
     implementation "com.google.dagger:hilt-android:2.44"

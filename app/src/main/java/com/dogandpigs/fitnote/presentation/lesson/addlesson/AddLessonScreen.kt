@@ -9,6 +9,7 @@ import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -45,6 +46,8 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.ExperimentalLifecycleComposeApi
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.compose.rememberNavController
 import com.dogandpigs.fitnote.R
 import com.dogandpigs.fitnote.presentation.base.FigmaPreview
@@ -54,6 +57,7 @@ import com.dogandpigs.fitnote.presentation.ui.theme.FitNoteTheme
 import java.util.Calendar
 import java.util.Date
 
+@OptIn(ExperimentalLifecycleComposeApi::class)
 @Composable
 internal fun AddLessonScreen(
     viewModel: AddLessonViewModel = hiltViewModel(),
@@ -61,9 +65,11 @@ internal fun AddLessonScreen(
     navigateToLoadLesson: () -> Unit,
     navigateToAddExercise: () -> Unit,
 ) {
+    val uiState by viewModel.uiState.collectAsStateWithLifecycle()
+
     AddLesson(
         viewModel,
-        uiState = viewModel.uiState,
+        uiState = uiState,
         onClickClose = popBackStack,
         onClickLoadLesson = navigateToLoadLesson,
         onClickAddExercise = navigateToAddExercise,
@@ -98,11 +104,18 @@ private fun AddLesson(
             modifier = Modifier
                 .padding(it)
         ) {
+            val paddingValues = PaddingValues(16.dp)
+
             Column(
                 modifier = Modifier
+                    .padding(paddingValues)
                     .background(color = Color.White),
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
+                DateLabel(
+                    uiState.dateString,
+                    {},
+                )
                 AddLessonCard(viewModel)
             }
             CompleteButton("저장", onClick = {})
@@ -121,7 +134,6 @@ private fun AddLessonCard(viewModel: AddLessonViewModel) {
                 .fillMaxSize()
                 .padding(0.dp, 15.dp)
         ) {
-            DateLabel(viewModel)
             Spacer(modifier = Modifier.height(20.dp))
             InputLesson()
             Spacer(modifier = Modifier.height(20.dp))
@@ -131,9 +143,12 @@ private fun AddLessonCard(viewModel: AddLessonViewModel) {
 }
 
 @Composable
-private fun DateLabel(viewModel: AddLessonViewModel) {
+private fun DateLabel(
+    dateString: String,
+    onClickDate: () -> Unit,
+) {
     val context = LocalContext.current
-    var dateState = viewModel.dateStringState
+
     Row(
         modifier = Modifier
             .fillMaxWidth()
@@ -153,10 +168,10 @@ private fun DateLabel(viewModel: AddLessonViewModel) {
             fontSize = 12.sp
         )
         ClickableText(
-            text = AnnotatedString(dateState),
+            text = AnnotatedString(dateString),
             style = TextStyle.Default,
             onClick = {
-                showDatePicker(viewModel, context as AppCompatActivity)
+//                showDatePicker(viewModel, context as AppCompatActivity)
             }
         )
     }
