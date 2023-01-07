@@ -4,4 +4,11 @@
     <string name="title_first">First</string>
     <string name="title_second">Second</string>
     <string name="title_third">Third</string>
+    <string name="name">이름</string>
+    <string name="email">이메일</string>
+    <string name="password">비밀번호</string>
+    <string name="check_password">비밀번호 확인</string>
+    <string name="btn_next">다음</string>
+    <string name="placeholder_email">example@example.com</string>
+    <string name="placeholder_password">8-16자의 영문/숫자 조합으로 공백없이 입력해주세요</string>
 </resources>
