@@ -2,8 +2,11 @@ package com.dogandpigs.fitnote.presentation.ui.component
 
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.defaultMinSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.ButtonDefaults
@@ -13,9 +16,10 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.dogandpigs.fitnote.presentation.base.FigmaPreview
+import com.dogandpigs.fitnote.presentation.base.ComponentPreview
 import com.dogandpigs.fitnote.presentation.ui.theme.BrandPrimary
 import com.dogandpigs.fitnote.presentation.ui.theme.GrayScaleLightGray2
 import com.dogandpigs.fitnote.presentation.ui.theme.GrayScaleMidGray3
@@ -23,6 +27,7 @@ import com.dogandpigs.fitnote.presentation.ui.theme.GrayScaleWhite
 
 @Composable
 internal fun DefaultTwoButton(
+    modifier: Modifier.() -> Modifier = { Modifier },
     positiveText: String,
     onClickPositive: () -> Unit,
     negativeText: String,
@@ -32,19 +37,24 @@ internal fun DefaultTwoButton(
         modifier = Modifier
             .wrapContentHeight()
             .fillMaxWidth()
+            .modifier()
     ) {
         DefaultNegativeButton(
-            modifier = Modifier
-                .weight(1F)
-                .wrapContentHeight(),
+            modifier = {
+                Modifier
+                    .weight(1F)
+                    .wrapContentHeight()
+            },
             negativeText = negativeText,
             onClickNegative = onClickNegative,
         )
         WidthSpacer(width = 9.dp)
         DefaultPositiveButton(
-            modifier = Modifier
-                .weight(1F)
-                .wrapContentHeight(),
+            modifier = {
+                Modifier
+                    .weight(1F)
+                    .wrapContentHeight()
+            },
             positiveText = positiveText,
             onClickPositive = onClickPositive,
         )
@@ -53,7 +63,7 @@ internal fun DefaultTwoButton(
 
 @Composable
 private fun DefaultNegativeButton(
-    modifier: Modifier,
+    modifier: Modifier.() -> Modifier = { Modifier },
     negativeText: String,
     onClickNegative: () -> Unit,
 ) {
@@ -69,7 +79,7 @@ private fun DefaultNegativeButton(
 
 @Composable
 private fun DefaultPositiveButton(
-    modifier: Modifier,
+    modifier: Modifier.() -> Modifier = { Modifier },
     positiveText: String,
     onClickPositive: () -> Unit,
 ) {
@@ -84,35 +94,60 @@ private fun DefaultPositiveButton(
 }
 
 @Composable
+fun PrimaryButton(
+    modifier: Modifier.() -> Modifier = { Modifier },
+    text: String,
+    textSize: TextUnit = 16.sp,
+    buttonPadding: PaddingValues = PaddingValues(vertical = 16.dp, horizontal = 0.dp),
+    onClickPositive: () -> Unit,
+) {
+    DefaultButton(
+        modifier = modifier,
+        text = text,
+        textColor = Color.White,
+        buttonColor = BrandPrimary,
+        borderColor = BrandPrimary,
+        textSize = textSize,
+        buttonPadding = buttonPadding,
+        onClick = onClickPositive
+    )
+}
+
+@Composable
 private fun DefaultButton(
-    modifier: Modifier = Modifier,
+    modifier: Modifier.() -> Modifier = { Modifier },
     text: String,
     textColor: Color,
     buttonColor: Color,
     borderColor: Color,
+    textSize: TextUnit = 12.sp,
+    buttonPadding: PaddingValues = PaddingValues(vertical = 12.dp, horizontal = 0.dp),
     onClick: () -> Unit,
 ) {
     OutlinedButton(
-        modifier = modifier
-            .fillMaxWidth()
-            .background(Color.Transparent),
+        modifier = Modifier
+            .defaultMinSize(minWidth = 0.dp, minHeight = 0.dp)
+            .background(Color.Transparent)
+            .modifier(),
         onClick = onClick,
         shape = RoundedCornerShape(5.dp),
         colors = ButtonDefaults.buttonColors(
             containerColor = buttonColor,
         ),
-        border = BorderStroke(1.dp, borderColor)
+        border = BorderStroke(1.dp, borderColor),
+        contentPadding = PaddingValues(0.dp)
     ) {
         Text(
+            modifier = Modifier.padding(buttonPadding),
             text = text,
             textAlign = TextAlign.Center,
-            fontSize = 12.sp,
+            fontSize = textSize,
             color = textColor
         )
     }
 }
 
-@FigmaPreview
+@ComponentPreview
 @Composable
 private fun PreviewDefaultTwoButton() {
     DefaultTwoButton(
@@ -121,4 +156,12 @@ private fun PreviewDefaultTwoButton() {
         negativeText = "negativeText",
         onClickNegative = {}
     )
+}
+
+@ComponentPreview
+@Composable
+private fun PreviewPrimaryButton() {
+    PrimaryButton(text = "PrimaryButton") {
+
+    }
 }

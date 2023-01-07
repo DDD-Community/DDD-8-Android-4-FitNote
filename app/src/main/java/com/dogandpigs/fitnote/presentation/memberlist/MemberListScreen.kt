@@ -1,11 +1,13 @@
 package com.dogandpigs.fitnote.presentation.memberlist
 
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -22,6 +24,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -31,8 +34,8 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.dogandpigs.fitnote.R
 import com.dogandpigs.fitnote.presentation.base.ComponentPreview
 import com.dogandpigs.fitnote.presentation.base.FigmaPreview
-import com.dogandpigs.fitnote.presentation.ui.component.CompleteButton
 import com.dogandpigs.fitnote.presentation.ui.component.FitNoteScaffold
+import com.dogandpigs.fitnote.presentation.ui.component.PrimaryButton
 import com.dogandpigs.fitnote.presentation.ui.theme.FitNoteTheme
 import com.dogandpigs.fitnote.presentation.ui.theme.GrayScaleLightGray2
 import com.dogandpigs.fitnote.presentation.ui.theme.GrayScaleMidGray2
@@ -59,25 +62,39 @@ internal fun MemberListScreen(
         Box(modifier = Modifier.padding(it)) {
             Column(
                 modifier = Modifier
-                    .fillMaxWidth()
-                    .verticalScroll(rememberScrollState())
+                    .background(Color.White)
+                    .fillMaxSize()
             ) {
-                MemberListHeader(myName = state.myName, profileImgUrl = state.profileImgUrl)
-                Divider(
-                    color = GrayScaleMidGray2, modifier = Modifier
+                Column(
+                    modifier = Modifier
                         .fillMaxWidth()
-                        .height(1.dp)
-                )
-                MemberList(
-                    userList = state.userList,
-                    popBackStack = popBackStack,
-                    onClickMemberDetail = navigateToMemberDetail,
-                    onClickAddMember = navigateToAddMember,
-                    onClickLesson = navigateToLesson,
-                    onClickSetting = navigateToSetting,
-                )
+                        .weight(1f)
+                        .verticalScroll(rememberScrollState())
+                ) {
+                    MemberListHeader(myName = state.myName, profileImgUrl = state.profileImgUrl)
+                    Divider(
+                        color = GrayScaleMidGray2, modifier = Modifier
+                            .fillMaxWidth()
+                            .height(1.dp)
+                    )
+                    MemberList(
+                        userList = state.userList,
+                        popBackStack = popBackStack,
+                        onClickMemberDetail = navigateToMemberDetail,
+                        onClickAddMember = navigateToAddMember,
+                        onClickLesson = navigateToLesson,
+                        onClickSetting = navigateToSetting,
+                    )
+                }
+                PrimaryButton(
+                    modifier = {
+                        padding(PaddingValues(start = 16.dp, end = 16.dp, bottom = 24.dp))
+                            .fillMaxWidth()
+                    }, text = "회원 추가"
+                ) {
+
+                }
             }
-            CompleteButton("회원 추가", onClick = {})
         }
     }
 }
@@ -142,11 +159,10 @@ private fun MemberList(
     }
 }
 
-private val previewUiState = MemberListUiState(
-    myName = "김코치", profileImgUrl = "", userList = (0..30).map {
+private val previewUiState =
+    MemberListUiState(myName = "김코치", profileImgUrl = "", userList = (0..30).map {
         MemberUiModel(id = it.toLong(), userName = "이름 $it")
-    }
-)
+    })
 
 @FigmaPreview
 @Composable
