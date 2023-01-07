@@ -27,4 +27,30 @@ internal class AddLessonViewModel @Inject constructor() : BaseViewModel() {
             )
         }
     }
+
+    fun addRoutine(routine: Routine) {
+        val routineList = uiState.value.routineList.toMutableList()
+        if (routineList.isNotEmpty()) {
+            routine.set = routineList.last().set + 1
+        }
+        routineList.add(routine)
+        viewModelScope.launch {
+            uiState.value = uiState.value.copy(
+                routineList = routineList
+            )
+        }
+    }
+
+    fun removeRoutine(set: Int) {
+        val routineList = uiState.value.routineList.toMutableList()
+        val routine = routineList.find { routine ->
+            routine.set == set
+        }
+        routineList.remove(routine)
+        viewModelScope.launch {
+            uiState.value = uiState.value.copy(
+                routineList = routineList
+            )
+        }
+    }
 }

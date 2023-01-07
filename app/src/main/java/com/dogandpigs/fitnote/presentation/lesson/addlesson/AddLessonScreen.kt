@@ -6,32 +6,14 @@ import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.PaddingValues
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxHeight
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.layout.wrapContentSize
-import androidx.compose.foundation.layout.wrapContentWidth
+import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.foundation.text.ClickableText
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Close
-import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
-import androidx.compose.material3.Text
-import androidx.compose.material3.TextButton
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
+import androidx.compose.material3.*
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.CornerRadius
@@ -52,11 +34,6 @@ import androidx.navigation.compose.rememberNavController
 import com.dogandpigs.fitnote.R
 import com.dogandpigs.fitnote.presentation.base.FigmaPreview
 import com.dogandpigs.fitnote.presentation.ui.component.*
-import com.dogandpigs.fitnote.presentation.ui.component.CloseButton
-import com.dogandpigs.fitnote.presentation.ui.component.CompleteButton
-import com.dogandpigs.fitnote.presentation.ui.component.FitNoteScaffold
-import com.dogandpigs.fitnote.presentation.ui.component.WidthSpacer
-import com.dogandpigs.fitnote.presentation.ui.component.defaultBorder
 import com.dogandpigs.fitnote.presentation.ui.theme.FitNoteTheme
 import com.google.android.material.datepicker.MaterialDatePicker
 
@@ -76,7 +53,9 @@ internal fun AddLessonScreen(
         onClickClose = popBackStack,
         onClickLoadLesson = navigateToLoadLesson,
         onClickAddExercise = navigateToAddExercise,
-    )
+    ).also {
+        Log.d("TestTAG", "AddLessonScreen: recomposition")
+    }
 }
 
 @Composable
@@ -89,8 +68,7 @@ private fun AddLesson(
 ) {
     val navController = rememberNavController()
 
-    FitNoteScaffold(
-        topBarTitle = stringResource(id = R.string.title_add_lesson),
+    FitNoteScaffold(topBarTitle = stringResource(id = R.string.title_add_lesson),
         topBarTitleFontSize = 16.sp,
         onClickTopBarNavigationIcon = { navController.navigateUp() },
         topBarNavigationIconImageVector = Icons.Filled.Close,
@@ -101,11 +79,9 @@ private fun AddLesson(
                     color = colorResource(id = R.color.brand_primary)
                 )
             }
-        }
-    ) {
+        }) {
         Box(
-            modifier = Modifier
-                .padding(it)
+            modifier = Modifier.padding(it)
         ) {
             val paddingValues = PaddingValues(16.dp)
             val scrollState = rememberScrollState()
@@ -113,8 +89,7 @@ private fun AddLesson(
                 modifier = Modifier
                     .padding(paddingValues)
                     .background(color = Color.White)
-                    .verticalScroll(scrollState),
-                horizontalAlignment = Alignment.CenterHorizontally
+                    .verticalScroll(scrollState), horizontalAlignment = Alignment.CenterHorizontally
             ) {
                 DateLabel(
                     viewModel,
@@ -130,12 +105,10 @@ private fun AddLesson(
 
 @Composable
 private fun AddLessonCard(
-    uiState: AddLessonUiState,
-    viewModel: AddLessonViewModel
+    uiState: AddLessonUiState, viewModel: AddLessonViewModel
 ) {
     Box(
-        modifier = Modifier
-            .fillMaxSize()
+        modifier = Modifier.fillMaxSize()
     ) {
         Column(
             modifier = Modifier
@@ -143,7 +116,7 @@ private fun AddLessonCard(
                 .padding(vertical = 16.dp)
         ) {
             Spacer(modifier = Modifier.height(20.dp))
-            InputLesson(uiState)
+            InputLesson(viewModel, uiState)
             Spacer(modifier = Modifier.height(20.dp))
             AddExercise()
         }
@@ -175,22 +148,16 @@ private fun DateLabel(
             fontSize = 12.sp,
         )
         WidthSpacer(width = 24.dp)
-        ClickableText(
-            text = AnnotatedString(dateString),
-            style = TextStyle.Default,
-            onClick = {
-                showDatePicker(viewModel, context as AppCompatActivity)
-            }
-        )
+        ClickableText(text = AnnotatedString(dateString), style = TextStyle.Default, onClick = {
+            showDatePicker(viewModel, context as AppCompatActivity)
+        })
     }
 }
 
 private fun showDatePicker(viewModel: AddLessonViewModel, activity: AppCompatActivity) {
     val fm = activity.supportFragmentManager
-    val picker =
-        MaterialDatePicker.Builder.datePicker()
-            .setSelection(viewModel.uiState.value.dateMilliSeconds)
-            .build()
+    val picker = MaterialDatePicker.Builder.datePicker()
+        .setSelection(viewModel.uiState.value.dateMilliSeconds).build()
     fm.let {
         picker.show(fm, picker.toString())
         picker.addOnPositiveButtonClickListener {
@@ -200,7 +167,12 @@ private fun showDatePicker(viewModel: AddLessonViewModel, activity: AppCompatAct
 }
 
 @Composable
-private fun InputLesson(uiState: AddLessonUiState) {
+private fun InputLesson(
+    viewModel: AddLessonViewModel, uiState: AddLessonUiState
+) {
+    var exerciseName by remember {
+        mutableStateOf("")
+    }
     Column(
         modifier = Modifier
             .fillMaxWidth()
@@ -212,71 +184,111 @@ private fun InputLesson(uiState: AddLessonUiState) {
             horizontalArrangement = Arrangement.Start,
             verticalAlignment = Alignment.CenterVertically
         ) {
-            Text(
+            BasicTextField(
+                value = exerciseName,
+                onValueChange = { textValue ->
+                    exerciseName = textValue
+                },
                 modifier = Modifier
                     .weight(1F)
                     .defaultBorder()
                     .padding(15.dp, 15.dp),
-                text = stringResource(id = R.string.txt_exercise_name),
-                color = Color.Black,
-                fontSize = 12.sp
             )
             CloseButton {
 
             }
         }
         Spacer(modifier = Modifier.height(20.dp))
-        Routine(false)
+        Routine(
+            Routine(0, 0, 0),
+            viewModel = viewModel,
+            btnRoutineCloseVisibility = false,
+        )
         Spacer(modifier = Modifier.height(20.dp))
-        ExpandableCard(
-            header = stringResource(id = R.string.edit_per_set),
-            description = "ㅎㅁㄴㅇㅎㅁㄴㅇㅎ",
+        ExpandableCard(header = stringResource(id = R.string.edit_per_set),
             color = Color.LightGray,
-            routineView = { Routine(btnRoutineCloseVisibility = true) }
+            routineView = { routine ->
+                Routine(
+                    routine = routine,
+                    viewModel = viewModel,
+                    btnRoutineCloseVisibility = true,
+                )
+            },
+            routineList = uiState.routineList.toMutableList(),
+            onClickAdd = {
+                viewModel.addRoutine(
+                    Routine(weight = 0, count = 0)
+                )
+            }
         )
     }
 }
 
 @Composable
-private fun Routine(btnRoutineCloseVisibility: Boolean) {
+private fun Routine(
+    routine: Routine,
+    viewModel: AddLessonViewModel,
+    btnRoutineCloseVisibility: Boolean,
+) {
+    var set by remember {
+        mutableStateOf(routine.set)
+    }
+    var weight by remember {
+        mutableStateOf(routine.weight)
+    }
+    var count by remember {
+        mutableStateOf(routine.count)
+    }
     Row(
-        modifier = Modifier
-            .fillMaxWidth(),
+        modifier = Modifier.fillMaxWidth(),
         verticalAlignment = Alignment.CenterVertically
     ) {
-        Text(
+        BasicTextField(
+            value = "$set",
+            onValueChange = { value ->
+                if (value.isNullOrBlank()) {
+                    return@BasicTextField
+                }
+                set = value.toInt()
+            },
             modifier = Modifier
                 .weight(1F)
                 .defaultBorder()
                 .padding(15.dp, 15.dp),
-            text = "0세트",
-            color = Color.Black,
-            fontSize = 12.sp
         )
-        Spacer(modifier = Modifier.width(10.dp))
-        Text(
+        WidthSpacer(width = 10.dp)
+        BasicTextField(
+            value = "${weight}",
+            onValueChange = { value ->
+                if (value.isNullOrBlank()) {
+                    return@BasicTextField
+                }
+                weight = value.toInt()
+            },
             modifier = Modifier
                 .weight(1F)
                 .defaultBorder()
                 .padding(15.dp, 15.dp),
-            text = "0kg",
-            color = Color.Black,
-            fontSize = 12.sp
         )
-        Spacer(modifier = Modifier.width(10.dp))
-        Text(
+        WidthSpacer(width = 10.dp)
+        BasicTextField(
+            value = "${count}",
+            onValueChange = { value ->
+                if (value.isNullOrBlank()) {
+                    return@BasicTextField
+                }
+                count = value.toInt()
+            },
             modifier = Modifier
                 .weight(1F)
                 .defaultBorder()
                 .padding(15.dp, 15.dp),
-            text = "0회",
-            color = Color.Black,
-            fontSize = 12.sp
         )
         if (btnRoutineCloseVisibility) {
-            Spacer(modifier = Modifier.width(10.dp))
-            IconButton(
-                onClick = { Log.d("TestTAG", "Routine: ") }) {
+            WidthSpacer(width = 10.dp)
+            IconButton(onClick = {
+                viewModel.removeRoutine(routine.set)
+            }) {
                 Icon(
                     imageVector = Icons.Filled.Close,
                     contentDescription = "Back"
@@ -289,13 +301,10 @@ private fun Routine(btnRoutineCloseVisibility: Boolean) {
 @Composable
 private fun AddExercise() {
     val stroke = Stroke(
-        width = 2f,
-        pathEffect = PathEffect.dashPathEffect(floatArrayOf(10f, 10f), 0f)
+        width = 2f, pathEffect = PathEffect.dashPathEffect(floatArrayOf(10f, 10f), 0f)
     )
     Box(
-        Modifier
-            .fillMaxWidth(),
-        contentAlignment = Alignment.Center
+        Modifier.fillMaxWidth(), contentAlignment = Alignment.Center
     ) {
         Canvas(
             modifier = Modifier
@@ -303,9 +312,7 @@ private fun AddExercise() {
                 .height(60.dp)
         ) {
             drawRoundRect(
-                color = Color.LightGray,
-                style = stroke,
-                cornerRadius = CornerRadius(10.dp.toPx())
+                color = Color.LightGray, style = stroke, cornerRadius = CornerRadius(10.dp.toPx())
             )
         }
         Row(
@@ -313,8 +320,7 @@ private fun AddExercise() {
             verticalAlignment = Alignment.CenterVertically
         ) {
             Icon(
-                imageVector = Icons.Default.Add,
-                tint = Color.Black, // Icon Color
+                imageVector = Icons.Default.Add, tint = Color.Black, // Icon Color
                 contentDescription = "Add Exercise"
             )
             Text(

@@ -5,6 +5,7 @@ import androidx.compose.animation.core.LinearOutSlowInEasing
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.KeyboardArrowDown
@@ -14,38 +15,39 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.compose.ExperimentalLifecycleComposeApi
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.dogandpigs.fitnote.R
+import com.dogandpigs.fitnote.presentation.ui.component.CompleteButton
+import com.dogandpigs.fitnote.presentation.ui.component.HeightSpacer
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun ExpandableCard(
+internal fun ExpandableCard(
     header: String, // Header
-    description: String, // Description
     color: Color, // Color
-    routineView: @Composable () -> Unit,
+    routineView: @Composable (routine: Routine) -> Unit,
+    routineList: MutableList<Routine>,
+    onClickAdd: () -> Unit
 ) {
     var expand by remember { mutableStateOf(false) } // Expand State
     val rotationState by animateFloatAsState(if (expand) 180f else 0f) // Rotation State
     var stroke by remember { mutableStateOf(1) } // Stroke State
-    Card(modifier = Modifier
-        .animateContentSize( // Animation
-            animationSpec = tween(
-                durationMillis = 400, // Animation Speed
-                easing = LinearOutSlowInEasing // Animation Type
+
+    Card(
+        modifier = Modifier
+            .animateContentSize( // Animation
+                animationSpec = tween(
+                    durationMillis = 400, // Animation Speed
+                    easing = LinearOutSlowInEasing // Animation Type
+                )
             )
-        )
-        .background(color = Color.White)
-//        .padding(8.dp),
-//        shape = RoundedCornerShape(10.dp), // Shape
-//        border = BorderStroke(stroke.dp, color) // Stroke Width and Color
-        ,
-        onClick = {
-            expand = !expand
-            stroke = if (expand) 2 else 1
-        }) {
+            .background(color = Color.White),
+    ) {
         Column(
             modifier = Modifier
                 .fillMaxWidth()
@@ -53,19 +55,18 @@ fun ExpandableCard(
         ) {
             Row(
                 modifier = Modifier
-                    .fillMaxWidth(),
+                    .fillMaxWidth()
+                    .clickable {
+                        expand = !expand
+                        stroke = if (expand) 2 else 1
+                    },
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.Center // Control the header Alignment over here.
             ) {
-                IconButton(modifier = Modifier.rotate(rotationState), onClick = {
-                    expand = !expand
-                    stroke = if (expand) 2 else 1
-                }) {
-                    Icon(
-                        imageVector = Icons.Default.KeyboardArrowDown, tint = color, // Icon Color
-                        contentDescription = "Drop Down Arrow"
-                    )
-                }
+                Icon(
+                    imageVector = Icons.Default.KeyboardArrowDown, tint = color, // Icon Color
+                    contentDescription = "Drop Down Arrow"
+                )
                 Text(
                     text = header,
                     color = color, // Header Color
@@ -74,12 +75,17 @@ fun ExpandableCard(
                     fontWeight = FontWeight.Normal,
                 )
             }
+            HeightSpacer(height = 8.dp)
             if (expand) {
                 Column {
-                    for (i in 0..15) {
-                        routineView()
-                        Spacer(modifier = Modifier.padding(0.dp, 4.dp))
+                    for (routine in routineList) {
+                        routineView(routine)
+                        HeightSpacer(height = 4.dp)
                     }
+                    CompleteButton(
+                        text = stringResource(id = R.string.btn_add_set),
+                        onClick = onClickAdd
+                    )
                 }
             }
         }
