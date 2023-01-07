@@ -11,11 +11,13 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.text.ClickableText
 import androidx.compose.material.icons.Icons
@@ -51,6 +53,7 @@ import com.dogandpigs.fitnote.R
 import com.dogandpigs.fitnote.presentation.base.FigmaPreview
 import com.dogandpigs.fitnote.presentation.ui.component.CompleteButton
 import com.dogandpigs.fitnote.presentation.ui.component.FitNoteScaffold
+import com.dogandpigs.fitnote.presentation.ui.component.WidthSpacer
 import com.dogandpigs.fitnote.presentation.ui.component.defaultBorder
 import com.dogandpigs.fitnote.presentation.ui.theme.FitNoteTheme
 import java.util.Calendar
@@ -150,18 +153,20 @@ private fun DateLabel(
 
     Row(
         modifier = Modifier
+            .height(58.dp)
             .fillMaxWidth()
-            .defaultBorder()
-            .padding(16.dp, 16.dp),
+            .defaultBorder(),
+        verticalAlignment = Alignment.CenterVertically
     ) {
+        WidthSpacer(width = 16.dp)
         Text(
             modifier = Modifier
-                .wrapContentWidth()
-                .padding(end = 24.dp),
+                .wrapContentSize(),
             text = "날짜",
             color = Color.Black,
-            fontSize = 12.sp
+            fontSize = 12.sp,
         )
+        WidthSpacer(width = 24.dp)
         ClickableText(
             text = AnnotatedString(dateString),
             style = TextStyle.Default,
