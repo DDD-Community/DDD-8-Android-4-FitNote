@@ -18,8 +18,6 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.dogandpigs.fitnote.presentation.base.FigmaPreview
-import com.dogandpigs.fitnote.presentation.join.JoinScreen
-import com.dogandpigs.fitnote.presentation.join.JoinViewModel
 import com.dogandpigs.fitnote.presentation.login.LoginScreen
 import com.dogandpigs.fitnote.presentation.login.LoginViewModel
 import com.dogandpigs.fitnote.presentation.ui.theme.BrandPrimary
@@ -32,6 +30,7 @@ internal fun SplashScreen(
     navigateToJoin: () -> Unit,
     navigateToLogin: () -> Unit,
     navigateToLesson: () -> Unit,
+    navigateToMemberList: () -> Unit,
 ) {
     Box {
         Splash(
@@ -40,6 +39,7 @@ internal fun SplashScreen(
             navigateToJoin,
             navigateToLogin,
             navigateToLesson,
+            navigateToMemberList,
         )
     }
 }
@@ -51,6 +51,7 @@ private fun Splash(
     navigateToJoin: () -> Unit,
     navigateToLogin: () -> Unit,
     navigateToLesson: () -> Unit,
+    navigateToMemberList: () -> Unit,
 ) {
     Column(
         modifier = Modifier
@@ -101,6 +102,20 @@ private fun Splash(
         ) {
             Text(text = "수업 목록")
         }
+        Button(
+            onClick = navigateToMemberList,
+            modifier = Modifier
+                .width(300.dp)
+                .padding(0.dp, 5.dp)
+                .background(Color.Transparent),
+            colors = ButtonDefaults.buttonColors(
+                containerColor = BrandPrimary,
+                contentColor = Color.White,
+            ),
+            contentPadding = PaddingValues(horizontal = 20.dp)
+        ) {
+            Text(text = "회원 목록")
+        }
     }
 }
 
@@ -129,6 +144,7 @@ private fun PreviewSplash() {
             navigateToJoin = {},
             navigateToLogin = {},
             navigateToLesson = {},
+            navigateToMemberList = {},
         )
     }
 }
