@@ -1,38 +1,23 @@
 package com.dogandpigs.fitnote.presentation.lesson.addlesson
 
-import android.app.DatePickerDialog
-import android.widget.DatePicker
+import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.PaddingValues
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxHeight
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.layout.wrapContentSize
-import androidx.compose.foundation.layout.wrapContentWidth
+import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.text.ClickableText
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
-import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.CornerRadius
@@ -41,6 +26,7 @@ import androidx.compose.ui.graphics.PathEffect
 import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.colorResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.dp
@@ -51,13 +37,14 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.compose.rememberNavController
 import com.dogandpigs.fitnote.R
 import com.dogandpigs.fitnote.presentation.base.FigmaPreview
+import com.dogandpigs.fitnote.presentation.ui.component.*
+import com.dogandpigs.fitnote.presentation.ui.component.CloseButton
 import com.dogandpigs.fitnote.presentation.ui.component.CompleteButton
 import com.dogandpigs.fitnote.presentation.ui.component.FitNoteScaffold
 import com.dogandpigs.fitnote.presentation.ui.component.WidthSpacer
 import com.dogandpigs.fitnote.presentation.ui.component.defaultBorder
 import com.dogandpigs.fitnote.presentation.ui.theme.FitNoteTheme
-import java.util.Calendar
-import java.util.Date
+import com.google.android.material.datepicker.MaterialDatePicker
 
 @OptIn(ExperimentalLifecycleComposeApi::class)
 @Composable
@@ -89,14 +76,14 @@ private fun AddLesson(
     val navController = rememberNavController()
 
     FitNoteScaffold(
-        topBarTitle = "수업 추가",
+        topBarTitle = stringResource(id = R.string.title_add_lesson),
         topBarTitleFontSize = 16.sp,
         onClickTopBarNavigationIcon = { navController.navigateUp() },
         topBarNavigationIconImageVector = Icons.Filled.Close,
         topBarActions = {
             TextButton(onClick = {}) {
                 Text(
-                    text = "불러오기",
+                    text = stringResource(id = R.string.btn_load),
                     color = colorResource(id = R.color.brand_primary)
                 )
             }
@@ -107,26 +94,31 @@ private fun AddLesson(
                 .padding(it)
         ) {
             val paddingValues = PaddingValues(16.dp)
-
+            val scrollState = rememberScrollState()
             Column(
                 modifier = Modifier
                     .padding(paddingValues)
-                    .background(color = Color.White),
+                    .background(color = Color.White)
+                    .verticalScroll(scrollState),
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
                 DateLabel(
+                    viewModel,
                     uiState.dateString,
                     {},
                 )
-                AddLessonCard(viewModel)
+                AddLessonCard(uiState, viewModel)
             }
-            CompleteButton("저장", onClick = {})
+            CompleteButton(stringResource(id = R.string.btn_save), onClick = {})
         }
     }
 }
 
 @Composable
-private fun AddLessonCard(viewModel: AddLessonViewModel) {
+private fun AddLessonCard(
+    uiState: AddLessonUiState,
+    viewModel: AddLessonViewModel
+) {
     Box(
         modifier = Modifier
             .fillMaxSize()
@@ -134,10 +126,10 @@ private fun AddLessonCard(viewModel: AddLessonViewModel) {
         Column(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(0.dp, 15.dp)
+                .padding(vertical = 16.dp)
         ) {
             Spacer(modifier = Modifier.height(20.dp))
-            InputLesson()
+            InputLesson(uiState)
             Spacer(modifier = Modifier.height(20.dp))
             AddExercise()
         }
@@ -146,6 +138,7 @@ private fun AddLessonCard(viewModel: AddLessonViewModel) {
 
 @Composable
 private fun DateLabel(
+    viewModel: AddLessonViewModel,
     dateString: String,
     onClickDate: () -> Unit,
 ) {
@@ -161,8 +154,9 @@ private fun DateLabel(
         WidthSpacer(width = 16.dp)
         Text(
             modifier = Modifier
-                .wrapContentSize(),
-            text = "날짜",
+                .wrapContentSize()
+                .padding(end = 24.dp),
+            text = stringResource(id = R.string.txt_date),
             color = Color.Black,
             fontSize = 12.sp,
         )
@@ -171,28 +165,28 @@ private fun DateLabel(
             text = AnnotatedString(dateString),
             style = TextStyle.Default,
             onClick = {
-//                showDatePicker(viewModel, context as AppCompatActivity)
+                showDatePicker(viewModel, context as AppCompatActivity)
             }
         )
     }
 }
 
 private fun showDatePicker(viewModel: AddLessonViewModel, activity: AppCompatActivity) {
-//    val fm = activity.supportFragmentManager
-//    val picker =
-//        MaterialDatePicker.Builder.datePicker()
-//            .setSelection(viewModel.dateMilliState)
-//            .build()
-//    fm.let {
-//        picker.show(fm, picker.toString())
-//        picker.addOnPositiveButtonClickListener {
-//            viewModel.setDate(it)
-//        }
-//    }
+    val fm = activity.supportFragmentManager
+    val picker =
+        MaterialDatePicker.Builder.datePicker()
+            .setSelection(viewModel.uiState.value.dateMilliSeconds)
+            .build()
+    fm.let {
+        picker.show(fm, picker.toString())
+        picker.addOnPositiveButtonClickListener {
+            viewModel.setDate(it)
+        }
+    }
 }
 
 @Composable
-private fun InputLesson() {
+private fun InputLesson(uiState: AddLessonUiState) {
     Column(
         modifier = Modifier
             .fillMaxWidth()
@@ -209,33 +203,31 @@ private fun InputLesson() {
                     .weight(1F)
                     .defaultBorder()
                     .padding(15.dp, 15.dp),
-                text = "운동명",
+                text = stringResource(id = R.string.txt_exercise_name),
                 color = Color.Black,
                 fontSize = 12.sp
             )
-            IconButton(
-                modifier = Modifier.wrapContentWidth(),
-                onClick = {},
-            ) {
-                Icon(
-                    imageVector = Icons.Filled.Close, contentDescription = "Back"
-                )
+            CloseButton {
+
             }
         }
         Spacer(modifier = Modifier.height(20.dp))
-        Routine()
+        Routine(false)
         Spacer(modifier = Modifier.height(20.dp))
-        ExpandableCard(header = "세트별 편집", description = "ㅎㅁㄴㅇㅎㅁㄴㅇㅎ", color = Color.LightGray)
+        ExpandableCard(
+            header = stringResource(id = R.string.edit_per_set),
+            description = "ㅎㅁㄴㅇㅎㅁㄴㅇㅎ",
+            color = Color.LightGray,
+            routineView = { Routine(btnRoutineCloseVisibility = true) }
+        )
     }
 }
 
 @Composable
-private fun Routine() {
+private fun Routine(btnRoutineCloseVisibility: Boolean) {
     Row(
         modifier = Modifier
-            .fillMaxWidth()
-            .padding(end = 15.dp),
-        horizontalArrangement = Arrangement.Start,
+            .fillMaxWidth(),
         verticalAlignment = Alignment.CenterVertically
     ) {
         Text(
@@ -267,6 +259,16 @@ private fun Routine() {
             color = Color.Black,
             fontSize = 12.sp
         )
+        if (btnRoutineCloseVisibility) {
+            Spacer(modifier = Modifier.width(10.dp))
+            IconButton(
+                onClick = { Log.d("TestTAG", "Routine: ") }) {
+                Icon(
+                    imageVector = Icons.Filled.Close,
+                    contentDescription = "Back"
+                )
+            }
+        }
     }
 }
 
@@ -302,40 +304,11 @@ private fun AddExercise() {
                 contentDescription = "Add Exercise"
             )
             Text(
-                text = "운동 추가",
+                text = stringResource(id = R.string.btn_add_exercise),
                 fontSize = 14.sp,
                 color = Color.Black
             )
         }
-    }
-}
-
-@Composable
-fun Calender() {
-
-    var datePicked by remember { mutableStateOf("1") }
-
-    val context = LocalContext.current
-    val year: Int
-    val month: Int
-    val day: Int
-
-    val calendar = Calendar.getInstance()
-    year = calendar.get(Calendar.YEAR)
-    month = calendar.get(Calendar.MONTH)
-    day = calendar.get(Calendar.DAY_OF_MONTH)
-    calendar.time = Date()
-
-
-    val datePickerDialog = DatePickerDialog(
-        context,
-        { _: DatePicker, year: Int, month: Int, dayOfMonth: Int ->
-            datePicked = "$dayOfMonth/$month/$year"
-        }, year, month, day
-    )
-
-    OutlinedButton(onClick = { datePickerDialog.show() }) {
-        Text(text = "Pick Date")
     }
 }
 

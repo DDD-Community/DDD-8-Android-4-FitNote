@@ -25,6 +25,7 @@ fun ExpandableCard(
     header: String, // Header
     description: String, // Description
     color: Color, // Color
+    routineView: @Composable () -> Unit,
 ) {
     var expand by remember { mutableStateOf(false) } // Expand State
     val rotationState by animateFloatAsState(if (expand) 180f else 0f) // Rotation State
@@ -74,16 +75,12 @@ fun ExpandableCard(
                 )
             }
             if (expand) {
-                Text(
-                    text = description,
-                    color = color, // Description Color
-                    fontSize = 12.sp,
-                    textAlign = TextAlign.Start,
-                    fontWeight = FontWeight.Normal,
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(start = 16.dp, end = 16.dp, bottom = 16.dp)
-                )
+                Column {
+                    for (i in 0..15) {
+                        routineView()
+                        Spacer(modifier = Modifier.padding(0.dp, 4.dp))
+                    }
+                }
             }
         }
     }

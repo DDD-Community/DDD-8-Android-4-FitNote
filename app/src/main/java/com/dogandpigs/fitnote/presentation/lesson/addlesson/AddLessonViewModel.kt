@@ -17,13 +17,13 @@ internal class AddLessonViewModel @Inject constructor() : BaseViewModel() {
     }
 
     private fun initialize() {
-        setCurrentDateString()
+        setDate(System.currentTimeMillis())
     }
 
-    private fun setCurrentDateString() {
+    fun setDate(date: Long) {
         viewModelScope.launch {
             uiState.value = uiState.value.copy(
-                dateString = FormatUtil.millToDate(System.currentTimeMillis())
+                dateString = FormatUtil.millToDate(date)
             )
         }
     }

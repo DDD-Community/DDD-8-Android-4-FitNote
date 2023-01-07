@@ -7,9 +7,11 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.unit.dp
 import androidx.navigation.compose.rememberNavController
+import com.dogandpigs.fitnote.R
 import com.dogandpigs.fitnote.presentation.base.FigmaPreview
 import com.dogandpigs.fitnote.presentation.ui.component.CompleteButton
 import com.dogandpigs.fitnote.presentation.ui.component.FitNoteScaffold
@@ -52,7 +54,7 @@ private fun Login(
             ) {
                 TextField(
                     label = {
-                        Text(text = "email")
+                        Text(text = stringResource(id = R.string.email))
                     },
                     colors = TextFieldDefaults.textFieldColors(
                         containerColor = Color.Transparent,
@@ -66,12 +68,12 @@ private fun Login(
                         email = textValue
                     },
                     placeholder = {
-                        Text("email")
+                        Text(stringResource(id = R.string.placeholder_email))
                     }
                 )
                 TextField(
                     label = {
-                        Text(text = "password")
+                        Text(text = stringResource(id = R.string.password))
                     },
                     colors = TextFieldDefaults.textFieldColors(
                         containerColor = Color.Transparent,
@@ -97,17 +99,18 @@ private fun Login(
                     horizontalArrangement = Arrangement.Start,
                     verticalAlignment = Alignment.CenterVertically
                 ) {
-                    Text(text = "비밀번호를 잊어버리셨나요? ")
+                    Text(text = stringResource(id = R.string.text_forget_pwd))
+                            
                     TextButton(onClick = {}) {
                         Text(
-                            text = "비밀번호 찾기",
+                            text = stringResource(id = R.string.btn_forget_pwd),
                             color = Color.Blue
                         )
                     }
                 }
             }
-    
-            CompleteButton("저장", onClick = {})
+
+            CompleteButton(stringResource(id = R.string.btn_login), onClick = {})
         }
     }
 }
