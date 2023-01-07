@@ -62,5 +62,6 @@ internal sealed class NavRoutes(
         const val ROUTE_LOGIN = "route_login"
         const val ROUTE_LESSON = "route_lesson"
         const val ROUTE_ADD_LESSON = "route_add_lesson"
+        const val ROUTE_MEMBER_LIST = "route_member_list"
     }
 }
