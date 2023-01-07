@@ -14,3 +14,13 @@ import androidx.compose.ui.tooling.preview.Preview
     showBackground = true,
 )
 annotation class FigmaPreview
+
+/**
+ * wrap_content
+ */
+@Preview(
+    device = Devices.DEFAULT,
+    widthDp = 360,
+    showBackground = true,
+)
+annotation class ComponentPreview
