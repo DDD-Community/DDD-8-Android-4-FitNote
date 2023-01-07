@@ -16,6 +16,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -28,10 +29,12 @@ import com.dogandpigs.fitnote.presentation.ui.theme.GrayScaleWhite
 @Composable
 internal fun DefaultTwoButton(
     modifier: Modifier.() -> Modifier = { Modifier },
-    positiveText: String,
-    onClickPositive: () -> Unit,
-    negativeText: String,
-    onClickNegative: () -> Unit,
+    positiveText: String? = null,
+    onClickPositive: (() -> Unit)? = null,
+    negativeText: String? = null,
+    onClickNegative: (() -> Unit)? = null,
+    spaceBetweenButtons: Dp = 9.dp,
+    positiveButtonColor: Color? = null,
 ) {
     Row(
         modifier = Modifier
@@ -39,25 +42,34 @@ internal fun DefaultTwoButton(
             .fillMaxWidth()
             .modifier()
     ) {
-        DefaultNegativeButton(
-            modifier = {
-                Modifier
-                    .weight(1F)
-                    .wrapContentHeight()
-            },
-            negativeText = negativeText,
-            onClickNegative = onClickNegative,
-        )
-        WidthSpacer(width = 9.dp)
-        DefaultPositiveButton(
-            modifier = {
-                Modifier
-                    .weight(1F)
-                    .wrapContentHeight()
-            },
-            positiveText = positiveText,
-            onClickPositive = onClickPositive,
-        )
+        negativeText?.also {
+            DefaultNegativeButton(
+                modifier = {
+                    Modifier
+                        .weight(1F)
+                        .wrapContentHeight()
+                },
+                negativeText = it,
+                onClickNegative = {
+                    onClickNegative?.invoke()
+                },
+            )
+        }
+        WidthSpacer(spaceBetweenButtons)
+        positiveText?.also {
+            DefaultPositiveButton(
+                modifier = {
+                    Modifier
+                        .weight(1F)
+                        .wrapContentHeight()
+                },
+                positiveText = it,
+                positiveButtonColor = positiveButtonColor,
+                onClickPositive = {
+                    onClickPositive?.invoke()
+                },
+            )
+        }
     }
 }
 
@@ -81,14 +93,15 @@ private fun DefaultNegativeButton(
 private fun DefaultPositiveButton(
     modifier: Modifier.() -> Modifier = { Modifier },
     positiveText: String,
+    positiveButtonColor: Color? = BrandPrimary,
     onClickPositive: () -> Unit,
 ) {
     DefaultButton(
         modifier = modifier,
         text = positiveText,
         textColor = GrayScaleWhite,
-        buttonColor = BrandPrimary,
-        borderColor = BrandPrimary,
+        buttonColor = positiveButtonColor ?: BrandPrimary,
+        borderColor = positiveButtonColor ?: BrandPrimary,
         onClick = onClickPositive,
     )
 }
