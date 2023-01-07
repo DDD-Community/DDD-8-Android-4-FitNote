@@ -11,4 +11,14 @@
     <string name="btn_next">다음</string>
     <string name="placeholder_email">example@example.com</string>
     <string name="placeholder_password">8-16자의 영문/숫자 조합으로 공백없이 입력해주세요</string>
+    <string name="btn_login">로그인하기</string>
+    <string name="text_forget_pwd">비밀번호를 잊어버리셨나요>? </string>
+    <string name="btn_forget_pwd">비밀번호 찾기</string>
+    <string name="btn_load">불러오기</string>
+    <string name="btn_add_exercise">운동 추가</string>
+    <string name="txt_date">날짜</string>
+    <string name="txt_exercise_name">운동명</string>
+    <string name="title_add_lesson">수업 추가</string>
+    <string name="btn_save">저장</string>
+    <string name="edit_per_set">세트별 편집</string>
 </resources>
