@@ -1,6 +1,5 @@
 package com.dogandpigs.fitnote.presentation.join
 
-import android.util.Log
 import android.util.Patterns
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
@@ -11,9 +10,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.TextFieldValue
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.ExperimentalLifecycleComposeApi
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.dogandpigs.fitnote.R
 import com.dogandpigs.fitnote.presentation.base.FigmaPreview
 import com.dogandpigs.fitnote.presentation.ui.component.CompleteButton
@@ -21,14 +20,13 @@ import com.dogandpigs.fitnote.presentation.ui.component.FitNoteScaffold
 import com.dogandpigs.fitnote.presentation.ui.theme.FitNoteTheme
 import java.util.regex.Pattern
 
+@OptIn(ExperimentalLifecycleComposeApi::class)
 @Composable
 internal fun JoinScreen(
     viewModel: JoinViewModel, popBackStack: () -> Unit
 ) {
-    Join(
-//        viewModel = viewModel,
-        uiState = viewModel.uiState, popBackStack = popBackStack
-    )
+    val state by viewModel.state.collectAsStateWithLifecycle()
+    Join(uiState = state, popBackStack = popBackStack)
 }
 
 @OptIn(ExperimentalMaterial3Api::class)

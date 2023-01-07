@@ -5,6 +5,6 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 
 @HiltViewModel
-internal class MainViewModel @Inject constructor(
-) : BaseViewModel() {
+internal class MainViewModel @Inject constructor() : BaseViewModel<MainState>() {
+    override fun createInitialState(): MainState = MainState
 }

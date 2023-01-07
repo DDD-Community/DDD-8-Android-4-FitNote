@@ -45,11 +45,11 @@ internal fun AddLessonScreen(
     navigateToLoadLesson: () -> Unit,
     navigateToAddExercise: () -> Unit,
 ) {
-    val uiState by viewModel.uiState.collectAsStateWithLifecycle()
+    val state by viewModel.state.collectAsStateWithLifecycle()
 
     AddLesson(
         viewModel,
-        uiState = uiState,
+        state = state,
         onClickClose = popBackStack,
         onClickLoadLesson = navigateToLoadLesson,
         onClickAddExercise = navigateToAddExercise,
@@ -61,7 +61,7 @@ internal fun AddLessonScreen(
 @Composable
 private fun AddLesson(
     viewModel: AddLessonViewModel,
-    uiState: AddLessonUiState,
+    state: AddLessonUiState,
     onClickClose: () -> Unit,
     onClickLoadLesson: () -> Unit,
     onClickAddExercise: () -> Unit,
@@ -92,11 +92,9 @@ private fun AddLesson(
                     .verticalScroll(scrollState), horizontalAlignment = Alignment.CenterHorizontally
             ) {
                 DateLabel(
-                    viewModel,
-                    uiState.dateString,
-                    {},
-                )
-                AddLessonCard(uiState, viewModel)
+                    viewModel, state.dateMilliSeconds, state.dateString
+                ) {}
+                AddLessonCard(state, viewModel)
             }
             CompleteButton(stringResource(id = R.string.btn_save), onClick = {})
         }
@@ -126,6 +124,7 @@ private fun AddLessonCard(
 @Composable
 private fun DateLabel(
     viewModel: AddLessonViewModel,
+    dateMilliSeconds: Long,
     dateString: String,
     onClickDate: () -> Unit,
 ) {
@@ -149,19 +148,20 @@ private fun DateLabel(
         )
         WidthSpacer(width = 24.dp)
         ClickableText(text = AnnotatedString(dateString), style = TextStyle.Default, onClick = {
-            showDatePicker(viewModel, context as AppCompatActivity)
+            showDatePicker(viewModel, dateMilliSeconds, context as AppCompatActivity)
         })
     }
 }
 
-private fun showDatePicker(viewModel: AddLessonViewModel, activity: AppCompatActivity) {
+private fun showDatePicker(
+    viewModel: AddLessonViewModel, dateMilliSeconds: Long, activity: AppCompatActivity
+) {
     val fm = activity.supportFragmentManager
-    val picker = MaterialDatePicker.Builder.datePicker()
-        .setSelection(viewModel.uiState.value.dateMilliSeconds).build()
+    val picker = MaterialDatePicker.Builder.datePicker().setSelection(dateMilliSeconds).build()
     fm.let {
         picker.show(fm, picker.toString())
         picker.addOnPositiveButtonClickListener {
-            viewModel.setDate(it)
+            viewModel.setState { copy(dateMilliSeconds = it) }
         }
     }
 }
@@ -219,8 +219,7 @@ private fun InputLesson(
                 viewModel.addRoutine(
                     Routine(weight = 0, count = 0)
                 )
-            }
-        )
+            })
     }
 }
 
@@ -240,8 +239,7 @@ private fun Routine(
         mutableStateOf(routine.count)
     }
     Row(
-        modifier = Modifier.fillMaxWidth(),
-        verticalAlignment = Alignment.CenterVertically
+        modifier = Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically
     ) {
         BasicTextField(
             value = "$set",
@@ -258,7 +256,7 @@ private fun Routine(
         )
         WidthSpacer(width = 10.dp)
         BasicTextField(
-            value = "${weight}",
+            value = "$weight",
             onValueChange = { value ->
                 if (value.isNullOrBlank()) {
                     return@BasicTextField
@@ -290,8 +288,7 @@ private fun Routine(
                 viewModel.removeRoutine(routine.set)
             }) {
                 Icon(
-                    imageVector = Icons.Filled.Close,
-                    contentDescription = "Back"
+                    imageVector = Icons.Filled.Close, contentDescription = "Back"
                 )
             }
         }
@@ -342,7 +339,7 @@ private fun PreviewAddLesson() {
     FitNoteTheme {
         AddLesson(
             viewModel = hiltViewModel(),
-            uiState = mockUiState,
+            state = mockUiState,
             onClickClose = {},
             onClickLoadLesson = {},
             onClickAddExercise = {},

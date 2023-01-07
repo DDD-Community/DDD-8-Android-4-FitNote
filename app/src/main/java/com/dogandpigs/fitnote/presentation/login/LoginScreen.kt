@@ -8,8 +8,10 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.ExperimentalLifecycleComposeApi
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.compose.rememberNavController
 import com.dogandpigs.fitnote.R
 import com.dogandpigs.fitnote.presentation.base.FigmaPreview
@@ -17,27 +19,22 @@ import com.dogandpigs.fitnote.presentation.ui.component.CompleteButton
 import com.dogandpigs.fitnote.presentation.ui.component.FitNoteScaffold
 import com.dogandpigs.fitnote.presentation.ui.theme.FitNoteTheme
 
+@OptIn(ExperimentalLifecycleComposeApi::class)
 @Composable
 internal fun LoginScreen(
-    viewModel: LoginViewModel,
-    navigateToHome: () -> Unit
+    viewModel: LoginViewModel, navigateToHome: () -> Unit
 ) {
+    val state by viewModel.state.collectAsStateWithLifecycle()
     Login(
-//        viewModel = viewModel,
-        uiState = viewModel.uiState,
-        navigateToHome = navigateToHome
+        viewModel = viewModel, state = state, navigateToHome = navigateToHome
     )
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 private fun Login(
-//    viewModel: LoginViewModel,
-    uiState: LoginUiState,
-    navigateToHome: () -> Unit
+    viewModel: LoginViewModel, state: LoginUiState, navigateToHome: () -> Unit
 ) {
-    var email by remember { mutableStateOf(TextFieldValue("")) }
-    var pwd by remember { mutableStateOf(TextFieldValue("")) }
     val navController = rememberNavController()
 
     FitNoteScaffold(
@@ -52,10 +49,9 @@ private fun Login(
                     .background(color = Color.White),
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
-                TextField(
-                    label = {
-                        Text(text = stringResource(id = R.string.email))
-                    },
+                TextField(label = {
+                    Text(text = stringResource(id = R.string.email))
+                },
                     colors = TextFieldDefaults.textFieldColors(
                         containerColor = Color.Transparent,
                     ),
@@ -63,18 +59,16 @@ private fun Login(
                         .fillMaxWidth()
                         .padding(20.dp, 10.dp)
                         .background(Color.Transparent),
-                    value = email,
+                    value = state.email,
                     onValueChange = { textValue ->
-                        email = textValue
+                        viewModel.setState { copy(email = textValue) }
                     },
                     placeholder = {
                         Text(stringResource(id = R.string.placeholder_email))
-                    }
-                )
-                TextField(
-                    label = {
-                        Text(text = stringResource(id = R.string.password))
-                    },
+                    })
+                TextField(label = {
+                    Text(text = stringResource(id = R.string.password))
+                },
                     colors = TextFieldDefaults.textFieldColors(
                         containerColor = Color.Transparent,
                     ),
@@ -82,14 +76,13 @@ private fun Login(
                         .fillMaxWidth()
                         .padding(20.dp, 0.dp)
                         .background(Color.Transparent),
-                    value = pwd,
+                    value = state.password,
                     onValueChange = { textValue ->
-                        pwd = textValue
+                        viewModel.setState { copy(password = textValue) }
                     },
                     placeholder = {
                         Text("pwd")
-                    }
-                )
+                    })
                 Row(
                     modifier = Modifier
                         .fillMaxWidth()
@@ -100,17 +93,17 @@ private fun Login(
                     verticalAlignment = Alignment.CenterVertically
                 ) {
                     Text(text = stringResource(id = R.string.text_forget_pwd))
-                            
+
                     TextButton(onClick = {}) {
                         Text(
-                            text = stringResource(id = R.string.btn_forget_pwd),
-                            color = Color.Blue
+                            text = stringResource(id = R.string.btn_forget_pwd), color = Color.Blue
                         )
                     }
                 }
             }
-
-            CompleteButton(stringResource(id = R.string.btn_login), onClick = {})
+            CompleteButton(stringResource(id = R.string.btn_login), onClick = {
+                viewModel.login()
+            })
         }
     }
 }
@@ -124,8 +117,7 @@ private val mockUiState = LoginUiState(
 private fun PreviewLogin() {
     FitNoteTheme {
         Login(
-//            viewModel = hiltViewModel(),
-            uiState = mockUiState
+            viewModel = hiltViewModel(), state = mockUiState
         ) {}
     }
 }

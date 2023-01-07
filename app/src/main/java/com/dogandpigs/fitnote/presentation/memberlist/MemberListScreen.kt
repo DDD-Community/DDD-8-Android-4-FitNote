@@ -44,9 +44,7 @@ import com.dogandpigs.fitnote.presentation.ui.theme.GrayScaleMidGray3
 @OptIn(ExperimentalLifecycleComposeApi::class)
 @Composable
 internal fun MemberListScreen(
-    viewModel: MemberListViewModel = hiltViewModel<MemberListViewModel>().apply {
-        setState { previewUiState }
-    },
+    viewModel: MemberListViewModel = hiltViewModel(),
     popBackStack: () -> Unit = {},
     navigateToMemberDetail: () -> Unit = {},
     navigateToAddMember: () -> Unit = {},
@@ -54,6 +52,7 @@ internal fun MemberListScreen(
     navigateToSetting: () -> Unit = {}
 ) {
     val state by viewModel.state.collectAsStateWithLifecycle()
+
     FitNoteScaffold(
         topBarTitle = "회원목록",
         topBarTitleFontSize = 20.sp,
@@ -88,11 +87,14 @@ internal fun MemberListScreen(
                 }
                 PrimaryButton(
                     modifier = {
-                        padding(PaddingValues(start = 16.dp, end = 16.dp, bottom = 24.dp))
-                            .fillMaxWidth()
+                        padding(
+                            PaddingValues(start = 16.dp, end = 16.dp, bottom = 24.dp)
+                        ).fillMaxWidth()
                     }, text = "회원 추가"
                 ) {
-
+                    viewModel.setState {
+                        copy(userList = userList.dropLast(1))
+                    }
                 }
             }
         }
