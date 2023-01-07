@@ -21,4 +21,6 @@
     <string name="title_add_lesson">수업 추가</string>
     <string name="btn_save">저장</string>
     <string name="edit_per_set">세트별 편집</string>
+    <string name="lesson_list">수업 목록</string>
+    <string name="some_member">%s 회원님</string>
 </resources>

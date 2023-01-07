@@ -2,6 +2,7 @@ package com.dogandpigs.fitnote.presentation.lesson.memberlessonlist
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -13,26 +14,43 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.wrapContentHeight
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.Divider
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.ExperimentalLifecycleComposeApi
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.dogandpigs.fitnote.R
 import com.dogandpigs.fitnote.presentation.base.FigmaPreview
+import com.dogandpigs.fitnote.presentation.ui.component.DefaultTwoButton
 import com.dogandpigs.fitnote.presentation.ui.component.FitNoteScaffold
+import com.dogandpigs.fitnote.presentation.ui.component.HeightSpacer
+import com.dogandpigs.fitnote.presentation.ui.component.WidthSpacer
+import com.dogandpigs.fitnote.presentation.ui.component.defaultBorder
 import com.dogandpigs.fitnote.presentation.ui.theme.BrandPrimary
 import com.dogandpigs.fitnote.presentation.ui.theme.FitNoteTheme
+import com.dogandpigs.fitnote.presentation.ui.theme.GrayScaleLightGray1
 import com.dogandpigs.fitnote.presentation.ui.theme.GrayScaleMidGray2
+import com.dogandpigs.fitnote.presentation.ui.theme.GrayScaleMidGray3
 
+@OptIn(ExperimentalLifecycleComposeApi::class)
 @Composable
 internal fun MemberLessonListScreen(
     viewModel: MemberLessonListViewModel = hiltViewModel(),
@@ -40,14 +58,14 @@ internal fun MemberLessonListScreen(
     navigateToAddLesson: () -> Unit,
     navigateToSetting: () -> Unit,
 ) {
-    Box {
-        MemberLessonList(
-            uiState = viewModel.uiState,
-            popBackStack = popBackStack,
-            onClickAddLesson = navigateToAddLesson,
-            navigateToSetting = navigateToSetting,
-        )
-    }
+    val uiState by viewModel.uiState.collectAsStateWithLifecycle()
+
+    MemberLessonList(
+        uiState = uiState,
+        popBackStack = popBackStack,
+        onClickAddLesson = navigateToAddLesson,
+        navigateToSetting = navigateToSetting,
+    )
 }
 
 @Composable
@@ -58,14 +76,21 @@ private fun MemberLessonList(
     navigateToSetting: () -> Unit,
 ) {
     FitNoteScaffold(
-        topBarTitle = "${uiState.userName} ${uiState.title}",
+        topBarTitle = "${
+            String.format(
+                stringResource(id = R.string.some_member),
+                uiState.userName
+            )
+        } ${stringResource(id = R.string.lesson_list)}",
         topBarTitleFontSize = 20.sp,
         onClickTopBarNavigationIcon = popBackStack
     ) {
         Box(modifier = Modifier.padding(it)) {
             Column {
                 Spacer(modifier = Modifier.height(24.dp))
-                LessonTabList()
+                LessonTabList(
+                    uiState.tabs
+                )
             }
 
             AddLessonButton(
@@ -75,34 +100,9 @@ private fun MemberLessonList(
     }
 }
 
-data class Tab(
-    val isSelected: Boolean,
-    val name: String,
-    val emptySubText: String = "",
-    val list: List<Lesson>
-) {
-    data class Lesson(
-        val name: String
-    )
-}
-
-private val mockTabs = listOf(
-    Tab(
-        isSelected = true,
-        name = "예정된 수업",
-        emptySubText = "\n 수업을 추가해보세요!",
-        list = listOf()
-    ),
-    Tab(
-        isSelected = false,
-        name = "완료한 수업",
-        list = listOf()
-    )
-)
-
 @Composable
 private fun LessonTabList(
-    tabs: List<Tab> = mockTabs,
+    tabs: List<MemberLessonListUiState.Tab>,
 ) {
     val tabHeight = 42.dp
 
@@ -122,12 +122,16 @@ private fun LessonTabList(
             it.isSelected
         }
 
-        if (selectedTab.list.isEmpty()) {
-            Column(
-                modifier = Modifier.fillMaxSize(),
-                verticalArrangement = Arrangement.Center,
-                horizontalAlignment = Alignment.CenterHorizontally,
-            ) {
+        Column(
+            modifier = Modifier
+                .padding(
+                    horizontal = 16.dp
+                )
+                .fillMaxSize()
+                .verticalScroll(rememberScrollState()),
+            horizontalAlignment = Alignment.CenterHorizontally,
+        ) {
+            if (selectedTab.lessons.isEmpty()) {
                 Image(
                     modifier = Modifier.size(123.dp),
                     painter = painterResource(id = R.drawable.image_lesson_empty),
@@ -138,9 +142,9 @@ private fun LessonTabList(
                     color = GrayScaleMidGray2,
                     textAlign = TextAlign.Center,
                 )
+            } else {
+                LessonList(selectedTab.lessons)
             }
-        } else {
-//                LessonList(tab.list)
         }
     }
 }
@@ -184,6 +188,94 @@ private fun LessonTab(
     }
 }
 
+@Preview
+@Composable
+private fun LessonList(
+    lessons: List<MemberLessonListUiState.Tab.Lesson> = previewUiState.tabs.first().lessons
+) {
+    for (lesson in lessons) {
+        HeightSpacer(height = 24.dp)
+        LessonItem(lesson)
+    }
+}
+
+@Composable
+private fun LessonItem(
+    lesson: MemberLessonListUiState.Tab.Lesson
+) {
+    Column(
+        modifier = Modifier
+            .fillMaxWidth()
+            .wrapContentHeight()
+            .defaultBorder()
+            .padding(
+                horizontal = 16.dp
+            )
+    ) {
+        HeightSpacer(height = 16.dp)
+        Row {
+            Text(
+                text = "2022년 12월 25일",
+                fontSize = 16.sp,
+            )
+        }
+        HeightSpacer(height = 24.dp)
+        ExerciseRow(lesson.exercises)
+        HeightSpacer(height = 16.dp)
+        Divider(color = GrayScaleLightGray1)
+        HeightSpacer(height = 16.dp)
+        LessonItemButtons()
+        HeightSpacer(height = 13.dp)
+    }
+}
+
+@Composable
+private fun ExerciseRow(
+    exercises: List<String>,
+) {
+    Row(
+        modifier = Modifier
+            .horizontalScroll(rememberScrollState())
+    ) {
+        for (exercise in exercises) {
+            ExerciseItem(exercise)
+            WidthSpacer(width = 16.dp)
+        }
+    }
+}
+
+@Composable
+private fun ExerciseItem(
+    exercise: String,
+) {
+    val paddingValues = PaddingValues(
+        horizontal = 10.dp,
+        vertical = 6.dp,
+    )
+
+    Text(
+        modifier = Modifier
+            .clip(RoundedCornerShape(5.dp))
+            .background(GrayScaleLightGray1)
+            .padding(paddingValues),
+        text = exercise,
+        color = GrayScaleMidGray3,
+        fontSize = 16.sp,
+    )
+}
+
+@Composable
+private fun LessonItemButtons() {
+    Row {
+        DefaultTwoButton(
+            positiveText = "수업 시작",
+            onClickPositive = {},
+            negativeText = "편집",
+            onClickNegative = {}
+        )
+    }
+}
+
 @Composable
 private fun AddLessonButton(
     onClickAddLesson: () -> Unit,
@@ -221,9 +313,53 @@ private fun AddLessonButton(
     }
 }
 
-private val mockUiState = MemberLessonListUiState(
-    title = "수업 목록",
-    userName = "나초보 회원님",
+internal val previewTabs = listOf(
+    MemberLessonListUiState.Tab(
+        isSelected = true,
+        name = "예정된 수업",
+        emptySubText = "\n 수업을 추가해보세요!",
+        lessons = listOf(
+            MemberLessonListUiState.Tab.Lesson(
+                dateString = "2022년 12월 25일",
+                exercises = listOf(
+                    "벤치 프레스",
+                    "덤벨 프레스",
+                    "덤벨 플라이",
+                    "인클라인 벤치 프레스",
+                )
+            ),
+            MemberLessonListUiState.Tab.Lesson(
+                dateString = "2022년 12월 25일",
+                exercises = listOf(
+                    "벤치 프레스",
+                    "덤벨 프레스",
+                    "덤벨 플라이",
+                    "인클라인 벤치 프레스",
+                )
+            ),
+        ),
+    ),
+    MemberLessonListUiState.Tab(
+        isSelected = false,
+        name = "완료한 수업",
+        emptySubText = "",
+        lessons = listOf(
+            MemberLessonListUiState.Tab.Lesson(
+                dateString = "2022년 12월 25일",
+                exercises = listOf(
+                    "벤치 프레스",
+                    "덤벨 프레스",
+                    "덤벨 플라이",
+                    "인클라인 벤치 프레스",
+                )
+            ),
+        ),
+    ),
+)
+
+private val previewUiState = MemberLessonListUiState(
+    userName = "나초보",
+    tabs = previewTabs,
 )
 
 @FigmaPreview
@@ -231,7 +367,7 @@ private val mockUiState = MemberLessonListUiState(
 private fun PreviewLesson() {
     FitNoteTheme {
         MemberLessonList(
-            uiState = mockUiState,
+            uiState = previewUiState,
             popBackStack = {},
             onClickAddLesson = {},
             navigateToSetting = {},
