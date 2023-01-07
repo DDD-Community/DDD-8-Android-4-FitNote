@@ -5,7 +5,6 @@ import android.widget.DatePicker
 import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
-import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -18,7 +17,6 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentWidth
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.ClickableText
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
@@ -53,6 +51,7 @@ import com.dogandpigs.fitnote.R
 import com.dogandpigs.fitnote.presentation.base.FigmaPreview
 import com.dogandpigs.fitnote.presentation.ui.component.CompleteButton
 import com.dogandpigs.fitnote.presentation.ui.component.FitNoteScaffold
+import com.dogandpigs.fitnote.presentation.ui.component.defaultBorder
 import com.dogandpigs.fitnote.presentation.ui.theme.FitNoteTheme
 import java.util.Calendar
 import java.util.Date
@@ -152,11 +151,7 @@ private fun DateLabel(
     Row(
         modifier = Modifier
             .fillMaxWidth()
-            .border(
-                width = 1.dp,
-                color = colorResource(id = R.color.border_gray),
-                shape = RoundedCornerShape(10.dp)
-            )
+            .defaultBorder()
             .padding(16.dp, 16.dp),
     ) {
         Text(
@@ -196,11 +191,7 @@ private fun InputLesson() {
     Column(
         modifier = Modifier
             .fillMaxWidth()
-            .border(
-                width = 1.dp,
-                color = colorResource(id = R.color.border_gray),
-                shape = RoundedCornerShape(10.dp)
-            )
+            .defaultBorder()
             .padding(16.dp, 16.dp),
     ) {
         Row(
@@ -211,11 +202,7 @@ private fun InputLesson() {
             Text(
                 modifier = Modifier
                     .weight(1F)
-                    .border(
-                        width = 1.dp,
-                        color = colorResource(id = R.color.border_gray),
-                        shape = RoundedCornerShape(10.dp)
-                    )
+                    .defaultBorder()
                     .padding(15.dp, 15.dp),
                 text = "운동명",
                 color = Color.Black,
@@ -249,11 +236,7 @@ private fun Routine() {
         Text(
             modifier = Modifier
                 .weight(1F)
-                .border(
-                    width = 1.dp,
-                    color = colorResource(id = R.color.border_gray),
-                    shape = RoundedCornerShape(10.dp)
-                )
+                .defaultBorder()
                 .padding(15.dp, 15.dp),
             text = "0세트",
             color = Color.Black,
@@ -263,11 +246,7 @@ private fun Routine() {
         Text(
             modifier = Modifier
                 .weight(1F)
-                .border(
-                    width = 1.dp,
-                    color = colorResource(id = R.color.border_gray),
-                    shape = RoundedCornerShape(10.dp)
-                )
+                .defaultBorder()
                 .padding(15.dp, 15.dp),
             text = "0kg",
             color = Color.Black,
@@ -277,11 +256,7 @@ private fun Routine() {
         Text(
             modifier = Modifier
                 .weight(1F)
-                .border(
-                    width = 1.dp,
-                    color = colorResource(id = R.color.border_gray),
-                    shape = RoundedCornerShape(10.dp)
-                )
+                .defaultBorder()
                 .padding(15.dp, 15.dp),
             text = "0회",
             color = Color.Black,
