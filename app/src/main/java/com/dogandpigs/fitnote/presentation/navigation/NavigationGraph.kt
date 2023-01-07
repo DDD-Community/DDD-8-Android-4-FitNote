@@ -19,7 +19,8 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import com.dogandpigs.fitnote.presentation.join.addJoin
 import com.dogandpigs.fitnote.presentation.lesson.addLesson
-import com.dogandpigs.fitnote.presentation.lesson.addlesson.AddLessonScreen
+import com.dogandpigs.fitnote.presentation.lesson.addlesson.addAddLesson
+import com.dogandpigs.fitnote.presentation.navigation.NavRoutes.Companion.ROUTE_ADD_LESSON
 import com.dogandpigs.fitnote.presentation.navigation.NavRoutes.Companion.ROUTE_JOIN
 import com.dogandpigs.fitnote.presentation.navigation.NavRoutes.Companion.ROUTE_LESSON
 import com.dogandpigs.fitnote.presentation.navigation.NavRoutes.Companion.ROUTE_LOGIN
@@ -34,9 +35,6 @@ internal fun NavigationGraph(navController: NavHostController) {
         navController = navController,
         startDestination = ROUTE_SPLASH
     ) {
-        composable(NavRoutes.Home.route) {
-            HomePage()
-        }
         composable(NavRoutes.FirstPage.route) {
             FirstPage()
         }
@@ -64,22 +62,15 @@ internal fun NavigationGraph(navController: NavHostController) {
         addLesson(
             route = ROUTE_LESSON,
             popBackStack = { navController.popBackStack() },
+            navigateToAddLesson = { navController.navigate(ROUTE_ADD_LESSON) },
             navigateToSetting = {},
         )
-    }
-}
-
-@Composable
-private fun HomePage() {
-    Box(
-        modifier = Modifier
-            .fillMaxSize()
-            .background(Color.White)
-    ) {
-        AddLessonScreen(
-            viewModel = hiltViewModel(),
-            navigateToHome = {},
-            navigateToLoad = {})
+        addAddLesson(
+            route = ROUTE_ADD_LESSON,
+            popBackStack = { navController.popBackStack() },
+            navigateToLoadLesson = {},
+            navigateToAddExercise = {},
+        )
     }
 }
 

@@ -6,19 +6,32 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.ClickableText
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Close
-import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
-import androidx.compose.runtime.*
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.CornerRadius
@@ -29,30 +42,31 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.TextStyle
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.compose.rememberNavController
 import com.dogandpigs.fitnote.R
-import com.dogandpigs.fitnote.core.FormatUtil
 import com.dogandpigs.fitnote.presentation.base.FigmaPreview
 import com.dogandpigs.fitnote.presentation.ui.component.CompleteButton
 import com.dogandpigs.fitnote.presentation.ui.component.FitNoteScaffold
-import com.dogandpigs.fitnote.presentation.ui.theme.BrandPrimary
 import com.dogandpigs.fitnote.presentation.ui.theme.FitNoteTheme
-import com.google.android.material.datepicker.MaterialDatePicker
-import java.util.*
+import java.util.Calendar
+import java.util.Date
 
 @Composable
 internal fun AddLessonScreen(
-    viewModel: AddLessonViewModel, navigateToHome: () -> Unit, navigateToLoad: () -> Unit
+    viewModel: AddLessonViewModel = hiltViewModel(),
+    popBackStack: () -> Unit,
+    navigateToLoadLesson: () -> Unit,
+    navigateToAddExercise: () -> Unit,
 ) {
     AddLesson(
         viewModel,
         uiState = viewModel.uiState,
-        navigateToHome = navigateToHome,
-        navigateToLoad = navigateToLoad
+        onClickClose = popBackStack,
+        onClickLoadLesson = navigateToLoadLesson,
+        onClickAddExercise = navigateToAddExercise,
     )
 }
 
@@ -60,11 +74,12 @@ internal fun AddLessonScreen(
 private fun AddLesson(
     viewModel: AddLessonViewModel,
     uiState: AddLessonUiState,
-    navigateToHome: () -> Unit,
-    navigateToLoad: () -> Unit
+    onClickClose: () -> Unit,
+    onClickLoadLesson: () -> Unit,
+    onClickAddExercise: () -> Unit,
 ) {
     val navController = rememberNavController()
-    
+
     FitNoteScaffold(
         topBarTitle = "수업 추가",
         topBarTitleFontSize = 16.sp,
@@ -148,17 +163,17 @@ private fun DateLabel(viewModel: AddLessonViewModel) {
 }
 
 private fun showDatePicker(viewModel: AddLessonViewModel, activity: AppCompatActivity) {
-    val fm = activity.supportFragmentManager
-    val picker =
-        MaterialDatePicker.Builder.datePicker()
-            .setSelection(viewModel.dateMilliState)
-            .build()
-    fm.let {
-        picker.show(fm, picker.toString())
-        picker.addOnPositiveButtonClickListener {
-            viewModel.setDate(it)
-        }
-    }
+//    val fm = activity.supportFragmentManager
+//    val picker =
+//        MaterialDatePicker.Builder.datePicker()
+//            .setSelection(viewModel.dateMilliState)
+//            .build()
+//    fm.let {
+//        picker.show(fm, picker.toString())
+//        picker.addOnPositiveButtonClickListener {
+//            viewModel.setDate(it)
+//        }
+//    }
 }
 
 @Composable
@@ -302,28 +317,28 @@ private fun AddExercise() {
 
 @Composable
 fun Calender() {
-    
+
     var datePicked by remember { mutableStateOf("1") }
-    
+
     val context = LocalContext.current
     val year: Int
     val month: Int
     val day: Int
-    
+
     val calendar = Calendar.getInstance()
     year = calendar.get(Calendar.YEAR)
     month = calendar.get(Calendar.MONTH)
     day = calendar.get(Calendar.DAY_OF_MONTH)
     calendar.time = Date()
-    
-    
+
+
     val datePickerDialog = DatePickerDialog(
         context,
         { _: DatePicker, year: Int, month: Int, dayOfMonth: Int ->
             datePicked = "$dayOfMonth/$month/$year"
         }, year, month, day
     )
-    
+
     OutlinedButton(onClick = { datePickerDialog.show() }) {
         Text(text = "Pick Date")
     }
@@ -336,11 +351,13 @@ private val mockUiState = AddLessonUiState(
 @FigmaPreview
 @Composable
 private fun PreviewAddLesson() {
-    FitNoteTheme() {
+    FitNoteTheme {
         AddLesson(
             viewModel = hiltViewModel(),
             uiState = mockUiState,
-            navigateToHome = {},
-            navigateToLoad = {})
+            onClickClose = {},
+            onClickLoadLesson = {},
+            onClickAddExercise = {},
+        )
     }
 }

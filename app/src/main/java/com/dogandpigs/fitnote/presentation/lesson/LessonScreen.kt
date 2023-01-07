@@ -37,12 +37,14 @@ import com.dogandpigs.fitnote.presentation.ui.theme.GrayScaleMidGray2
 internal fun LessonScreen(
     viewModel: LessonViewModel = hiltViewModel(),
     popBackStack: () -> Unit,
+    navigateToAddLesson: () -> Unit,
     navigateToSetting: () -> Unit,
 ) {
     Box {
         Lesson(
             uiState = viewModel.uiState,
             popBackStack = popBackStack,
+            onClickAddLesson = navigateToAddLesson,
             navigateToSetting = navigateToSetting,
         )
     }
@@ -52,6 +54,7 @@ internal fun LessonScreen(
 private fun Lesson(
     uiState: LessonUiState,
     popBackStack: () -> Unit,
+    onClickAddLesson: () -> Unit,
     navigateToSetting: () -> Unit,
 ) {
     FitNoteScaffold(
@@ -65,7 +68,9 @@ private fun Lesson(
                 LessonTabList()
             }
 
-            AddLessonButton()
+            AddLessonButton(
+                onClickAddLesson
+            )
         }
     }
 }
@@ -180,7 +185,9 @@ private fun LessonTab(
 }
 
 @Composable
-private fun AddLessonButton() {
+private fun AddLessonButton(
+    onClickAddLesson: () -> Unit,
+) {
     val paddingValues = PaddingValues(
         horizontal = 16.dp,
         vertical = 24.dp,
@@ -195,7 +202,7 @@ private fun AddLessonButton() {
         verticalAlignment = Alignment.Bottom
     ) {
         OutlinedButton(
-            onClick = { },
+            onClick = onClickAddLesson,
             modifier = Modifier
                 .height(buttonHeight)
                 .fillMaxWidth(),
@@ -226,6 +233,7 @@ private fun PreviewLesson() {
         Lesson(
             uiState = mockUiState,
             popBackStack = {},
+            onClickAddLesson = {},
             navigateToSetting = {},
         )
     }
