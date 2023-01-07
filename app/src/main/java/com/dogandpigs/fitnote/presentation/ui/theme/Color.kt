@@ -11,4 +11,11 @@ val PurpleGrey40 = Color(0xFF625b71)
 val Pink40 = Color(0xFF7D5260)
 
 val BrandPrimary = Color(0xFF0085FF)
+
+val GrayScaleWhite = Color(0xFFFFFFFF)
+
+val GrayScaleLightGray1 = Color(0xFFF4F5F8)
+val GrayScaleLightGray2 = Color(0xFFE2E4E9)
+
 val GrayScaleMidGray2 = Color(0xFF9199AB)
+val GrayScaleMidGray3 = Color(0xFF636D81)
