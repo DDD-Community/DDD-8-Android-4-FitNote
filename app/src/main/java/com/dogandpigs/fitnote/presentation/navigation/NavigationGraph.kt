@@ -17,7 +17,7 @@ import androidx.navigation.NavOptions
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import com.dogandpigs.fitnote.presentation.join.addJoin
-import com.dogandpigs.fitnote.presentation.lesson.addLesson
+import com.dogandpigs.fitnote.presentation.lesson.memberlessonlist.addMemberLessonList
 import com.dogandpigs.fitnote.presentation.lesson.addlesson.addAddLesson
 import com.dogandpigs.fitnote.presentation.memberlist.addMemberList
 import com.dogandpigs.fitnote.presentation.navigation.NavRoutes.Companion.ROUTE_ADD_LESSON
@@ -60,7 +60,7 @@ internal fun NavigationGraph(navController: NavHostController) {
             route = ROUTE_LOGIN,
             navigateToHome = { navController.navigate(NavRoutes.Home.route) }
         )
-        addLesson(
+        addMemberLessonList(
             route = ROUTE_LESSON,
             popBackStack = { navController.popBackStack() },
             navigateToAddLesson = { navController.navigate(ROUTE_ADD_LESSON) },

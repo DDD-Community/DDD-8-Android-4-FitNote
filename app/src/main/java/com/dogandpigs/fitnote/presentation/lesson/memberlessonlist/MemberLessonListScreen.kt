@@ -1,4 +1,4 @@
-package com.dogandpigs.fitnote.presentation.lesson
+package com.dogandpigs.fitnote.presentation.lesson.memberlessonlist
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -34,14 +34,14 @@ import com.dogandpigs.fitnote.presentation.ui.theme.FitNoteTheme
 import com.dogandpigs.fitnote.presentation.ui.theme.GrayScaleMidGray2
 
 @Composable
-internal fun LessonScreen(
-    viewModel: LessonViewModel = hiltViewModel(),
+internal fun MemberLessonListScreen(
+    viewModel: MemberLessonListViewModel = hiltViewModel(),
     popBackStack: () -> Unit,
     navigateToAddLesson: () -> Unit,
     navigateToSetting: () -> Unit,
 ) {
     Box {
-        Lesson(
+        MemberLessonList(
             uiState = viewModel.uiState,
             popBackStack = popBackStack,
             onClickAddLesson = navigateToAddLesson,
@@ -51,8 +51,8 @@ internal fun LessonScreen(
 }
 
 @Composable
-private fun Lesson(
-    uiState: LessonUiState,
+private fun MemberLessonList(
+    uiState: MemberLessonListUiState,
     popBackStack: () -> Unit,
     onClickAddLesson: () -> Unit,
     navigateToSetting: () -> Unit,
@@ -221,7 +221,7 @@ private fun AddLessonButton(
     }
 }
 
-private val mockUiState = LessonUiState(
+private val mockUiState = MemberLessonListUiState(
     title = "수업 목록",
     userName = "나초보 회원님",
 )
@@ -230,7 +230,7 @@ private val mockUiState = LessonUiState(
 @Composable
 private fun PreviewLesson() {
     FitNoteTheme {
-        Lesson(
+        MemberLessonList(
             uiState = mockUiState,
             popBackStack = {},
             onClickAddLesson = {},

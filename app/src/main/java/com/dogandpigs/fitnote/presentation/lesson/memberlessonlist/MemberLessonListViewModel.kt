@@ -1,4 +1,4 @@
-package com.dogandpigs.fitnote.presentation.lesson
+package com.dogandpigs.fitnote.presentation.lesson.memberlessonlist
 
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -8,9 +8,9 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 
 @HiltViewModel
-internal class LessonViewModel @Inject constructor(
+internal class MemberLessonListViewModel @Inject constructor(
 
 ) : ViewModel() {
-    var uiState by mutableStateOf(LessonUiState())
+    var uiState by mutableStateOf(MemberLessonListUiState())
         private set
 }

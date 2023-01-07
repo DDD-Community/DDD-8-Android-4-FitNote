@@ -1,16 +1,16 @@
-package com.dogandpigs.fitnote.presentation.lesson
+package com.dogandpigs.fitnote.presentation.lesson.memberlessonlist
 
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.composable
 
-fun NavGraphBuilder.addLesson(
+fun NavGraphBuilder.addMemberLessonList(
     route: String,
     popBackStack: () -> Unit,
     navigateToAddLesson: () -> Unit,
     navigateToSetting: () -> Unit,
 ) {
     composable(route = route) {
-        LessonScreen(
+        MemberLessonListScreen(
             popBackStack = popBackStack,
             navigateToAddLesson = navigateToAddLesson,
             navigateToSetting = navigateToSetting,
