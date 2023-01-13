@@ -44,6 +44,7 @@ fun FitNoteTheme(
     // Dynamic color is available on Android 12+
     dynamicColor: Boolean = true,
     fitNoteTypography: FitNoteDesignSystemTypography = FitNoteDesignSystemTypography(),
+    fitNoteSpacing: FitNoteDesignSystemSpacing = FitNoteDesignSystemSpacing(),
     content: @Composable () -> Unit
 ) {
     val colorScheme = when {
@@ -64,6 +65,7 @@ fun FitNoteTheme(
 
     CompositionLocalProvider(
         LocalFitNoteTypography provides fitNoteTypography,
+        LocalFitNoteSpacing provides fitNoteSpacing,
     ) {
         MaterialTheme(
             colorScheme = colorScheme,
