@@ -12,6 +12,7 @@ internal fun NavGraphBuilder.addSplash(
     navigateToLogin: () -> Unit,
     navigateToLesson: () -> Unit,
     navigateToMemberList: () -> Unit,
+    navigateToMemberLesson: () -> Unit,
 ) {
     composable(route = route) {
         SplashRoute(
@@ -20,6 +21,7 @@ internal fun NavGraphBuilder.addSplash(
             navigateToLogin = navigateToLogin,
             navigateToLesson = navigateToLesson,
             navigateToMemberList = navigateToMemberList,
+            navigateToMemberLesson = navigateToMemberLesson,
         )
     }
 }
@@ -32,6 +34,7 @@ private fun SplashRoute(
     navigateToLogin: () -> Unit,
     navigateToLesson: () -> Unit,
     navigateToMemberList: () -> Unit,
+    navigateToMemberLesson: () -> Unit,
 ) {
     SplashScreen(
         viewModel = viewModel,
@@ -40,5 +43,6 @@ private fun SplashRoute(
         navigateToLogin,
         navigateToLesson = navigateToLesson,
         navigateToMemberList = navigateToMemberList,
+        navigateToMemberLesson = navigateToMemberLesson,
     )
 }

@@ -35,6 +35,7 @@ internal fun SplashScreen(
     navigateToLogin: () -> Unit,
     navigateToLesson: () -> Unit,
     navigateToMemberList: () -> Unit,
+    navigateToMemberLesson: () -> Unit,
 ) {
     Box {
         Splash(
@@ -44,6 +45,7 @@ internal fun SplashScreen(
             navigateToLogin,
             navigateToLesson,
             navigateToMemberList,
+            navigateToMemberLesson,
         )
     }
 }
@@ -56,6 +58,7 @@ private fun Splash(
     navigateToLogin: () -> Unit,
     navigateToLesson: () -> Unit,
     navigateToMemberList: () -> Unit,
+    navigateToMemberLesson: () -> Unit,
 ) {
     Column(
         modifier = Modifier
@@ -125,6 +128,20 @@ private fun Splash(
         ) {
             Text(text = "회원 목록")
         }
+        Button(
+            onClick = navigateToMemberLesson,
+            modifier = Modifier
+                .width(300.dp)
+                .padding(0.dp, 5.dp)
+                .background(Color.Transparent),
+            colors = ButtonDefaults.buttonColors(
+                containerColor = BrandPrimary,
+                contentColor = Color.White,
+            ),
+            contentPadding = PaddingValues(horizontal = 20.dp)
+        ) {
+            Text(text = "수업")
+        }
     }
 }
 
@@ -154,6 +171,7 @@ private fun PreviewSplash() {
             navigateToLogin = {},
             navigateToLesson = {},
             navigateToMemberList = {},
+            navigateToMemberLesson = {},
         )
     }
 }
