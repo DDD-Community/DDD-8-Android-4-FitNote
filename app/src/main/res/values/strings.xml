@@ -30,4 +30,5 @@
     <string name="some_count">%d 회</string>
     <string name="string_fold">접기</string>
     <string name="show_each_set">세트별로 보기</string>
+    <string name="title_load_lesson">불러오기</string>
 </resources>

@@ -82,10 +82,12 @@ internal fun ExpandableCard(
                         routineView(routine)
                         HeightSpacer(height = 4.dp)
                     }
-                    CompleteButton(
-                        text = stringResource(id = R.string.btn_add_set),
+                    OutlinedButton(
                         onClick = onClickAdd
-                    )
+                    ) {
+                        Text(text = stringResource(id = R.string.btn_add_set),
+                        )
+                    }
                 }
             }
         }
