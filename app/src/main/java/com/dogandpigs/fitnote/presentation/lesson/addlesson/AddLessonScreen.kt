@@ -46,7 +46,7 @@ internal fun AddLessonScreen(
     navigateToAddExercise: () -> Unit,
 ) {
     val state by viewModel.state.collectAsStateWithLifecycle()
-
+    
     AddLesson(
         viewModel,
         state = state,
@@ -67,13 +67,13 @@ private fun AddLesson(
     onClickAddExercise: () -> Unit,
 ) {
     val navController = rememberNavController()
-
+    
     FitNoteScaffold(topBarTitle = stringResource(id = R.string.title_add_lesson),
         topBarTitleFontSize = 16.sp,
         onClickTopBarNavigationIcon = { navController.navigateUp() },
         topBarNavigationIconImageVector = Icons.Filled.Close,
         topBarActions = {
-            TextButton(onClick = {}) {
+            TextButton(onClick = onClickLoadLesson) {
                 Text(
                     text = stringResource(id = R.string.btn_load),
                     color = colorResource(id = R.color.brand_primary)
@@ -129,7 +129,7 @@ private fun DateLabel(
     onClickDate: () -> Unit,
 ) {
     val context = LocalContext.current
-
+    
     Row(
         modifier = Modifier
             .height(58.dp)
@@ -195,7 +195,7 @@ private fun InputLesson(
                     .padding(15.dp, 15.dp),
             )
             CloseButton {
-
+            
             }
         }
         Spacer(modifier = Modifier.height(20.dp))

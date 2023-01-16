@@ -36,17 +36,20 @@ internal fun LoadLessonScreen(
     popBackStack: () -> Unit
 ) {
     val state by viewModel.state.collectAsStateWithLifecycle()
-    LoadLesson(state)
+    LoadLesson(state, popBackStack)
 }
 
 @Composable
-internal fun LoadLesson(uiState: LoadLessonUiState) {
+internal fun LoadLesson(
+    uiState: LoadLessonUiState,
+    popBackStack: () -> Unit
+) {
     val navController = rememberNavController()
     
     FitNoteScaffold(
         topBarTitle = stringResource(id = R.string.title_load_lesson),
         topBarTitleFontSize = 16.sp,
-        onClickTopBarNavigationIcon = { navController.navigateUp() },
+        onClickTopBarNavigationIcon = { popBackStack() },
         topBarNavigationIconImageVector = Icons.Filled.Close,
     ) {
         Box(modifier = Modifier.padding(it)) {
@@ -110,6 +113,6 @@ private val mockUiState = LoadLessonUiState(
 @Composable
 internal fun PreviewLoadLesson() {
     FitNoteTheme {
-        LoadLesson(mockUiState)
+        LoadLesson(uiState = mockUiState, popBackStack =  {})
     }
 }

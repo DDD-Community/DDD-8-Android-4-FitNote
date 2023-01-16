@@ -18,12 +18,14 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import com.dogandpigs.fitnote.presentation.join.addJoin
 import com.dogandpigs.fitnote.presentation.lesson.addlesson.addAddLesson
+import com.dogandpigs.fitnote.presentation.lesson.loadlesson.addLoadLesson
 import com.dogandpigs.fitnote.presentation.lesson.memberlesson.addMemberLesson
 import com.dogandpigs.fitnote.presentation.lesson.memberlessonlist.addMemberLessonList
 import com.dogandpigs.fitnote.presentation.memberlist.addMemberList
 import com.dogandpigs.fitnote.presentation.navigation.NavRoutes.Companion.ROUTE_ADD_LESSON
 import com.dogandpigs.fitnote.presentation.navigation.NavRoutes.Companion.ROUTE_JOIN
 import com.dogandpigs.fitnote.presentation.navigation.NavRoutes.Companion.ROUTE_LESSON
+import com.dogandpigs.fitnote.presentation.navigation.NavRoutes.Companion.ROUTE_LOAD_LESSON
 import com.dogandpigs.fitnote.presentation.navigation.NavRoutes.Companion.ROUTE_LOGIN
 import com.dogandpigs.fitnote.presentation.navigation.NavRoutes.Companion.ROUTE_MEMBER_LESSON
 import com.dogandpigs.fitnote.presentation.navigation.NavRoutes.Companion.ROUTE_MEMBER_LIST
@@ -72,7 +74,7 @@ internal fun NavigationGraph(navController: NavHostController) {
         addAddLesson(
             route = ROUTE_ADD_LESSON,
             popBackStack = { navController.popBackStack() },
-            navigateToLoadLesson = {},
+            navigateToLoadLesson = { navController.navigate(ROUTE_LOAD_LESSON) },
             navigateToAddExercise = {},
         )
         addMemberList(
@@ -88,6 +90,10 @@ internal fun NavigationGraph(navController: NavHostController) {
             popBackStack = { navController.popBackStack() },
             navigateToAddLesson = { navController.navigate(ROUTE_ADD_LESSON) },
             navigateToSetting = {},
+        )
+        addLoadLesson(
+            route = ROUTE_LOAD_LESSON,
+            popBackStack = { navController.popBackStack() }
         )
     }
 }
