@@ -6,16 +6,11 @@ import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.KeyboardArrowDown
-import androidx.compose.material3.Card
-import androidx.compose.material3.Icon
-import androidx.compose.material3.OutlinedButton
-import androidx.compose.material3.Text
+import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Alignment.Companion.CenterHorizontally
@@ -28,6 +23,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.dogandpigs.fitnote.R
 import com.dogandpigs.fitnote.presentation.ui.component.HeightSpacer
+import com.dogandpigs.fitnote.presentation.ui.theme.*
 
 @Composable
 internal fun ExpandableCard(
@@ -72,10 +68,11 @@ internal fun ExpandableCard(
                 )
                 Text(
                     text = header,
-                    color = color, // Header Color
+                    color = GrayScaleMidGray2, // Header Color
                     fontSize = 12.sp,
                     textAlign = TextAlign.Start,
-                    fontWeight = FontWeight.Normal,
+                    style = LocalFitNoteTypography.current.buttonSmall,
+                    
                 )
             }
             HeightSpacer(height = 8.dp)
@@ -86,8 +83,16 @@ internal fun ExpandableCard(
                         HeightSpacer(height = 4.dp)
                     }
                     OutlinedButton(
+                        colors = ButtonDefaults.outlinedButtonColors(
+                            disabledContentColor = SubPrimary,
+                            disabledContainerColor = BrandPrimary,
+                            contentColor = GrayScaleMidGray3,
+                            containerColor = GrayScaleLightGray1
+                        ),
+                        contentPadding = PaddingValues(16.dp, 6.dp),
                         onClick = onClickAdd,
-                        modifier = Modifier.align(CenterHorizontally)
+                        modifier = Modifier.align(CenterHorizontally),
+                        shape = RoundedCornerShape(5.dp)
                     ) {
                         Text(text = stringResource(id = R.string.btn_add_set))
                     }

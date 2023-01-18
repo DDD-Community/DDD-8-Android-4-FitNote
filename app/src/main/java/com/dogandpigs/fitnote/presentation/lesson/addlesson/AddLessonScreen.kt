@@ -256,6 +256,7 @@ private fun Routine(
         )
         WidthSpacer(width = 10.dp)
         BasicTextField(
+            
             value = "$weight",
             onValueChange = { value ->
                 if (value.isNullOrBlank()) {
