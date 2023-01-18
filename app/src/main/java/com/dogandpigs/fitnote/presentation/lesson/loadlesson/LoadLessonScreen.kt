@@ -81,7 +81,7 @@ private fun RowTagList(count: Int, borderRadius: Dp, paddingValue: PaddingValues
         Modifier.horizontalScroll(scrollState)
     ) {
         repeat(count) {
-            Tag("[$count]번째 회원", borderRadius, paddingValue)
+            Tag("[${it + 1}]번째 회원", borderRadius, paddingValue)
             WidthSpacer(width = 10.dp)
         }
     }
@@ -180,7 +180,8 @@ private fun ExerciseList() {
                 )
             },
             routineList = list,
-            onClickAdd = {}
+            onClickAdd = {},
+            isAddBtnVisible = false
         )
     }
 }
