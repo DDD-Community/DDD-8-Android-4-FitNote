@@ -156,7 +156,6 @@ private fun ExerciseList() {
         ) {
             Text(
                 text = "##월 ##일 운동",
-                fontSize = 16.sp,
                 color = GrayScaleMidGray3,
                 style = LocalFitNoteTypography.current.buttonMedium
             )

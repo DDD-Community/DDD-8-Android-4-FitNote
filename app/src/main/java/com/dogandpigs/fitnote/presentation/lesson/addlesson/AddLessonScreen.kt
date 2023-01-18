@@ -20,6 +20,7 @@ import androidx.compose.ui.graphics.PathEffect
 import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.colorResource
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.TextStyle
@@ -333,7 +334,9 @@ private fun Routine(
                 viewModel.removeRoutine(routine.set)
             }) {
                 Icon(
-                    imageVector = Icons.Filled.Close, contentDescription = "Back"
+                    painter = painterResource(id = R.drawable.trash),
+//                    imageVector = Icons.Filled.Close,
+                    contentDescription = "Back"
                 )
             }
         }
