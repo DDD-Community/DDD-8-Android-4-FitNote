@@ -21,6 +21,9 @@
     <string name="btn_forget_pwd">비밀번호 찾기</string>
     <string name="btn_add_exercise">운동 추가</string>
 
+    <string name="completion">완료</string>
+    <string name="terms_and_conditions">회원가입하시면 핏노트의 개인정보처리방침 및\n이용약관에 동의하는 것으로 간주합니다.</string>
+
     <string name="placeholder_email">example@example.com</string>
     <string name="placeholder_password">8-16자의 영문/숫자 조합으로 공백없이 입력해주세요</string>
     <string name="text_forget_pwd">비밀번호를 잊어버리셨나요>? </string>
@@ -30,10 +33,12 @@
     <string name="edit_per_set">세트별 편집</string>
     <string name="lesson">수업</string>
     <string name="lesson_list">수업 목록</string>
+
     <string name="some_member">%s 회원님</string>
     <string name="some_set">%d 세트</string>
     <string name="some_weight">%s kg</string>
     <string name="some_count">%d 회</string>
+
     <string name="string_fold">접기</string>
     <string name="show_each_set">세트별로 보기</string>
     <string name="load_lesson">불러오기</string>

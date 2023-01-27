@@ -9,7 +9,9 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.TextFieldValue
+import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.ExperimentalLifecycleComposeApi
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
@@ -17,8 +19,14 @@ import com.dogandpigs.fitnote.R
 import com.dogandpigs.fitnote.presentation.base.FigmaPreview
 import com.dogandpigs.fitnote.presentation.ui.component.CompleteButton
 import com.dogandpigs.fitnote.presentation.ui.component.FitNoteScaffold
+import com.dogandpigs.fitnote.presentation.ui.component.HeightSpacer
+import com.dogandpigs.fitnote.presentation.ui.theme.Alert
 import com.dogandpigs.fitnote.presentation.ui.theme.BrandPrimary
 import com.dogandpigs.fitnote.presentation.ui.theme.FitNoteTheme
+import com.dogandpigs.fitnote.presentation.ui.theme.GrayScaleDarkGray2
+import com.dogandpigs.fitnote.presentation.ui.theme.GrayScaleMidGray2
+import com.dogandpigs.fitnote.presentation.ui.theme.GrayScaleMidGray3
+import com.dogandpigs.fitnote.presentation.ui.theme.LocalFitNoteTypography
 import java.util.regex.Pattern
 
 @OptIn(ExperimentalLifecycleComposeApi::class)
@@ -45,6 +53,12 @@ private fun Join(
     var isEmailError by remember { mutableStateOf(false) }
     var isPwdError by remember { mutableStateOf(false) }
     var isCheckPwdError by remember { mutableStateOf(false) }
+
+    var readyCompletion by remember { mutableStateOf(false) }
+
+    val passwordVisualTransformation = PasswordVisualTransformation(
+        mask = '\u002A'
+    )
 
     FitNoteScaffold(
         topBarTitle = "가입하기",
@@ -110,6 +124,7 @@ private fun Join(
                     },
                     labelText = stringResource(id = R.string.password),
                     placeholderText = stringResource(id = R.string.password),
+                    visualTransformation = passwordVisualTransformation,
                 )
                 /**
                  * 비밀번호 확인
@@ -130,15 +145,35 @@ private fun Join(
                     },
                     labelText = stringResource(id = R.string.check_password),
                     placeholderText = stringResource(id = R.string.check_password),
+                    visualTransformation = passwordVisualTransformation,
                 )
             }
 
-            CompleteButton(
-                stringResource(
-                    id = R.string.btn_next
-                ),
-                onClick = {}
-            )
+            Column(
+                modifier = Modifier
+                    .fillMaxSize(),
+                horizontalAlignment = Alignment.CenterHorizontally,
+                verticalArrangement = Arrangement.Bottom
+            ) {
+                Text(
+                    text = stringResource(id = R.string.terms_and_conditions),
+                    color = GrayScaleMidGray3,
+                    style = LocalFitNoteTypography.current.textSmall,
+                )
+                HeightSpacer(height = 99.dp)
+            }
+
+            if (readyCompletion) {
+                CompleteButton(
+                    text = stringResource(id = R.string.completion),
+                    onClick = {},
+                )
+            } else {
+                CompleteButton(
+                    text = stringResource(id = R.string.completion),
+                    onClick = {},
+                )
+            }
         }
     }
 }
@@ -151,15 +186,20 @@ private fun LoginTextField(
     onValueChange: (TextFieldValue) -> Unit,
     labelText: String,
     placeholderText: String,
+    visualTransformation: VisualTransformation = VisualTransformation.None,
 ) {
     TextField(
         isError = isError,
         label = {
-            Text(text = labelText)
+            Text(
+                text = labelText,
+                color = GrayScaleMidGray2,
+            )
         },
         colors = TextFieldDefaults.textFieldColors(
             containerColor = Color.Transparent,
-            errorIndicatorColor = Color.Red,
+            errorCursorColor = Alert,
+            errorIndicatorColor = Alert,
             focusedIndicatorColor = BrandPrimary,
         ),
         modifier = Modifier
@@ -169,8 +209,13 @@ private fun LoginTextField(
         value = value,
         onValueChange = onValueChange,
         placeholder = {
-            Text(text = placeholderText)
+            Text(
+                text = placeholderText,
+                color = GrayScaleDarkGray2,
+                style = LocalFitNoteTypography.current.textDefault,
+            )
         },
+        visualTransformation = visualTransformation,
     )
 }
 
