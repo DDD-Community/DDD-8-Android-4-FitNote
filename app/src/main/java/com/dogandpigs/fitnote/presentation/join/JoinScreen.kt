@@ -17,6 +17,7 @@ import com.dogandpigs.fitnote.R
 import com.dogandpigs.fitnote.presentation.base.FigmaPreview
 import com.dogandpigs.fitnote.presentation.ui.component.CompleteButton
 import com.dogandpigs.fitnote.presentation.ui.component.FitNoteScaffold
+import com.dogandpigs.fitnote.presentation.ui.theme.BrandPrimary
 import com.dogandpigs.fitnote.presentation.ui.theme.FitNoteTheme
 import java.util.regex.Pattern
 
@@ -38,16 +39,12 @@ private fun Join(
     var name by remember { mutableStateOf(TextFieldValue("")) }
     var email by remember { mutableStateOf(TextFieldValue("")) }
     var pwd by remember { mutableStateOf(TextFieldValue("")) }
-    var checkPwd by remember {
-        mutableStateOf(TextFieldValue(""))
-    }
+    var checkPwd by remember { mutableStateOf(TextFieldValue("")) }
 
     var isNameError by remember { mutableStateOf(false) }
     var isEmailError by remember { mutableStateOf(false) }
     var isPwdError by remember { mutableStateOf(false) }
-    var isCheckPwdError by remember {
-        mutableStateOf(false)
-    }
+    var isCheckPwdError by remember { mutableStateOf(false) }
 
     FitNoteScaffold(
         topBarTitle = "가입하기",
@@ -61,39 +58,24 @@ private fun Join(
                     .background(color = Color.White),
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
-                TextField(
+                /**
+                 * 이름
+                 */
+                LoginTextField(
                     isError = isNameError,
-                    label = {
-                        Text(text = stringResource(id = R.string.name))
-                    },
-                    colors = TextFieldDefaults.textFieldColors(
-                        containerColor = Color.Transparent, errorIndicatorColor = Color.Red
-                    ),
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(20.dp, 10.dp)
-                        .background(Color.Transparent),
                     value = name,
                     onValueChange = { newText ->
                         isNameError = true
                         name = newText
                     },
-                    placeholder = {
-                        Text(text = stringResource(id = R.string.name))
-                    },
+                    labelText = stringResource(id = R.string.name),
+                    placeholderText = stringResource(id = R.string.name),
                 )
-                TextField(
+                /**
+                 * 이메일
+                 */
+                LoginTextField(
                     isError = isEmailError,
-                    label = {
-                        Text(text = stringResource(id = R.string.email))
-                    },
-                    colors = TextFieldDefaults.textFieldColors(
-                        containerColor = Color.Transparent,
-                    ),
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(20.dp, 10.dp)
-                        .background(Color.Transparent),
                     value = email,
                     onValueChange = { emailValue ->
                         email = emailValue
@@ -102,26 +84,18 @@ private fun Join(
                             ).matches()
                         ) {
                             isEmailError = false
-                            return@TextField
+                            return@LoginTextField
                         }
                         isEmailError = true
                     },
-                    placeholder = {
-                        Text(text = stringResource(id = R.string.placeholder_email))
-                    },
+                    labelText = stringResource(id = R.string.email),
+                    placeholderText = stringResource(id = R.string.placeholder_email),
                 )
-                TextField(
+                /**
+                 * 비밀번호
+                 */
+                LoginTextField(
                     isError = isPwdError,
-                    label = {
-                        Text(text = stringResource(id = R.string.password))
-                    },
-                    colors = TextFieldDefaults.textFieldColors(
-                        containerColor = Color.Transparent,
-                    ),
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(20.dp, 10.dp)
-                        .background(Color.Transparent),
                     value = pwd,
                     onValueChange = { textValue ->
                         pwd = textValue
@@ -130,24 +104,18 @@ private fun Join(
                             && pwd.text.length < 17
                         ) {
                             isPwdError = false
-                            return@TextField
+                            return@LoginTextField
                         }
                         isPwdError = true
                     },
-                    placeholder = {
-                        Text(text = stringResource(id = R.string.password))
-                    })
-                TextField(
-                    label = {
-                        Text(text = stringResource(id = R.string.check_password))
-                    },
-                    colors = TextFieldDefaults.textFieldColors(
-                        containerColor = Color.Transparent,
-                    ),
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(20.dp, 10.dp)
-                        .background(Color.Transparent),
+                    labelText = stringResource(id = R.string.password),
+                    placeholderText = stringResource(id = R.string.password),
+                )
+                /**
+                 * 비밀번호 확인
+                 */
+                LoginTextField(
+                    isError = isCheckPwdError,
                     value = checkPwd,
                     onValueChange = { textValue ->
                         checkPwd = textValue
@@ -156,13 +124,12 @@ private fun Join(
                             && checkPwd.text.length < 17
                         ) {
                             isCheckPwdError = false
-                            return@TextField
+                            return@LoginTextField
                         }
                         isCheckPwdError = true
                     },
-                    placeholder = {
-                        Text(text = stringResource(id = R.string.check_password))
-                    },
+                    labelText = stringResource(id = R.string.check_password),
+                    placeholderText = stringResource(id = R.string.check_password),
                 )
             }
 
@@ -174,6 +141,37 @@ private fun Join(
             )
         }
     }
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+private fun LoginTextField(
+    isError: Boolean = false,
+    value: TextFieldValue,
+    onValueChange: (TextFieldValue) -> Unit,
+    labelText: String,
+    placeholderText: String,
+) {
+    TextField(
+        isError = isError,
+        label = {
+            Text(text = labelText)
+        },
+        colors = TextFieldDefaults.textFieldColors(
+            containerColor = Color.Transparent,
+            errorIndicatorColor = Color.Red,
+            focusedIndicatorColor = BrandPrimary,
+        ),
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(20.dp, 10.dp)
+            .background(Color.Transparent),
+        value = value,
+        onValueChange = onValueChange,
+        placeholder = {
+            Text(text = placeholderText)
+        },
+    )
 }
 
 private val mockUiState = JoinUiState(

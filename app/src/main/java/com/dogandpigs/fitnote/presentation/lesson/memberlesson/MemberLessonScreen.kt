@@ -33,7 +33,6 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.ExperimentalLifecycleComposeApi
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
@@ -92,7 +91,6 @@ private fun MemberLessonList(
                 uiState.userName
             )
         } ${stringResource(id = R.string.lesson)}",
-        topBarTitleFontSize = 20.sp,
         onClickTopBarNavigationIcon = popBackStack
     ) {
         Column(modifier = Modifier.padding(it)) {

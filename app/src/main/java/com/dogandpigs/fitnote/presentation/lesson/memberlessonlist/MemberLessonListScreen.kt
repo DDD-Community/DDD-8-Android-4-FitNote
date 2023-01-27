@@ -82,7 +82,6 @@ private fun MemberLessonList(
                 uiState.userName
             )
         } ${stringResource(id = R.string.lesson_list)}",
-        topBarTitleFontSize = 20.sp,
         onClickTopBarNavigationIcon = popBackStack
     ) {
         Box(modifier = Modifier.padding(it)) {
@@ -304,7 +303,7 @@ private fun AddLessonButton(
             )
         ) {
             Text(
-                text = "수업 추가",
+                text = stringResource(id = R.string.add_lesson),
                 textAlign = TextAlign.Center,
                 fontSize = 16.sp,
                 color = Color.White,

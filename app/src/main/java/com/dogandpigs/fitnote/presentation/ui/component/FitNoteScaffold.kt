@@ -14,14 +14,14 @@ import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
-import androidx.compose.ui.unit.TextUnit
-import androidx.compose.ui.unit.sp
+import androidx.compose.ui.text.TextStyle
+import com.dogandpigs.fitnote.presentation.ui.theme.LocalFitNoteTypography
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 internal fun FitNoteScaffold(
     topBarTitle: String,
-    topBarTitleFontSize: TextUnit = 14.sp,
+    topBarTitleStyle: TextStyle = LocalFitNoteTypography.current.titleLarge,
     onClickTopBarNavigationIcon: () -> Unit,
     topBarNavigationIconImageVector: ImageVector = Icons.Filled.ArrowBack,
     topBarActions: @Composable RowScope.() -> Unit = {},
@@ -37,7 +37,7 @@ internal fun FitNoteScaffold(
                     Text(
                         text = topBarTitle,
                         color = Color.Black,
-                        fontSize = topBarTitleFontSize
+                        style = topBarTitleStyle,
                     )
                 },
                 navigationIcon = {

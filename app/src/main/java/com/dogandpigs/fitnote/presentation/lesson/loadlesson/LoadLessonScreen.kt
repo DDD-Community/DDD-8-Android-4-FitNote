@@ -23,15 +23,11 @@ import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.ExperimentalLifecycleComposeApi
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import androidx.navigation.compose.rememberNavController
 import com.dogandpigs.fitnote.R
 import com.dogandpigs.fitnote.presentation.base.FigmaPreview
 import com.dogandpigs.fitnote.presentation.lesson.addlesson.ExpandableCard
 import com.dogandpigs.fitnote.presentation.lesson.addlesson.Routine
 import com.dogandpigs.fitnote.presentation.ui.component.*
-import com.dogandpigs.fitnote.presentation.ui.component.FitNoteScaffold
-import com.dogandpigs.fitnote.presentation.ui.component.HeightSpacer
-import com.dogandpigs.fitnote.presentation.ui.component.defaultBorder
 import com.dogandpigs.fitnote.presentation.ui.theme.*
 
 @OptIn(ExperimentalLifecycleComposeApi::class)
@@ -50,10 +46,9 @@ internal fun LoadLesson(
     popBackStack: () -> Unit
 ) {
     val paddingValues = PaddingValues(16.dp)
-    
+
     FitNoteScaffold(
         topBarTitle = stringResource(id = R.string.load_lesson),
-        topBarTitleFontSize = 16.sp,
         onClickTopBarNavigationIcon = { popBackStack() },
         topBarNavigationIconImageVector = Icons.Filled.Close,
     ) {
@@ -166,7 +161,8 @@ private fun ExerciseList() {
             )
         }
         RowTagList(count = 5, 50.dp, PaddingValues(10.dp, 6.dp))
-        ExpandableCard(header = stringResource(id = R.string.view_detail),
+        ExpandableCard(
+            header = stringResource(id = R.string.view_detail),
             color = Color.LightGray,
             routineView = { routine ->
                 Exercise(

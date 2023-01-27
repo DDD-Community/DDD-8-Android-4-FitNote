@@ -1,6 +1,5 @@
 package com.dogandpigs.fitnote.presentation.lesson.addlesson
 
-import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
@@ -45,7 +44,7 @@ internal fun AddLessonScreen(
     navigateToAddExercise: () -> Unit,
 ) {
     val state by viewModel.state.collectAsStateWithLifecycle()
-    
+
     AddLesson(
         viewModel,
         state = state,
@@ -64,9 +63,9 @@ private fun AddLesson(
     onClickAddExercise: () -> Unit,
 ) {
     val navController = rememberNavController()
-    
-    FitNoteScaffold(topBarTitle = stringResource(id = R.string.title_add_lesson),
-        topBarTitleFontSize = 16.sp,
+
+    FitNoteScaffold(
+        topBarTitle = stringResource(id = R.string.add_lesson),
         onClickTopBarNavigationIcon = { navController.navigateUp() },
         topBarNavigationIconImageVector = Icons.Filled.Close,
         topBarActions = {
@@ -128,7 +127,7 @@ private fun DateLabel(
     onClickDate: () -> Unit,
 ) {
     val context = LocalContext.current
-    
+
     Row(
         modifier = Modifier
             .height(58.dp)
