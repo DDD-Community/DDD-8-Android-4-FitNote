@@ -2,6 +2,7 @@ package com.dogandpigs.fitnote.presentation.splash
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -13,6 +14,10 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -38,6 +43,8 @@ internal fun SplashScreen(
     navigateToMemberLesson: () -> Unit,
 ) {
     Box {
+        var isShowDebugMenu by rememberSaveable { mutableStateOf(false) }
+
         Splash(
             uiState = viewModel.uiState,
             navigateToHome = navigateToHome,
@@ -46,7 +53,20 @@ internal fun SplashScreen(
             navigateToLesson,
             navigateToMemberList,
             navigateToMemberLesson,
+            onClickTitle = {
+                isShowDebugMenu = !isShowDebugMenu
+            }
         )
+        if (isShowDebugMenu) {
+            DebugMenu(
+                navigateToHome = navigateToHome,
+                navigateToJoin = navigateToJoin,
+                navigateToLogin = navigateToLogin,
+                navigateToLesson = navigateToLesson,
+                navigateToMemberList = navigateToMemberList,
+                navigateToMemberLesson = navigateToMemberLesson,
+            )
+        }
     }
 }
 
@@ -59,6 +79,7 @@ private fun Splash(
     navigateToLesson: () -> Unit,
     navigateToMemberList: () -> Unit,
     navigateToMemberLesson: () -> Unit,
+    onClickTitle: () -> Unit,
 ) {
     Column(
         modifier = Modifier
@@ -69,9 +90,45 @@ private fun Splash(
     ) {
         Image(
             painter = painterResource(id = R.drawable.image_fitnote),
-            contentDescription = null
+            contentDescription = null,
+            modifier = Modifier.clickable {
+                onClickTitle()
+            }
         )
-        HeightSpacer(height = 24.dp)
+    }
+}
+
+private val mockUiState = SplashUiState(
+    title = "mock SplashUiState title"
+)
+
+@Composable
+internal fun LoginRoute(
+    viewModel: LoginViewModel = hiltViewModel(),
+    navigateToHome: () -> Unit
+) {
+    LoginScreen(
+        viewModel = viewModel,
+        navigateToHome = navigateToHome
+    )
+}
+
+@Composable
+private fun DebugMenu(
+    navigateToHome: () -> Unit,
+    navigateToJoin: () -> Unit,
+    navigateToLogin: () -> Unit,
+    navigateToLesson: () -> Unit,
+    navigateToMemberList: () -> Unit,
+    navigateToMemberLesson: () -> Unit,
+) {
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(color = Color.Transparent),
+        verticalArrangement = Arrangement.Bottom,
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
         Button(
             onClick = { navigateToJoin() },
             modifier = Modifier
@@ -142,22 +199,8 @@ private fun Splash(
         ) {
             Text(text = "수업")
         }
+        HeightSpacer(height = 24.dp)
     }
-}
-
-private val mockUiState = SplashUiState(
-    title = "mock SplashUiState title"
-)
-
-@Composable
-internal fun LoginRoute(
-    viewModel: LoginViewModel = hiltViewModel(),
-    navigateToHome: () -> Unit
-) {
-    LoginScreen(
-        viewModel = viewModel,
-        navigateToHome = navigateToHome
-    )
 }
 
 @FigmaPreview
@@ -172,6 +215,7 @@ private fun PreviewSplash() {
             navigateToLesson = {},
             navigateToMemberList = {},
             navigateToMemberLesson = {},
+            onClickTitle = {},
         )
     }
 }
