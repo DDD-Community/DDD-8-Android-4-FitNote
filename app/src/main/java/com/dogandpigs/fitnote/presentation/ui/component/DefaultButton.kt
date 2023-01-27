@@ -31,7 +31,7 @@ import com.dogandpigs.fitnote.presentation.ui.theme.GrayScaleWhite
 
 @Composable
 internal fun DefaultTwoButton(
-    modifier: Modifier.() -> Modifier = { Modifier },
+    reverseModifier: Modifier.() -> Modifier = { Modifier },
     positiveText: String? = null,
     onClickPositive: (() -> Unit)? = null,
     negativeText: String? = null,
@@ -43,11 +43,11 @@ internal fun DefaultTwoButton(
         modifier = Modifier
             .wrapContentHeight()
             .fillMaxWidth()
-            .modifier()
+            .reverseModifier()
     ) {
         negativeText?.also {
             DefaultNegativeButton(
-                modifier = {
+                reverseModifier = {
                     Modifier
                         .weight(1F)
                         .wrapContentHeight()
@@ -61,7 +61,7 @@ internal fun DefaultTwoButton(
         WidthSpacer(spaceBetweenButtons)
         positiveText?.also {
             DefaultPositiveButton(
-                modifier = {
+                reverseModifier = {
                     Modifier
                         .weight(1F)
                         .wrapContentHeight()
@@ -78,14 +78,14 @@ internal fun DefaultTwoButton(
 
 @Composable
 internal fun DefaultNegativeButton(
-    modifier: Modifier.() -> Modifier = { Modifier },
+    reverseModifier: Modifier.() -> Modifier = { Modifier },
     negativeText: String,
     buttonTextStyle: TextStyle? = null,
     onClickNegative: () -> Unit,
 ) {
     if (buttonTextStyle != null) {
         DefaultButton(
-            modifier = modifier,
+            reverseModifier = reverseModifier,
             text = negativeText,
             textColor = GrayScaleDarkGray1,
             style = buttonTextStyle,
@@ -95,7 +95,7 @@ internal fun DefaultNegativeButton(
         )
     } else {
         DefaultButton(
-            modifier = modifier,
+            reverseModifier = reverseModifier,
             text = negativeText,
             textColor = GrayScaleMidGray3,
             buttonColor = Color.Transparent,
@@ -107,7 +107,7 @@ internal fun DefaultNegativeButton(
 
 @Composable
 internal fun DefaultPositiveButton(
-    modifier: Modifier.() -> Modifier = { Modifier },
+    reverseModifier: Modifier.() -> Modifier = { Modifier },
     positiveText: String,
     positiveButtonColor: Color? = BrandPrimary,
     buttonTextStyle: TextStyle? = null,
@@ -115,7 +115,7 @@ internal fun DefaultPositiveButton(
 ) {
     if (buttonTextStyle != null) {
         DefaultButton(
-            modifier = modifier,
+            reverseModifier = reverseModifier,
             text = positiveText,
             textColor = GrayScaleWhite,
             style = buttonTextStyle,
@@ -125,7 +125,7 @@ internal fun DefaultPositiveButton(
         )
     } else {
         DefaultButton(
-            modifier = modifier,
+            reverseModifier = reverseModifier,
             text = positiveText,
             textColor = GrayScaleWhite,
             buttonColor = positiveButtonColor ?: BrandPrimary,
@@ -137,14 +137,14 @@ internal fun DefaultPositiveButton(
 
 @Composable
 fun PrimaryButton(
-    modifier: Modifier.() -> Modifier = { Modifier },
+    reverseModifier: Modifier.() -> Modifier = { Modifier },
     text: String,
     textSize: TextUnit = 16.sp,
     buttonPadding: PaddingValues = PaddingValues(vertical = 16.dp, horizontal = 0.dp),
     onClickPositive: () -> Unit,
 ) {
     DefaultButton(
-        modifier = modifier,
+        reverseModifier = reverseModifier,
         text = text,
         textColor = Color.White,
         buttonColor = BrandPrimary,
@@ -157,7 +157,7 @@ fun PrimaryButton(
 
 @Composable
 private fun DefaultOutlinedButton(
-    modifier: Modifier.() -> Modifier = { Modifier },
+    reverseModifier: Modifier.() -> Modifier = { Modifier },
     buttonColor: Color,
     borderColor: Color,
     onClick: () -> Unit,
@@ -167,7 +167,7 @@ private fun DefaultOutlinedButton(
         modifier = Modifier
             .defaultMinSize(minWidth = 0.dp, minHeight = 0.dp)
             .background(Color.Transparent)
-            .modifier(),
+            .reverseModifier(),
         onClick = onClick,
         shape = RoundedCornerShape(5.dp),
         colors = ButtonDefaults.buttonColors(
@@ -182,7 +182,7 @@ private fun DefaultOutlinedButton(
 
 @Composable
 private fun DefaultButton(
-    modifier: Modifier.() -> Modifier = { Modifier },
+    reverseModifier: Modifier.() -> Modifier = { Modifier },
     text: String,
     textColor: Color,
     buttonColor: Color,
@@ -192,7 +192,7 @@ private fun DefaultButton(
     onClick: () -> Unit,
 ) {
     DefaultOutlinedButton(
-        modifier = modifier,
+        reverseModifier = reverseModifier,
         buttonColor = buttonColor,
         borderColor = borderColor,
         onClick = onClick,
@@ -209,7 +209,7 @@ private fun DefaultButton(
 
 @Composable
 private fun DefaultButton(
-    modifier: Modifier.() -> Modifier = { Modifier },
+    reverseModifier: Modifier.() -> Modifier = { Modifier },
     text: String,
     textColor: Color,
     style: TextStyle,
@@ -219,7 +219,7 @@ private fun DefaultButton(
     onClick: () -> Unit,
 ) {
     DefaultOutlinedButton(
-        modifier = modifier,
+        reverseModifier = reverseModifier,
         buttonColor = buttonColor,
         borderColor = borderColor,
         onClick = onClick,

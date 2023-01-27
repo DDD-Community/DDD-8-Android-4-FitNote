@@ -84,7 +84,7 @@ internal fun MemberListScreen(
                     )
                 }
                 PrimaryButton(
-                    modifier = {
+                    reverseModifier = {
                         padding(
                             PaddingValues(start = 16.dp, end = 16.dp, bottom = 24.dp)
                         ).fillMaxWidth()

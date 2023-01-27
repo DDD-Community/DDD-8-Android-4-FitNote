@@ -170,7 +170,7 @@ private fun JoinOrLogin(
         )
         HeightSpacer(height = 205.dp)
         DefaultPositiveButton(
-            modifier = {
+            reverseModifier = {
                 Modifier
                     .padding(
                         horizontal = 16.dp
@@ -184,7 +184,7 @@ private fun JoinOrLogin(
         )
         HeightSpacer(height = 24.dp)
         DefaultNegativeButton(
-            modifier = {
+            reverseModifier = {
                 Modifier
                     .padding(
                         horizontal = 16.dp
