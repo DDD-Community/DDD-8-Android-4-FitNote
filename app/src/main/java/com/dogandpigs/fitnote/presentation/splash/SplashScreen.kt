@@ -155,7 +155,7 @@ private fun JoinOrLogin(
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .background(color = Color.Transparent),
+            .background(color = Color.White),
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
