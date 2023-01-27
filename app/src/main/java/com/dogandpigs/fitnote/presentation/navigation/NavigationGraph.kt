@@ -53,7 +53,11 @@ internal fun NavigationGraph(navController: NavHostController) {
             navigateToHome = {
                 // TODO 수정 필요
                 // navController.navigate(NavRoutes.Home.route)
-                navController.navigate(ROUTE_MEMBER_LIST)
+                navController.navigate(ROUTE_MEMBER_LIST) {
+                    popUpTo(navController.graph.id) {
+                        inclusive = true
+                    }
+                }
             },
             navigateToJoin = { navController.navigate(NavRoutes.Join.route) },
             navigateToLogin = { navController.navigate(NavRoutes.Login.route) },
