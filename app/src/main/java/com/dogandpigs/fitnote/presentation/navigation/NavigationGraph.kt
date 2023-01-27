@@ -50,7 +50,11 @@ internal fun NavigationGraph(navController: NavHostController) {
         }
         addSplash(
             route = ROUTE_SPLASH,
-            navigateToHome = { navController.navigate(NavRoutes.Home.route) },
+            navigateToHome = {
+                // TODO 수정 필요
+                // navController.navigate(NavRoutes.Home.route)
+                navController.navigate(ROUTE_MEMBER_LIST)
+            },
             navigateToJoin = { navController.navigate(NavRoutes.Join.route) },
             navigateToLogin = { navController.navigate(NavRoutes.Login.route) },
             navigateToLesson = { navController.navigate(NavRoutes.Lesson.route) },

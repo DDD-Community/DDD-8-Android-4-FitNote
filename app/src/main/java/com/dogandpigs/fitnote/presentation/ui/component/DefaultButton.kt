@@ -15,6 +15,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.TextUnit
@@ -22,7 +23,9 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.dogandpigs.fitnote.presentation.base.ComponentPreview
 import com.dogandpigs.fitnote.presentation.ui.theme.BrandPrimary
+import com.dogandpigs.fitnote.presentation.ui.theme.GrayScaleDarkGray1
 import com.dogandpigs.fitnote.presentation.ui.theme.GrayScaleLightGray2
+import com.dogandpigs.fitnote.presentation.ui.theme.GrayScaleMidGray2
 import com.dogandpigs.fitnote.presentation.ui.theme.GrayScaleMidGray3
 import com.dogandpigs.fitnote.presentation.ui.theme.GrayScaleWhite
 
@@ -74,36 +77,62 @@ internal fun DefaultTwoButton(
 }
 
 @Composable
-private fun DefaultNegativeButton(
+internal fun DefaultNegativeButton(
     modifier: Modifier.() -> Modifier = { Modifier },
     negativeText: String,
+    buttonTextStyle: TextStyle? = null,
     onClickNegative: () -> Unit,
 ) {
-    DefaultButton(
-        modifier = modifier,
-        text = negativeText,
-        textColor = GrayScaleMidGray3,
-        buttonColor = Color.Transparent,
-        borderColor = GrayScaleLightGray2,
-        onClick = onClickNegative,
-    )
+    if (buttonTextStyle != null) {
+        DefaultButton(
+            modifier = modifier,
+            text = negativeText,
+            textColor = GrayScaleDarkGray1,
+            style = buttonTextStyle,
+            buttonColor = Color.Transparent,
+            borderColor = GrayScaleMidGray2,
+            onClick = onClickNegative,
+        )
+    } else {
+        DefaultButton(
+            modifier = modifier,
+            text = negativeText,
+            textColor = GrayScaleMidGray3,
+            buttonColor = Color.Transparent,
+            borderColor = GrayScaleLightGray2,
+            onClick = onClickNegative,
+        )
+    }
 }
 
 @Composable
-private fun DefaultPositiveButton(
+internal fun DefaultPositiveButton(
     modifier: Modifier.() -> Modifier = { Modifier },
     positiveText: String,
     positiveButtonColor: Color? = BrandPrimary,
+    buttonTextStyle: TextStyle? = null,
     onClickPositive: () -> Unit,
 ) {
-    DefaultButton(
-        modifier = modifier,
-        text = positiveText,
-        textColor = GrayScaleWhite,
-        buttonColor = positiveButtonColor ?: BrandPrimary,
-        borderColor = positiveButtonColor ?: BrandPrimary,
-        onClick = onClickPositive,
-    )
+    if (buttonTextStyle != null) {
+        DefaultButton(
+            modifier = modifier,
+            text = positiveText,
+            textColor = GrayScaleWhite,
+            style = buttonTextStyle,
+            buttonColor = positiveButtonColor ?: BrandPrimary,
+            borderColor = positiveButtonColor ?: BrandPrimary,
+            onClick = onClickPositive,
+        )
+    } else {
+        DefaultButton(
+            modifier = modifier,
+            text = positiveText,
+            textColor = GrayScaleWhite,
+            buttonColor = positiveButtonColor ?: BrandPrimary,
+            borderColor = positiveButtonColor ?: BrandPrimary,
+            onClick = onClickPositive,
+        )
+    }
 }
 
 @Composable
@@ -127,15 +156,12 @@ fun PrimaryButton(
 }
 
 @Composable
-private fun DefaultButton(
+private fun DefaultOutlinedButton(
     modifier: Modifier.() -> Modifier = { Modifier },
-    text: String,
-    textColor: Color,
     buttonColor: Color,
     borderColor: Color,
-    textSize: TextUnit = 12.sp,
-    buttonPadding: PaddingValues = PaddingValues(vertical = 12.dp, horizontal = 0.dp),
     onClick: () -> Unit,
+    content: @Composable () -> Unit,
 ) {
     OutlinedButton(
         modifier = Modifier
@@ -150,12 +176,60 @@ private fun DefaultButton(
         border = BorderStroke(1.dp, borderColor),
         contentPadding = PaddingValues(0.dp)
     ) {
+        content()
+    }
+}
+
+@Composable
+private fun DefaultButton(
+    modifier: Modifier.() -> Modifier = { Modifier },
+    text: String,
+    textColor: Color,
+    buttonColor: Color,
+    borderColor: Color,
+    textSize: TextUnit = 12.sp,
+    buttonPadding: PaddingValues = PaddingValues(vertical = 12.dp, horizontal = 0.dp),
+    onClick: () -> Unit,
+) {
+    DefaultOutlinedButton(
+        modifier = modifier,
+        buttonColor = buttonColor,
+        borderColor = borderColor,
+        onClick = onClick,
+    ) {
         Text(
             modifier = Modifier.padding(buttonPadding),
             text = text,
             textAlign = TextAlign.Center,
             fontSize = textSize,
-            color = textColor
+            color = textColor,
+        )
+    }
+}
+
+@Composable
+private fun DefaultButton(
+    modifier: Modifier.() -> Modifier = { Modifier },
+    text: String,
+    textColor: Color,
+    style: TextStyle,
+    buttonColor: Color,
+    borderColor: Color,
+    buttonPadding: PaddingValues = PaddingValues(vertical = 12.dp, horizontal = 0.dp),
+    onClick: () -> Unit,
+) {
+    DefaultOutlinedButton(
+        modifier = modifier,
+        buttonColor = buttonColor,
+        borderColor = borderColor,
+        onClick = onClick,
+    ) {
+        Text(
+            modifier = Modifier.padding(buttonPadding),
+            text = text,
+            textAlign = TextAlign.Center,
+            color = textColor,
+            style = style,
         )
     }
 }
