@@ -1,20 +1,8 @@
 package com.dogandpigs.fitnote.presentation.navigation
 
-import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.Alignment
-import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.text.style.TextAlign
-import androidx.navigation.NavController
 import androidx.navigation.NavHostController
-import androidx.navigation.NavOptions
 import androidx.navigation.compose.NavHost
-import androidx.navigation.compose.composable
 import com.dogandpigs.fitnote.presentation.join.addJoin
 import com.dogandpigs.fitnote.presentation.lesson.addlesson.addAddLesson
 import com.dogandpigs.fitnote.presentation.lesson.loadlesson.addLoadLesson
@@ -23,16 +11,6 @@ import com.dogandpigs.fitnote.presentation.lesson.memberlessonlist.addMemberLess
 import com.dogandpigs.fitnote.presentation.login.addLogin
 import com.dogandpigs.fitnote.presentation.login.addLoginWithEmail
 import com.dogandpigs.fitnote.presentation.memberlist.addMemberList
-import com.dogandpigs.fitnote.presentation.navigation.NavRoutes.Companion.ARGUMENT_EMAIL
-import com.dogandpigs.fitnote.presentation.navigation.NavRoutes.Companion.ROUTE_ADD_LESSON
-import com.dogandpigs.fitnote.presentation.navigation.NavRoutes.Companion.ROUTE_HOME
-import com.dogandpigs.fitnote.presentation.navigation.NavRoutes.Companion.ROUTE_JOIN
-import com.dogandpigs.fitnote.presentation.navigation.NavRoutes.Companion.ROUTE_LESSON
-import com.dogandpigs.fitnote.presentation.navigation.NavRoutes.Companion.ROUTE_LOAD_LESSON
-import com.dogandpigs.fitnote.presentation.navigation.NavRoutes.Companion.ROUTE_LOGIN
-import com.dogandpigs.fitnote.presentation.navigation.NavRoutes.Companion.ROUTE_MEMBER_LESSON
-import com.dogandpigs.fitnote.presentation.navigation.NavRoutes.Companion.ROUTE_MEMBER_LIST
-import com.dogandpigs.fitnote.presentation.navigation.NavRoutes.Companion.ROUTE_SPLASH
 import com.dogandpigs.fitnote.presentation.splash.addSplash
 
 @Composable
@@ -41,15 +19,6 @@ internal fun NavigationGraph(navController: NavHostController) {
         navController = navController,
         startDestination = ROUTE_SPLASH
     ) {
-        composable(NavRoutes.FirstPage.route) {
-            FirstPage()
-        }
-        composable(NavRoutes.SecondPage.route) {
-            SecondPage()
-        }
-        composable(NavRoutes.ThirdPage.route) {
-            ThirdPage()
-        }
         addSplash(
             route = ROUTE_SPLASH,
             navigateToHome = {
@@ -59,9 +28,9 @@ internal fun NavigationGraph(navController: NavHostController) {
                     }
                 }
             },
-            navigateToJoin = { navController.navigate(NavRoutes.Join.route) },
-            navigateToLogin = { navController.navigate(NavRoutes.Login.route) },
-            navigateToLesson = { navController.navigate(NavRoutes.Lesson.route) },
+            navigateToJoin = { navController.navigate(ROUTE_JOIN) },
+            navigateToLogin = { navController.navigate(ROUTE_LOGIN) },
+            navigateToLesson = { navController.navigate(ROUTE_LESSON) },
             navigateToMemberList = { navController.navigate(ROUTE_MEMBER_LIST) },
             navigateToMemberLesson = { navController.navigate(ROUTE_MEMBER_LESSON) },
         )
@@ -90,7 +59,7 @@ internal fun NavigationGraph(navController: NavHostController) {
         addLoginWithEmail(
             route = "$ROUTE_LOGIN/{$ARGUMENT_EMAIL}",
             popBackStack = { navController.popBackStack() },
-            navigateToHome = { navController.navigate(NavRoutes.Home.route) }
+            navigateToHome = { navController.navigate(ROUTE_HOME) }
         )
         addMemberLessonList(
             route = ROUTE_LESSON,
@@ -121,57 +90,6 @@ internal fun NavigationGraph(navController: NavHostController) {
         addLoadLesson(
             route = ROUTE_LOAD_LESSON,
             popBackStack = { navController.popBackStack() }
-        )
-    }
-}
-
-@Composable
-private fun FirstPage() {
-    Box(
-        modifier = Modifier
-            .fillMaxSize()
-            .background(Color.White)
-    ) {
-        Text(
-            text = "FirstScreen",
-            style = MaterialTheme.typography.headlineLarge,
-            textAlign = TextAlign.Center,
-            color = Color.Black,
-            modifier = Modifier.align(Alignment.Center)
-        )
-    }
-}
-
-@Composable
-private fun SecondPage() {
-    Box(
-        modifier = Modifier
-            .fillMaxSize()
-            .background(Color.White)
-    ) {
-        Text(
-            text = "SecondScreen",
-            style = MaterialTheme.typography.headlineLarge,
-            textAlign = TextAlign.Center,
-            color = Color.Black,
-            modifier = Modifier.align(Alignment.Center)
-        )
-    }
-}
-
-@Composable
-private fun ThirdPage() {
-    Box(
-        modifier = Modifier
-            .fillMaxSize()
-            .background(Color.White)
-    ) {
-        Text(
-            text = "ThirdScreen",
-            style = MaterialTheme.typography.headlineLarge,
-            textAlign = TextAlign.Center,
-            color = Color.Black,
-            modifier = Modifier.align(Alignment.Center)
         )
     }
 }
