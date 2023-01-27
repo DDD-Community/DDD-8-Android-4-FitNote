@@ -9,22 +9,16 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.input.PasswordVisualTransformation
-import androidx.compose.ui.text.input.TextFieldValue
-import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.ExperimentalLifecycleComposeApi
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.dogandpigs.fitnote.R
 import com.dogandpigs.fitnote.presentation.base.FigmaPreview
 import com.dogandpigs.fitnote.presentation.ui.component.CompleteButton
+import com.dogandpigs.fitnote.presentation.ui.component.DefaultTextField
 import com.dogandpigs.fitnote.presentation.ui.component.FitNoteScaffold
 import com.dogandpigs.fitnote.presentation.ui.component.HeightSpacer
-import com.dogandpigs.fitnote.presentation.ui.theme.Alert
-import com.dogandpigs.fitnote.presentation.ui.theme.BrandPrimary
 import com.dogandpigs.fitnote.presentation.ui.theme.FitNoteTheme
-import com.dogandpigs.fitnote.presentation.ui.theme.GrayScaleDarkGray2
-import com.dogandpigs.fitnote.presentation.ui.theme.GrayScaleMidGray2
 import com.dogandpigs.fitnote.presentation.ui.theme.GrayScaleMidGray3
 import com.dogandpigs.fitnote.presentation.ui.theme.LocalFitNoteTypography
 import java.util.regex.Pattern
@@ -44,10 +38,10 @@ private fun Join(
 //    viewModel: JoinViewModel,
     uiState: JoinUiState, popBackStack: () -> Unit
 ) {
-    var name by remember { mutableStateOf(TextFieldValue("")) }
-    var email by remember { mutableStateOf(TextFieldValue("")) }
-    var pwd by remember { mutableStateOf(TextFieldValue("")) }
-    var checkPwd by remember { mutableStateOf(TextFieldValue("")) }
+    var name by remember { mutableStateOf("") }
+    var email by remember { mutableStateOf("") }
+    var pwd by remember { mutableStateOf("") }
+    var checkPwd by remember { mutableStateOf("") }
 
     var isNameError by remember { mutableStateOf(false) }
     var isEmailError by remember { mutableStateOf(false) }
@@ -55,10 +49,6 @@ private fun Join(
     var isCheckPwdError by remember { mutableStateOf(false) }
 
     var readyCompletion by remember { mutableStateOf(false) }
-
-    val passwordVisualTransformation = PasswordVisualTransformation(
-        mask = '\u002A'
-    )
 
     FitNoteScaffold(
         topBarTitle = "가입하기",
@@ -75,7 +65,7 @@ private fun Join(
                 /**
                  * 이름
                  */
-                LoginTextField(
+                DefaultTextField(
                     isError = isNameError,
                     value = name,
                     onValueChange = { newText ->
@@ -88,17 +78,17 @@ private fun Join(
                 /**
                  * 이메일
                  */
-                LoginTextField(
+                DefaultTextField(
                     isError = isEmailError,
                     value = email,
                     onValueChange = { emailValue ->
                         email = emailValue
-                        if (emailValue.text == "" || Patterns.EMAIL_ADDRESS.matcher(
-                                emailValue.text
+                        if (emailValue == "" || Patterns.EMAIL_ADDRESS.matcher(
+                                emailValue
                             ).matches()
                         ) {
                             isEmailError = false
-                            return@LoginTextField
+                            return@DefaultTextField
                         }
                         isEmailError = true
                     },
@@ -108,44 +98,44 @@ private fun Join(
                 /**
                  * 비밀번호
                  */
-                LoginTextField(
+                DefaultTextField(
                     isError = isPwdError,
                     value = pwd,
                     onValueChange = { textValue ->
                         pwd = textValue
-                        if (Pattern.matches("^[a-zA-Z0-9]*\$", pwd.text)
-                            && pwd.text.length > 7
-                            && pwd.text.length < 17
+                        if (Pattern.matches("^[a-zA-Z0-9]*\$", pwd)
+                            && pwd.length > 7
+                            && pwd.length < 17
                         ) {
                             isPwdError = false
-                            return@LoginTextField
+                            return@DefaultTextField
                         }
                         isPwdError = true
                     },
                     labelText = stringResource(id = R.string.password),
                     placeholderText = stringResource(id = R.string.password),
-                    visualTransformation = passwordVisualTransformation,
+                    isPassword = true,
                 )
                 /**
                  * 비밀번호 확인
                  */
-                LoginTextField(
+                DefaultTextField(
                     isError = isCheckPwdError,
                     value = checkPwd,
                     onValueChange = { textValue ->
                         checkPwd = textValue
-                        if (Pattern.matches("^[a-zA-Z0-9]*\$", checkPwd.text)
-                            && checkPwd.text.length > 7
-                            && checkPwd.text.length < 17
+                        if (Pattern.matches("^[a-zA-Z0-9]*\$", checkPwd)
+                            && checkPwd.length > 7
+                            && checkPwd.length < 17
                         ) {
                             isCheckPwdError = false
-                            return@LoginTextField
+                            return@DefaultTextField
                         }
                         isCheckPwdError = true
                     },
                     labelText = stringResource(id = R.string.check_password),
                     placeholderText = stringResource(id = R.string.check_password),
-                    visualTransformation = passwordVisualTransformation,
+                    isPassword = true,
                 )
             }
 
@@ -176,47 +166,6 @@ private fun Join(
             }
         }
     }
-}
-
-@OptIn(ExperimentalMaterial3Api::class)
-@Composable
-private fun LoginTextField(
-    isError: Boolean = false,
-    value: TextFieldValue,
-    onValueChange: (TextFieldValue) -> Unit,
-    labelText: String,
-    placeholderText: String,
-    visualTransformation: VisualTransformation = VisualTransformation.None,
-) {
-    TextField(
-        isError = isError,
-        label = {
-            Text(
-                text = labelText,
-                color = GrayScaleMidGray2,
-            )
-        },
-        colors = TextFieldDefaults.textFieldColors(
-            containerColor = Color.Transparent,
-            errorCursorColor = Alert,
-            errorIndicatorColor = Alert,
-            focusedIndicatorColor = BrandPrimary,
-        ),
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(20.dp, 10.dp)
-            .background(Color.Transparent),
-        value = value,
-        onValueChange = onValueChange,
-        placeholder = {
-            Text(
-                text = placeholderText,
-                color = GrayScaleDarkGray2,
-                style = LocalFitNoteTypography.current.textDefault,
-            )
-        },
-        visualTransformation = visualTransformation,
-    )
 }
 
 private val mockUiState = JoinUiState(

@@ -26,7 +26,7 @@
 
     <string name="placeholder_email">example@example.com</string>
     <string name="placeholder_password">8-16자의 영문/숫자 조합으로 공백없이 입력해주세요</string>
-    <string name="text_forget_pwd">비밀번호를 잊어버리셨나요>? </string>
+    <string name="text_forget_pwd">비밀번호를 잊어버리셨나요? </string>
     <string name="txt_date">날짜</string>
     <string name="txt_exercise_name">운동명</string>
     <string name="add_lesson">수업 추가</string>
