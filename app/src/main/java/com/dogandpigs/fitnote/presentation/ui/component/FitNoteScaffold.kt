@@ -10,6 +10,7 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
+import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.Color
@@ -47,6 +48,35 @@ internal fun FitNoteScaffold(
                             contentDescription = "Back"
                         )
                     }
+                },
+                actions = topBarActions,
+            )
+        }
+    ) {
+        content(it)
+    }
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+internal fun FitNoteScaffold(
+    topBarTitle: String,
+    topBarTitleStyle: TextStyle = LocalFitNoteTypography.current.titleExtraLarge,
+    topBarActions: @Composable RowScope.() -> Unit = {},
+    content: @Composable (PaddingValues) -> Unit,
+) {
+    Scaffold(
+        topBar = {
+            TopAppBar(
+                colors = TopAppBarDefaults.smallTopAppBarColors(
+                    containerColor = Color.White
+                ),
+                title = {
+                    Text(
+                        text = topBarTitle,
+                        color = Color.Black,
+                        style = topBarTitleStyle,
+                    )
                 },
                 actions = topBarActions,
             )

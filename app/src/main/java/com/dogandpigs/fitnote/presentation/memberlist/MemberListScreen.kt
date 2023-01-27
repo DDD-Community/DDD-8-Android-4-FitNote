@@ -19,6 +19,8 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Divider
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -54,7 +56,14 @@ internal fun MemberListScreen(
 
     FitNoteScaffold(
         topBarTitle = "회원목록",
-        onClickTopBarNavigationIcon = popBackStack
+        topBarActions = {
+            IconButton(onClick = navigateToSetting) {
+                Icon(
+                    painter = painterResource(id = R.drawable.ic_setting),
+                    contentDescription = "Setting"
+                )
+            }
+        },
     ) {
         Box(modifier = Modifier.padding(it)) {
             Column(
