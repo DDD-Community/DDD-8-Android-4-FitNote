@@ -11,7 +11,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.style.TextAlign
 import androidx.navigation.NavController
-import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavHostController
 import androidx.navigation.NavOptions
 import androidx.navigation.compose.NavHost
@@ -21,7 +20,10 @@ import com.dogandpigs.fitnote.presentation.lesson.addlesson.addAddLesson
 import com.dogandpigs.fitnote.presentation.lesson.loadlesson.addLoadLesson
 import com.dogandpigs.fitnote.presentation.lesson.memberlesson.addMemberLesson
 import com.dogandpigs.fitnote.presentation.lesson.memberlessonlist.addMemberLessonList
+import com.dogandpigs.fitnote.presentation.login.addLogin
+import com.dogandpigs.fitnote.presentation.login.addLoginWithEmail
 import com.dogandpigs.fitnote.presentation.memberlist.addMemberList
+import com.dogandpigs.fitnote.presentation.navigation.NavRoutes.Companion.ARGUMENT_EMAIL
 import com.dogandpigs.fitnote.presentation.navigation.NavRoutes.Companion.ROUTE_ADD_LESSON
 import com.dogandpigs.fitnote.presentation.navigation.NavRoutes.Companion.ROUTE_JOIN
 import com.dogandpigs.fitnote.presentation.navigation.NavRoutes.Companion.ROUTE_LESSON
@@ -30,7 +32,6 @@ import com.dogandpigs.fitnote.presentation.navigation.NavRoutes.Companion.ROUTE_
 import com.dogandpigs.fitnote.presentation.navigation.NavRoutes.Companion.ROUTE_MEMBER_LESSON
 import com.dogandpigs.fitnote.presentation.navigation.NavRoutes.Companion.ROUTE_MEMBER_LIST
 import com.dogandpigs.fitnote.presentation.navigation.NavRoutes.Companion.ROUTE_SPLASH
-import com.dogandpigs.fitnote.presentation.splash.LoginRoute
 import com.dogandpigs.fitnote.presentation.splash.addSplash
 
 @Composable
@@ -67,10 +68,19 @@ internal fun NavigationGraph(navController: NavHostController) {
         )
         addJoin(
             route = ROUTE_JOIN,
-            popBackStack = { navController.popBackStack() }
+            popBackStack = { navController.popBackStack() },
+            navigateToLogin = {
+                navController.navigate(
+                    route = "$ROUTE_LOGIN/$it"
+                )
+            }
         )
         addLogin(
             route = ROUTE_LOGIN,
+            navigateToHome = { navController.navigate(NavRoutes.Home.route) }
+        )
+        addLoginWithEmail(
+            route = "$ROUTE_LOGIN/{$ARGUMENT_EMAIL}",
             navigateToHome = { navController.navigate(NavRoutes.Home.route) }
         )
         addMemberLessonList(
@@ -153,17 +163,6 @@ private fun ThirdPage() {
             textAlign = TextAlign.Center,
             color = Color.Black,
             modifier = Modifier.align(Alignment.Center)
-        )
-    }
-}
-
-fun NavGraphBuilder.addLogin(
-    route: String,
-    navigateToHome: () -> Unit,
-) {
-    composable(route = route) {
-        LoginRoute(
-            navigateToHome = navigateToHome
         )
     }
 }

@@ -27,9 +27,17 @@ import com.dogandpigs.fitnote.presentation.ui.theme.LocalFitNoteTypography
 @Composable
 internal fun LoginScreen(
     viewModel: LoginViewModel = hiltViewModel(),
+    email: String? = null,
     navigateToHome: () -> Unit
 ) {
     val state by viewModel.state.collectAsStateWithLifecycle()
+
+    email?.also {
+        viewModel.setState {
+            copy(email = email)
+        }
+    }
+
     Login(
         state = state,
         onEmailValueChange = { textValue ->
@@ -45,7 +53,6 @@ internal fun LoginScreen(
     )
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 private fun Login(
     state: LoginUiState,

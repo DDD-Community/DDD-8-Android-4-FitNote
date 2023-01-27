@@ -10,6 +10,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.ExperimentalLifecycleComposeApi
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.dogandpigs.fitnote.R
@@ -26,17 +27,23 @@ import java.util.regex.Pattern
 @OptIn(ExperimentalLifecycleComposeApi::class)
 @Composable
 internal fun JoinScreen(
-    viewModel: JoinViewModel, popBackStack: () -> Unit
+    viewModel: JoinViewModel = hiltViewModel(),
+    popBackStack: () -> Unit,
+    navigateToLogin: (String) -> Unit,
 ) {
     val state by viewModel.state.collectAsStateWithLifecycle()
-    Join(uiState = state, popBackStack = popBackStack)
+    Join(
+        uiState = state,
+        popBackStack = popBackStack,
+        navigateToLogin = navigateToLogin,
+    )
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 private fun Join(
-//    viewModel: JoinViewModel,
-    uiState: JoinUiState, popBackStack: () -> Unit
+    uiState: JoinUiState,
+    popBackStack: () -> Unit,
+    navigateToLogin: (String) -> Unit,
 ) {
     var name by remember { mutableStateOf("") }
     var email by remember { mutableStateOf("") }
@@ -48,7 +55,8 @@ private fun Join(
     var isPwdError by remember { mutableStateOf(false) }
     var isCheckPwdError by remember { mutableStateOf(false) }
 
-    var readyCompletion by remember { mutableStateOf(false) }
+    // TODO true -> false
+    var readyCompletion by remember { mutableStateOf(true) }
 
     FitNoteScaffold(
         topBarTitle = "가입하기",
@@ -156,7 +164,7 @@ private fun Join(
             if (readyCompletion) {
                 CompleteButton(
                     text = stringResource(id = R.string.completion),
-                    onClick = {},
+                    onClick = { navigateToLogin(email) },
                 )
             } else {
                 CompleteButton(
@@ -177,8 +185,9 @@ private val mockUiState = JoinUiState(
 private fun PreviewJoin() {
     FitNoteTheme {
         Join(
-//            viewModel = hiltViewModel(),
-            uiState = mockUiState
-        ) {}
+            uiState = mockUiState,
+            popBackStack = {},
+            navigateToLogin = {},
+        )
     }
 }

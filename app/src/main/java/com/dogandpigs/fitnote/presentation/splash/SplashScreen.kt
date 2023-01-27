@@ -24,11 +24,8 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
-import androidx.hilt.navigation.compose.hiltViewModel
 import com.dogandpigs.fitnote.R
 import com.dogandpigs.fitnote.presentation.base.FigmaPreview
-import com.dogandpigs.fitnote.presentation.login.LoginScreen
-import com.dogandpigs.fitnote.presentation.login.LoginViewModel
 import com.dogandpigs.fitnote.presentation.ui.component.DebugMenu
 import com.dogandpigs.fitnote.presentation.ui.component.DefaultNegativeButton
 import com.dogandpigs.fitnote.presentation.ui.component.DefaultPositiveButton
@@ -58,8 +55,14 @@ internal fun SplashScreen(
     Box {
         Splash(
             uiState = viewModel.uiState,
-            navigateToJoin = navigateToJoin,
-            navigateToLogin = navigateToLogin,
+            navigateToJoin = {
+                viewModel.cancelCheckLogin()
+                navigateToJoin()
+            },
+            navigateToLogin = {
+                viewModel.cancelCheckLogin()
+                navigateToLogin()
+            },
             onClickLogo = {
                 isShowDebugMenu = !isShowDebugMenu
                 viewModel.cancelCheckLogin()
@@ -69,7 +72,6 @@ internal fun SplashScreen(
             DebugMenu(
                 "홈" to navigateToHome,
                 "가입하기" to navigateToJoin,
-                "로그인" to navigateToJoin,
                 "로그인" to navigateToLogin,
                 "수업 목록" to navigateToLesson,
                 "회원 목록" to navigateToMemberList,
@@ -199,15 +201,6 @@ private fun JoinOrLogin(
             onClickNegative = navigateToLogin,
         )
     }
-}
-
-@Composable
-internal fun LoginRoute(
-    viewModel: LoginViewModel = hiltViewModel(), navigateToHome: () -> Unit
-) {
-    LoginScreen(
-        viewModel = viewModel, navigateToHome = navigateToHome
-    )
 }
 
 private val mockUiState = SplashUiState(
