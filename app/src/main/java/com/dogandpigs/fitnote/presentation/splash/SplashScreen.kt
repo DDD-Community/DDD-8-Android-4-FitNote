@@ -6,15 +6,11 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentHeight
-import androidx.compose.material3.Button
-import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -33,10 +29,10 @@ import com.dogandpigs.fitnote.R
 import com.dogandpigs.fitnote.presentation.base.FigmaPreview
 import com.dogandpigs.fitnote.presentation.login.LoginScreen
 import com.dogandpigs.fitnote.presentation.login.LoginViewModel
+import com.dogandpigs.fitnote.presentation.ui.component.DebugMenu
 import com.dogandpigs.fitnote.presentation.ui.component.DefaultNegativeButton
 import com.dogandpigs.fitnote.presentation.ui.component.DefaultPositiveButton
 import com.dogandpigs.fitnote.presentation.ui.component.HeightSpacer
-import com.dogandpigs.fitnote.presentation.ui.theme.BrandPrimary
 import com.dogandpigs.fitnote.presentation.ui.theme.FitNoteTheme
 import com.dogandpigs.fitnote.presentation.ui.theme.GrayScaleMidGray3
 import com.dogandpigs.fitnote.presentation.ui.theme.LocalFitNoteTypography
@@ -66,16 +62,18 @@ internal fun SplashScreen(
             navigateToLogin = navigateToLogin,
             onClickLogo = {
                 isShowDebugMenu = !isShowDebugMenu
+                viewModel.cancelCheckLogin()
             }
         )
         if (isShowDebugMenu) {
             DebugMenu(
-                navigateToHome = navigateToHome,
-                navigateToJoin = navigateToJoin,
-                navigateToLogin = navigateToLogin,
-                navigateToLesson = navigateToLesson,
-                navigateToMemberList = navigateToMemberList,
-                navigateToMemberLesson = navigateToMemberLesson,
+                "홈" to navigateToHome,
+                "가입하기" to navigateToJoin,
+                "로그인" to navigateToJoin,
+                "로그인" to navigateToLogin,
+                "수업 목록" to navigateToLesson,
+                "회원 목록" to navigateToMemberList,
+                "수업" to navigateToMemberLesson,
             )
         }
     }
@@ -90,6 +88,7 @@ private fun Splash(
 ) {
     if (uiState.isShowJoinOrLogin) {
         JoinOrLogin(
+            onClickLogo = onClickLogo,
             navigateToJoin = navigateToJoin,
             navigateToLogin = navigateToLogin,
         )
@@ -149,6 +148,7 @@ private fun LogoImage(
 @FigmaPreview
 @Composable
 private fun JoinOrLogin(
+    onClickLogo: () -> Unit = {},
     navigateToJoin: () -> Unit = {},
     navigateToLogin: () -> Unit = {},
 ) {
@@ -162,7 +162,9 @@ private fun JoinOrLogin(
         HeightSpacer(height = 80.dp)
         LogoMessage()
         HeightSpacer(height = 16.dp)
-        LogoImage()
+        LogoImage(
+            onClickImage = onClickLogo
+        )
         HeightSpacer(height = 42.dp)
         Image(
             painter = painterResource(id = R.drawable.image_fitnote_splash),
@@ -206,94 +208,6 @@ internal fun LoginRoute(
     LoginScreen(
         viewModel = viewModel, navigateToHome = navigateToHome
     )
-}
-
-@Composable
-private fun DebugMenu(
-    navigateToHome: () -> Unit,
-    navigateToJoin: () -> Unit,
-    navigateToLogin: () -> Unit,
-    navigateToLesson: () -> Unit,
-    navigateToMemberList: () -> Unit,
-    navigateToMemberLesson: () -> Unit,
-) {
-    Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .background(color = Color.Transparent),
-        verticalArrangement = Arrangement.Bottom,
-        horizontalAlignment = Alignment.CenterHorizontally
-    ) {
-        Button(
-            onClick = { navigateToJoin() },
-            modifier = Modifier
-                .width(300.dp)
-                .padding(0.dp, 5.dp)
-                .background(Color.Transparent),
-            colors = ButtonDefaults.buttonColors(
-                containerColor = Color.Black, contentColor = Color.White
-            ),
-
-            ) {
-            Text(text = "가입하기")
-        }
-        Button(
-            onClick = { navigateToLogin() },
-            modifier = Modifier
-                .width(300.dp)
-                .padding(0.dp, 5.dp)
-                .background(Color.Transparent),
-            colors = ButtonDefaults.buttonColors(
-                containerColor = Color.White, contentColor = Color.Black
-            ),
-            contentPadding = PaddingValues(horizontal = 20.dp)
-        ) {
-            Text(text = "로그인")
-        }
-        Button(
-            onClick = navigateToLesson,
-            modifier = Modifier
-                .width(300.dp)
-                .padding(0.dp, 5.dp)
-                .background(Color.Transparent),
-            colors = ButtonDefaults.buttonColors(
-                containerColor = BrandPrimary,
-                contentColor = Color.White,
-            ),
-            contentPadding = PaddingValues(horizontal = 20.dp)
-        ) {
-            Text(text = "수업 목록")
-        }
-        Button(
-            onClick = navigateToMemberList,
-            modifier = Modifier
-                .width(300.dp)
-                .padding(0.dp, 5.dp)
-                .background(Color.Transparent),
-            colors = ButtonDefaults.buttonColors(
-                containerColor = BrandPrimary,
-                contentColor = Color.White,
-            ),
-            contentPadding = PaddingValues(horizontal = 20.dp)
-        ) {
-            Text(text = "회원 목록")
-        }
-        Button(
-            onClick = navigateToMemberLesson,
-            modifier = Modifier
-                .width(300.dp)
-                .padding(0.dp, 5.dp)
-                .background(Color.Transparent),
-            colors = ButtonDefaults.buttonColors(
-                containerColor = BrandPrimary,
-                contentColor = Color.White,
-            ),
-            contentPadding = PaddingValues(horizontal = 20.dp)
-        ) {
-            Text(text = "수업")
-        }
-        HeightSpacer(height = 24.dp)
-    }
 }
 
 private val mockUiState = SplashUiState(

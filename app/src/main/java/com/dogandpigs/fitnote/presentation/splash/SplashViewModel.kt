@@ -6,6 +6,7 @@ import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -17,14 +18,16 @@ internal class SplashViewModel @Inject constructor(
     var uiState by mutableStateOf(SplashUiState())
         private set
 
+    private var checkLoginJob: Job? = null
+
     init {
         checkLogin()
     }
 
     // TODO UseCase 필요
     private fun checkLogin() {
-        viewModelScope.launch {
-            delay(5_000L)
+        checkLoginJob = viewModelScope.launch {
+            delay(2_000L)
             // 실패 시
             uiState = uiState.copy(
                 isShowJoinOrLogin = true
@@ -35,6 +38,13 @@ internal class SplashViewModel @Inject constructor(
             uiState = uiState.copy(
                 isLogin = true
             )
+        }
+    }
+
+    fun cancelCheckLogin() {
+        if (checkLoginJob?.isActive == true) {
+            checkLoginJob?.cancel()
+            checkLoginJob = null
         }
     }
 }

@@ -24,6 +24,9 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -35,6 +38,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.dogandpigs.fitnote.R
 import com.dogandpigs.fitnote.presentation.base.ComponentPreview
 import com.dogandpigs.fitnote.presentation.base.FigmaPreview
+import com.dogandpigs.fitnote.presentation.ui.component.DebugMenu
 import com.dogandpigs.fitnote.presentation.ui.component.FitNoteScaffold
 import com.dogandpigs.fitnote.presentation.ui.component.PrimaryButton
 import com.dogandpigs.fitnote.presentation.ui.theme.FitNoteTheme
@@ -54,10 +58,16 @@ internal fun MemberListScreen(
 ) {
     val state by viewModel.state.collectAsStateWithLifecycle()
 
+    var isShowDebugMenu by rememberSaveable { mutableStateOf(false) }
+
     FitNoteScaffold(
         topBarTitle = "회원목록",
         topBarActions = {
-            IconButton(onClick = navigateToSetting) {
+            IconButton(onClick = {
+                // TODO 설정으로 이동
+//                navigateToSetting
+                isShowDebugMenu = !isShowDebugMenu
+            }) {
                 Icon(
                     painter = painterResource(id = R.drawable.ic_setting),
                     contentDescription = "Setting"
@@ -103,6 +113,15 @@ internal fun MemberListScreen(
                         copy(userList = userList.dropLast(1))
                     }
                 }
+            }
+
+            if (isShowDebugMenu) {
+                DebugMenu(
+                    "회원 상세 정보" to navigateToMemberDetail,
+                    "회원 추가" to navigateToAddMember,
+                    "수업" to navigateToLesson,
+                    "설정" to navigateToSetting,
+                )
             }
         }
     }
