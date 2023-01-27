@@ -124,19 +124,6 @@ internal fun DefaultTextField(
 }
 
 @Composable
-internal fun CloseButton(onClick: () -> Unit) {
-    IconButton(
-        modifier = Modifier.wrapContentWidth(),
-        onClick = onClick,
-    ) {
-        Icon(
-            imageVector = Icons.Filled.Close, contentDescription = "Back"
-        )
-    }
-}
-
-
-@Composable
 internal fun CompleteButton(text: String, onClick: () -> Unit) {
     val buttonHeight = 52.dp
     val paddingValues = PaddingValues(
