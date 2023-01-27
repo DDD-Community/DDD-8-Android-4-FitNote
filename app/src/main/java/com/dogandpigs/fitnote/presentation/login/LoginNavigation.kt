@@ -4,7 +4,7 @@ import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavType
 import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
-import com.dogandpigs.fitnote.presentation.navigation.NavRoutes.Companion.ARGUMENT_EMAIL
+import com.dogandpigs.fitnote.presentation.navigation.ARGUMENT_EMAIL
 
 internal fun NavGraphBuilder.addLogin(
     route: String,
