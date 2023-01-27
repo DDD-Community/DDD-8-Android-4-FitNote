@@ -12,7 +12,6 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.ExperimentalLifecycleComposeApi
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import androidx.navigation.compose.rememberNavController
 import com.dogandpigs.fitnote.R
 import com.dogandpigs.fitnote.presentation.base.FigmaPreview
 import com.dogandpigs.fitnote.presentation.ui.component.CompleteButton
@@ -28,6 +27,7 @@ import com.dogandpigs.fitnote.presentation.ui.theme.LocalFitNoteTypography
 internal fun LoginScreen(
     viewModel: LoginViewModel = hiltViewModel(),
     email: String? = null,
+    popBackStack: () -> Unit,
     navigateToHome: () -> Unit
 ) {
     val state by viewModel.state.collectAsStateWithLifecycle()
@@ -40,6 +40,7 @@ internal fun LoginScreen(
 
     Login(
         state = state,
+        popBackStack = popBackStack,
         onEmailValueChange = { textValue ->
             viewModel.setState { copy(email = textValue) }
         },
@@ -48,24 +49,22 @@ internal fun LoginScreen(
         },
         onClickLoginButton = {
             viewModel.login()
+            navigateToHome()
         },
-        navigateToHome = navigateToHome,
     )
 }
 
 @Composable
 private fun Login(
     state: LoginUiState,
+    popBackStack: () -> Unit,
     onEmailValueChange: (String) -> Unit,
     onPasswordValueChange: (String) -> Unit,
     onClickLoginButton: () -> Unit,
-    navigateToHome: () -> Unit
 ) {
-    val navController = rememberNavController()
-
     FitNoteScaffold(
         topBarTitle = "로그인",
-        onClickTopBarNavigationIcon = { navController.navigateUp() },
+        onClickTopBarNavigationIcon = popBackStack,
     ) {
         Box {
             Column(
@@ -133,7 +132,7 @@ private fun PreviewLogin() {
             onEmailValueChange = {},
             onPasswordValueChange = {},
             onClickLoginButton = {},
-            navigateToHome = {},
+            popBackStack = {},
         )
     }
 }

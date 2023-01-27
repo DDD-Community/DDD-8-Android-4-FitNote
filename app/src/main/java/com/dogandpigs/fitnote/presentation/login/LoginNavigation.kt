@@ -8,10 +8,12 @@ import com.dogandpigs.fitnote.presentation.navigation.NavRoutes.Companion.ARGUME
 
 internal fun NavGraphBuilder.addLogin(
     route: String,
+    popBackStack: () -> Unit,
     navigateToHome: () -> Unit,
 ) {
     composable(route = route) {
         LoginScreen(
+            popBackStack = popBackStack,
             navigateToHome = navigateToHome,
         )
     }
@@ -19,6 +21,7 @@ internal fun NavGraphBuilder.addLogin(
 
 internal fun NavGraphBuilder.addLoginWithEmail(
     route: String,
+    popBackStack: () -> Unit,
     navigateToHome: () -> Unit,
 ) {
     val argument = ARGUMENT_EMAIL
@@ -31,6 +34,7 @@ internal fun NavGraphBuilder.addLoginWithEmail(
 
         LoginScreen(
             email = email,
+            popBackStack = popBackStack,
             navigateToHome = navigateToHome,
         )
     }

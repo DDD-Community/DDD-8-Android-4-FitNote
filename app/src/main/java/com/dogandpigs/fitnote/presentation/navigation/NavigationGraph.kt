@@ -25,6 +25,7 @@ import com.dogandpigs.fitnote.presentation.login.addLoginWithEmail
 import com.dogandpigs.fitnote.presentation.memberlist.addMemberList
 import com.dogandpigs.fitnote.presentation.navigation.NavRoutes.Companion.ARGUMENT_EMAIL
 import com.dogandpigs.fitnote.presentation.navigation.NavRoutes.Companion.ROUTE_ADD_LESSON
+import com.dogandpigs.fitnote.presentation.navigation.NavRoutes.Companion.ROUTE_HOME
 import com.dogandpigs.fitnote.presentation.navigation.NavRoutes.Companion.ROUTE_JOIN
 import com.dogandpigs.fitnote.presentation.navigation.NavRoutes.Companion.ROUTE_LESSON
 import com.dogandpigs.fitnote.presentation.navigation.NavRoutes.Companion.ROUTE_LOAD_LESSON
@@ -52,9 +53,7 @@ internal fun NavigationGraph(navController: NavHostController) {
         addSplash(
             route = ROUTE_SPLASH,
             navigateToHome = {
-                // TODO 수정 필요
-                // navController.navigate(NavRoutes.Home.route)
-                navController.navigate(ROUTE_MEMBER_LIST) {
+                navController.navigate(ROUTE_HOME) {
                     popUpTo(navController.graph.id) {
                         inclusive = true
                     }
@@ -72,15 +71,25 @@ internal fun NavigationGraph(navController: NavHostController) {
             navigateToLogin = {
                 navController.navigate(
                     route = "$ROUTE_LOGIN/$it"
-                )
+                ) {
+                    popUpTo(ROUTE_JOIN) { inclusive = true }
+                }
             }
         )
         addLogin(
             route = ROUTE_LOGIN,
-            navigateToHome = { navController.navigate(NavRoutes.Home.route) }
+            popBackStack = { navController.popBackStack() },
+            navigateToHome = {
+                navController.navigate(ROUTE_HOME) {
+                    popUpTo(navController.graph.id) {
+                        inclusive = true
+                    }
+                }
+            }
         )
         addLoginWithEmail(
             route = "$ROUTE_LOGIN/{$ARGUMENT_EMAIL}",
+            popBackStack = { navController.popBackStack() },
             navigateToHome = { navController.navigate(NavRoutes.Home.route) }
         )
         addMemberLessonList(
@@ -165,8 +174,4 @@ private fun ThirdPage() {
             modifier = Modifier.align(Alignment.Center)
         )
     }
-}
-
-fun NavController.navigateToScreen(navOptions: NavOptions? = null) {
-    this.navigate(ROUTE_SPLASH, navOptions)
 }
