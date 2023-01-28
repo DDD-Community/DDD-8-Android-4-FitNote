@@ -45,6 +45,7 @@ import com.dogandpigs.fitnote.presentation.ui.theme.FitNoteTheme
 import com.dogandpigs.fitnote.presentation.ui.theme.GrayScaleLightGray2
 import com.dogandpigs.fitnote.presentation.ui.theme.GrayScaleMidGray2
 import com.dogandpigs.fitnote.presentation.ui.theme.GrayScaleMidGray3
+import com.dogandpigs.fitnote.presentation.ui.theme.LocalFitNoteSpacing
 
 @OptIn(ExperimentalLifecycleComposeApi::class)
 @Composable
@@ -103,21 +104,10 @@ internal fun MemberListScreen(
                         onClickSetting = navigateToSetting,
                     )
                 }
-//                PrimaryButton(
-//                    reverseModifier = {
-//                        padding(
-//                            PaddingValues(start = 16.dp, end = 16.dp, bottom = 24.dp)
-//                        ).fillMaxWidth()
-//                    }, text = "회원 추가"
-//                ) {
-//                    viewModel.setState {
-//                        copy(userList = userList.dropLast(1))
-//                    }
-//                }
                 DefaultBottomPositiveButton(
                     modifier = Modifier
                         .padding(
-                            PaddingValues(start = 16.dp, end = 16.dp, bottom = 24.dp)
+                            vertical = LocalFitNoteSpacing.current.spacing4,
                         )
                         .fillMaxWidth(),
                     positiveText = "회원 추가",

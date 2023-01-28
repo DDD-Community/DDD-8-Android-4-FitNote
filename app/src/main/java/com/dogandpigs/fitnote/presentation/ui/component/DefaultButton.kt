@@ -30,6 +30,7 @@ import com.dogandpigs.fitnote.presentation.ui.theme.GrayScaleLightGray2
 import com.dogandpigs.fitnote.presentation.ui.theme.GrayScaleMidGray2
 import com.dogandpigs.fitnote.presentation.ui.theme.GrayScaleMidGray3
 import com.dogandpigs.fitnote.presentation.ui.theme.GrayScaleWhite
+import com.dogandpigs.fitnote.presentation.ui.theme.LocalFitNoteSpacing
 import com.dogandpigs.fitnote.presentation.ui.theme.LocalFitNoteTypography
 
 @Composable
@@ -82,9 +83,16 @@ internal fun DefaultNegativeButton(
     buttonTextStyle: TextStyle? = null,
     onClickNegative: () -> Unit,
 ) {
+    val buttonModifier = modifier
+        .padding(
+            horizontal = LocalFitNoteSpacing.current.spacing4,
+        )
+        .fillMaxWidth()
+        .wrapContentHeight()
+
     if (buttonTextStyle != null) {
         DefaultButton(
-            modifier = modifier,
+            modifier = buttonModifier,
             text = negativeText,
             textColor = GrayScaleDarkGray1,
             style = buttonTextStyle,
@@ -94,7 +102,7 @@ internal fun DefaultNegativeButton(
         )
     } else {
         DefaultButton(
-            modifier = modifier,
+            modifier = buttonModifier,
             text = negativeText,
             textColor = GrayScaleMidGray3,
             buttonColor = Color.Transparent,
@@ -112,9 +120,16 @@ internal fun DefaultPositiveButton(
     buttonTextStyle: TextStyle? = null,
     onClickPositive: () -> Unit,
 ) {
+    val buttonModifier = modifier
+        .padding(
+            horizontal = LocalFitNoteSpacing.current.spacing4,
+        )
+        .fillMaxWidth()
+        .wrapContentHeight()
+
     if (buttonTextStyle != null) {
         DefaultButton(
-            modifier = modifier,
+            modifier = buttonModifier,
             text = positiveText,
             textColor = GrayScaleWhite,
             style = buttonTextStyle,
@@ -124,7 +139,7 @@ internal fun DefaultPositiveButton(
         )
     } else {
         DefaultButton(
-            modifier = modifier,
+            modifier = buttonModifier,
             text = positiveText,
             textColor = GrayScaleWhite,
             buttonColor = positiveButtonColor ?: BrandPrimary,

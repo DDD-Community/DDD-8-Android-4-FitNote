@@ -8,9 +8,6 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -174,24 +171,12 @@ private fun JoinOrLogin(
         )
         HeightSpacer(height = 205.dp)
         DefaultPositiveButton(
-            modifier = Modifier
-                .padding(
-                    horizontal = 16.dp
-                )
-                .fillMaxWidth()
-                .wrapContentHeight(),
             positiveText = stringResource(id = R.string.btn_join),
             buttonTextStyle = LocalFitNoteTypography.current.buttonDefault,
             onClickPositive = navigateToJoin,
         )
         HeightSpacer(height = 24.dp)
         DefaultNegativeButton(
-            modifier = Modifier
-                .padding(
-                    horizontal = 16.dp
-                )
-                .fillMaxWidth()
-                .wrapContentHeight(),
             negativeText = stringResource(id = R.string.btn_login),
             buttonTextStyle = LocalFitNoteTypography.current.buttonDefault,
             onClickNegative = navigateToLogin,
