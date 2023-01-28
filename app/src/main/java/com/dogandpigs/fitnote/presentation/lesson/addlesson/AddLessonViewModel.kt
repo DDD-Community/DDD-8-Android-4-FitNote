@@ -23,6 +23,13 @@ internal class AddLessonViewModel @Inject constructor() : BaseViewModel<AddLesso
             routine.set == set
         }
         routineList.remove(routine)
-        setState { copy(routineList = routineList) }
+        setState { copy(routineList = sortSet(routineList)) }
+    }
+
+    private fun sortSet(routineList: MutableList<Routine>): MutableList<Routine> = currentState {
+        for (i in routineList.indices) {
+            routineList[i].set = i + 1
+        }
+        return routineList
     }
 }

@@ -90,8 +90,10 @@ private fun AddLesson(
                     .verticalScroll(scrollState), horizontalAlignment = Alignment.CenterHorizontally
             ) {
                 DateLabel(
-                    viewModel, state.dateMilliSeconds, state.dateString
-                ) {}
+                    viewModel,
+                    state.dateMilliSeconds,
+                    state.dateString
+                )
                 AddLessonCard(state, viewModel)
             }
             CompleteButton(stringResource(id = R.string.btn_save), onClick = {})
@@ -124,7 +126,6 @@ private fun DateLabel(
     viewModel: AddLessonViewModel,
     dateMilliSeconds: Long,
     dateString: String,
-    onClickDate: () -> Unit,
 ) {
     val context = LocalContext.current
 
@@ -144,14 +145,24 @@ private fun DateLabel(
             color = Color.Black,
             fontSize = 12.sp,
         )
-        ClickableText(text = AnnotatedString(dateString), style = TextStyle.Default, onClick = {
-            showDatePicker(viewModel, dateMilliSeconds, context as AppCompatActivity)
-        })
+        ClickableText(
+            text = AnnotatedString(dateString),
+            style = TextStyle.Default,
+            onClick = {
+                showDatePicker(
+                    viewModel,
+                    dateMilliSeconds,
+                    context as AppCompatActivity
+                )
+            }
+        )
     }
 }
 
 private fun showDatePicker(
-    viewModel: AddLessonViewModel, dateMilliSeconds: Long, activity: AppCompatActivity
+    viewModel: AddLessonViewModel,
+    dateMilliSeconds: Long,
+    activity: AppCompatActivity
 ) {
     val fm = activity.supportFragmentManager
     val picker = MaterialDatePicker.Builder.datePicker().setSelection(dateMilliSeconds).build()
@@ -163,7 +174,6 @@ private fun showDatePicker(
     }
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 private fun InputLesson(
     viewModel: AddLessonViewModel, uiState: AddLessonUiState
@@ -212,7 +222,8 @@ private fun InputLesson(
             btnRoutineCloseVisibility = false,
         )
         Spacer(modifier = Modifier.height(20.dp))
-        ExpandableCard(header = stringResource(id = R.string.edit_per_set),
+        ExpandableCard(
+            header = stringResource(id = R.string.edit_per_set),
             color = Color.LightGray,
             routineView = { routine ->
                 Routine(
@@ -227,7 +238,8 @@ private fun InputLesson(
                 viewModel.addRoutine(
                     Routine(weight = 0, count = 0)
                 )
-            })
+            }
+        )
     }
 }
 

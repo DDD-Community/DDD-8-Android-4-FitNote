@@ -70,7 +70,11 @@ internal fun LoadLesson(
 }
 
 @Composable
-private fun RowTagList(count: Int, borderRadius: Dp, paddingValue: PaddingValues) {
+private fun RowTagList(
+    count: Int,
+    borderRadius: Dp,
+    paddingValue: PaddingValues
+) {
     val scrollState = rememberScrollState()
     Row(
         Modifier.horizontalScroll(scrollState)

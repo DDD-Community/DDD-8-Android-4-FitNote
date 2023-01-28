@@ -10,6 +10,7 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.KeyboardArrowDown
+import androidx.compose.material.icons.filled.KeyboardArrowUp
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -35,9 +36,10 @@ internal fun ExpandableCard(
     isAddBtnVisible: Boolean = true
 ) {
     var expand by remember { mutableStateOf(false) } // Expand State
-    val rotationState by animateFloatAsState(if (expand) 180f else 0f) // Rotation State
     var stroke by remember { mutableStateOf(1) } // Stroke State
-    
+    var headerText by remember { mutableStateOf(header) }
+    var iconVector by remember { mutableStateOf(Icons.Default.KeyboardArrowDown) }
+
     Card(
         modifier = Modifier
             .animateContentSize( // Animation
@@ -53,38 +55,16 @@ internal fun ExpandableCard(
                 .fillMaxWidth()
                 .background(color = Color.White)
         ) {
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .clickable {
-                        expand = !expand
-                        stroke = if (expand) 2 else 1
-                    },
-                verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.Center // Control the header Alignment over here.
-            ) {
-                Icon(
-                    imageVector = Icons.Default.KeyboardArrowDown, tint = color, // Icon Color
-                    contentDescription = "Drop Down Arrow"
-                )
-                Text(
-                    text = header,
-                    color = GrayScaleMidGray2, // Header Color
-                    fontSize = 12.sp,
-                    textAlign = TextAlign.Start,
-                    style = LocalFitNoteTypography.current.buttonSmall,
-                    
-                    )
-            }
-            HeightSpacer(height = 8.dp)
             if (expand) {
+                headerText = "접기"
+                iconVector = Icons.Default.KeyboardArrowUp
                 Column(modifier = Modifier.fillMaxSize()) {
                     for (routine in routineList) {
                         routineView(routine)
                         HeightSpacer(height = 4.dp)
                     }
                     if (isAddBtnVisible) {
-                        OutlinedButton(
+                        Button(
                             colors = ButtonDefaults.outlinedButtonColors(
                                 disabledContentColor = SubPrimary,
                                 disabledContainerColor = BrandPrimary,
@@ -102,7 +82,33 @@ internal fun ExpandableCard(
                         }
                     }
                 }
+            } else {
+                headerText = header
+                iconVector = Icons.Default.KeyboardArrowDown
             }
+        }
+        Row(
+            modifier = Modifier
+                .background(Color.White)
+                .fillMaxWidth()
+                .clickable {
+                    expand = !expand
+                    stroke = if (expand) 2 else 1
+                },
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.Center // Control the header Alignment over here.
+        ) {
+            Icon(
+                imageVector = iconVector, tint = color, // Icon Color
+                contentDescription = "Drop Down Arrow"
+            )
+            Text(
+                text = headerText,
+                color = GrayScaleMidGray2, // Header Color
+                fontSize = 12.sp,
+                textAlign = TextAlign.Start,
+                style = LocalFitNoteTypography.current.buttonSmall,
+            )
         }
     }
 }

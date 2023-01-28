@@ -31,6 +31,11 @@ internal fun LoginScreen(
     navigateToHome: () -> Unit
 ) {
     val state by viewModel.state.collectAsStateWithLifecycle()
+    LaunchedEffect(state.loginState) {
+        if (state.loginState == LoginState.Success) {
+            navigateToHome()
+        }
+    }
 
     email?.also {
         viewModel.setState {
@@ -49,7 +54,7 @@ internal fun LoginScreen(
         },
         onClickLoginButton = {
             viewModel.login()
-            navigateToHome()
+//            navigateToHome()
         },
     )
 }

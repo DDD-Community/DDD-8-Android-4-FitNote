@@ -33,12 +33,15 @@ internal fun JoinScreen(
     navigateToLogin: (String) -> Unit,
 ) {
     val state by viewModel.state.collectAsStateWithLifecycle()
-    if (state.isJoinSuccess) {
-        navigateToLogin(state.email)
-        /**
-         * return 추가하면 매우 깜빡임..
-         * */
-    //        return
+    LaunchedEffect(state.isJoinSuccess) {
+        Log.d("test", "JoinScreen: ")
+        if (state.isJoinSuccess) {
+            navigateToLogin(state.email)
+            /**
+             * return 추가하면 매우 깜빡임..
+             * */
+            //        return
+        }
     }
     Join(
         uiState = state,
