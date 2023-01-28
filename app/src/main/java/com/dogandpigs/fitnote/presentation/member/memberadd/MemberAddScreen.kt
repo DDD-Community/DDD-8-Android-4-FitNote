@@ -152,14 +152,12 @@ private fun MemberAddButton(
     onClick: () -> Unit,
 ) {
     DefaultBottomPositiveButton(
-        reverseModifier = {
-            Modifier
-                .padding(
-                    horizontal = 16.dp
-                )
-                .fillMaxWidth()
-                .wrapContentHeight()
-        },
+        modifier = Modifier
+            .padding(
+                horizontal = 16.dp
+            )
+            .fillMaxWidth()
+            .wrapContentHeight(),
         positiveText = stringResource(id = R.string.registration),
         onClickPositive = onClick,
     ) {

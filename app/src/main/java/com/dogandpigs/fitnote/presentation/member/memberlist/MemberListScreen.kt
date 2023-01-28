@@ -115,11 +115,11 @@ internal fun MemberListScreen(
 //                    }
 //                }
                 DefaultBottomPositiveButton(
-                    reverseModifier = {
-                        padding(
+                    modifier = Modifier
+                        .padding(
                             PaddingValues(start = 16.dp, end = 16.dp, bottom = 24.dp)
-                        ).fillMaxWidth()
-                    },
+                        )
+                        .fillMaxWidth(),
                     positiveText = "회원 추가",
                     onClickPositive = {
                         viewModel.setState {

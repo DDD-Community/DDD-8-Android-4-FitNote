@@ -174,28 +174,24 @@ private fun JoinOrLogin(
         )
         HeightSpacer(height = 205.dp)
         DefaultPositiveButton(
-            reverseModifier = {
-                Modifier
-                    .padding(
-                        horizontal = 16.dp
-                    )
-                    .fillMaxWidth()
-                    .wrapContentHeight()
-            },
+            modifier = Modifier
+                .padding(
+                    horizontal = 16.dp
+                )
+                .fillMaxWidth()
+                .wrapContentHeight(),
             positiveText = stringResource(id = R.string.btn_join),
             buttonTextStyle = LocalFitNoteTypography.current.buttonDefault,
             onClickPositive = navigateToJoin,
         )
         HeightSpacer(height = 24.dp)
         DefaultNegativeButton(
-            reverseModifier = {
-                Modifier
-                    .padding(
-                        horizontal = 16.dp
-                    )
-                    .fillMaxWidth()
-                    .wrapContentHeight()
-            },
+            modifier = Modifier
+                .padding(
+                    horizontal = 16.dp
+                )
+                .fillMaxWidth()
+                .wrapContentHeight(),
             negativeText = stringResource(id = R.string.btn_login),
             buttonTextStyle = LocalFitNoteTypography.current.buttonDefault,
             onClickNegative = navigateToLogin,
