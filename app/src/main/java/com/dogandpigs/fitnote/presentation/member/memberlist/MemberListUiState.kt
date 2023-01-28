@@ -1,4 +1,4 @@
-package com.dogandpigs.fitnote.presentation.memberlist
+package com.dogandpigs.fitnote.presentation.member.memberlist
 
 internal data class MemberListUiState(
     val myName: String = "",

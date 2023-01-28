@@ -1,4 +1,4 @@
-package com.dogandpigs.fitnote.presentation.memberlist
+package com.dogandpigs.fitnote.presentation.member.memberlist
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -31,6 +31,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.ExperimentalLifecycleComposeApi
@@ -39,20 +40,23 @@ import com.dogandpigs.fitnote.R
 import com.dogandpigs.fitnote.presentation.base.ComponentPreview
 import com.dogandpigs.fitnote.presentation.base.FigmaPreview
 import com.dogandpigs.fitnote.presentation.ui.component.DebugMenu
+import com.dogandpigs.fitnote.presentation.ui.component.DefaultBottomLargePositiveButton
 import com.dogandpigs.fitnote.presentation.ui.component.FitNoteScaffold
-import com.dogandpigs.fitnote.presentation.ui.component.PrimaryButton
+import com.dogandpigs.fitnote.presentation.ui.component.HeightSpacer
 import com.dogandpigs.fitnote.presentation.ui.theme.FitNoteTheme
 import com.dogandpigs.fitnote.presentation.ui.theme.GrayScaleLightGray2
 import com.dogandpigs.fitnote.presentation.ui.theme.GrayScaleMidGray2
 import com.dogandpigs.fitnote.presentation.ui.theme.GrayScaleMidGray3
+import com.dogandpigs.fitnote.presentation.ui.theme.LocalFitNoteSpacing
 
 @OptIn(ExperimentalLifecycleComposeApi::class)
 @Composable
 internal fun MemberListScreen(
     viewModel: MemberListViewModel = hiltViewModel(),
     popBackStack: () -> Unit = {},
+    registration: Boolean = false,
     navigateToMemberDetail: () -> Unit = {},
-    navigateToAddMember: () -> Unit = {},
+    navigateToMemberAdd: () -> Unit = {},
     navigateToLesson: () -> Unit = {},
     navigateToSetting: () -> Unit = {}
 ) {
@@ -97,28 +101,24 @@ internal fun MemberListScreen(
                         userList = state.userList,
                         popBackStack = popBackStack,
                         onClickMemberDetail = navigateToMemberDetail,
-                        onClickAddMember = navigateToAddMember,
+                        onClickMemberAdd = navigateToMemberAdd,
                         onClickLesson = navigateToLesson,
                         onClickSetting = navigateToSetting,
                     )
                 }
-                PrimaryButton(
-                    reverseModifier = {
-                        padding(
-                            PaddingValues(start = 16.dp, end = 16.dp, bottom = 24.dp)
-                        ).fillMaxWidth()
-                    }, text = "회원 추가"
-                ) {
-                    viewModel.setState {
-                        copy(userList = userList.dropLast(1))
-                    }
-                }
+            }
+
+            DefaultBottomLargePositiveButton(
+                positiveText = stringResource(id = R.string.btn_add_member),
+                onClickPositive = navigateToMemberAdd,
+            ) {
+                HeightSpacer(height = LocalFitNoteSpacing.current.spacing5)
             }
 
             if (isShowDebugMenu) {
                 DebugMenu(
                     "회원 상세 정보" to navigateToMemberDetail,
-                    "회원 추가" to navigateToAddMember,
+                    "회원 추가" to navigateToMemberAdd,
                     "수업" to navigateToLesson,
                     "설정" to navigateToSetting,
                 )
@@ -156,7 +156,7 @@ private fun MemberList(
     userList: List<MemberUiModel>,
     popBackStack: () -> Unit = {},
     onClickMemberDetail: () -> Unit = {},
-    onClickAddMember: () -> Unit = {},
+    onClickMemberAdd: () -> Unit = {},
     onClickLesson: () -> Unit = {},
     onClickSetting: () -> Unit = {}
 ) {

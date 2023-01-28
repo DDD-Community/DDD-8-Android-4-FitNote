@@ -10,7 +10,9 @@ import com.dogandpigs.fitnote.presentation.lesson.memberlesson.addMemberLesson
 import com.dogandpigs.fitnote.presentation.lesson.memberlessonlist.addMemberLessonList
 import com.dogandpigs.fitnote.presentation.login.addLogin
 import com.dogandpigs.fitnote.presentation.login.addLoginWithEmail
-import com.dogandpigs.fitnote.presentation.memberlist.addMemberList
+import com.dogandpigs.fitnote.presentation.member.memberadd.addMemberAdd
+import com.dogandpigs.fitnote.presentation.member.memberlist.addMemberList
+import com.dogandpigs.fitnote.presentation.member.memberlist.addMemberListWithRegistration
 import com.dogandpigs.fitnote.presentation.splash.addSplash
 
 @Composable
@@ -78,9 +80,28 @@ internal fun NavigationGraph(navController: NavHostController) {
             route = ROUTE_MEMBER_LIST,
             popBackStack = { navController.popBackStack() },
             navigateToMemberDetail = {},
-            navigateToAddMember = {},
+            navigateToMemberAdd = { navController.navigate(ROUTE_MEMBER_ADD) },
             navigateToLesson = {},
             navigateToSetting = {}
+        )
+        addMemberListWithRegistration(
+            route = "$ROUTE_MEMBER_LIST/{$ARGUMENT_REGISTRATION}",
+            popBackStack = { navController.popBackStack() },
+            navigateToMemberDetail = {},
+            navigateToMemberAdd = { navController.navigate(ROUTE_MEMBER_ADD) },
+            navigateToLesson = {},
+            navigateToSetting = {}
+        )
+        addMemberAdd(
+            route = ROUTE_MEMBER_ADD,
+            popBackStack = { navController.popBackStack() },
+            navigateToMemberListWithRegistration = {
+                navController.navigate(
+                    route = "$ROUTE_MEMBER_LIST/$it"
+                ) {
+                    popUpTo(ROUTE_MEMBER_ADD) { inclusive = true }
+                }
+            }
         )
         addMemberLesson(
             route = ROUTE_MEMBER_LESSON,

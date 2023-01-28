@@ -1,4 +1,4 @@
-package com.dogandpigs.fitnote.presentation.memberlist
+package com.dogandpigs.fitnote.presentation.member.memberlist
 
 data class MemberUiModel(
     val id: Long,

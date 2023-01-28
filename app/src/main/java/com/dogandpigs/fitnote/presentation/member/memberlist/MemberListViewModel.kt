@@ -1,4 +1,4 @@
-package com.dogandpigs.fitnote.presentation.memberlist
+package com.dogandpigs.fitnote.presentation.member.memberlist
 
 import com.dogandpigs.fitnote.presentation.base.BaseViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
