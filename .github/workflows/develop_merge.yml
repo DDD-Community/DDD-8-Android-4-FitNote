@@ -1,0 +1,126 @@
+name: develop-merge
+
+on:
+  push:
+    branches:
+      - develop
+
+jobs:
+  build-start-notify:
+    runs-on: ubuntu-latest
+    if: always()
+    steps:
+      - name: Slack notification
+        timeout-minutes: 1
+        run: |
+          json="{\"channel\":\"#firebase-dobby\",\"username\":\"$GITHUB_REPOSITORY\",\"icon_emoji\":\":robot_face:\",\"attachments\":[{\"author_name\":\"$GITHUB_ACTOR\",\"author_icon\":\"${{github.event.sender.avatar_url}}\",\"color\":\"#00FF00\",\"pretext\":\"<${GITHUB_SERVER_URL}\/${GITHUB_REPOSITORY}|${GITHUB_REPOSITORY}> $GITHUB_WORKFLOW :airplane_departure:\",\"mrkdwn_in\":[\"text\"],\"fields\":[{\"title\":\"Workflow\",\"value\":\"$GITHUB_WORKFLOW-$RUNNER_OS-${GITHUB_RUN_NUMBER}\",\"short\":true},{\"title\":\"ref\",\"value\":\"$GITHUB_REF\",\"short\":true},{\"title\":\"Event\",\"value\":\"${GITHUB_REF##*\/}_${GITHUB_REF_TYPE}_${GITHUB_EVENT_NAME}\",\"short\":true},{\"title\":\"Repository\",\"value\":\"<${GITHUB_SERVER_URL}\/${GITHUB_REPOSITORY}|${GITHUB_REPOSITORY}>\",\"short\":true},{\"title\":\"Message\",\"value\":\"${{github.event.pull_request.title}}\",\"short\":true}],\"thumb_url\":\"${{github.event.organization.avatar_url}}\"}]}"
+          echo $json
+          curl -s -d "payload=$json" ${{ secrets.SLACK_URL }}
+
+  build-end-notify:
+    needs: [build, app-distribution]
+    runs-on: ubuntu-latest
+    if: always()
+    steps:
+      - name: Slack failure notification
+        timeout-minutes: 1
+        if: needs.build.result != 'success' || needs.app-distribution.result != 'success'
+        run: |
+          json="{\"channel\":\"#firebase-dobby\",\"username\":\"$GITHUB_REPOSITORY\",\"icon_emoji\":\":robot_face:\",\"attachments\":[{\"author_name\":\"$GITHUB_ACTOR\",\"author_icon\":\"${{github.event.sender.avatar_url}}\",\"color\":\"#FF0000\",\"pretext\":\"<${GITHUB_SERVER_URL}\/${GITHUB_REPOSITORY}|${GITHUB_REPOSITORY}> ${{job.status}} $GITHUB_WORKFLOW :exclamation: <!here>\",\"mrkdwn_in\":[\"text\"],\"fields\":[{\"title\":\"Workflow\",\"value\":\"$GITHUB_WORKFLOW-$RUNNER_OS-${GITHUB_RUN_NUMBER}\",\"short\":true},{\"title\":\"ref\",\"value\":\"$GITHUB_REF\",\"short\":true},{\"title\":\"Event\",\"value\":\"${GITHUB_REF##*\/}_${GITHUB_REF_TYPE}_${GITHUB_EVENT_NAME}\",\"short\":true},{\"title\":\"Repository\",\"value\":\"<${GITHUB_SERVER_URL}\/${GITHUB_REPOSITORY}|${GITHUB_REPOSITORY}>\",\"short\":true},{\"title\":\"Message\",\"value\":\"${{github.event.pull_request.title}}\",\"short\":true}],\"thumb_url\":\"${{github.event.organization.avatar_url}}\"}]}"
+          echo $json
+          curl -s -d "payload=$json" ${{ secrets.SLACK_URL }}
+
+      - name: Slack success notification
+        timeout-minutes: 1
+        if: needs.build.result == 'success' && needs.app-distribution.result == 'success'
+        run: |
+          json="{\"channel\":\"#firebase-dobby\",\"username\":\"$GITHUB_REPOSITORY\",\"icon_emoji\":\":robot_face:\",\"attachments\":[{\"author_name\":\"$GITHUB_ACTOR\",\"author_icon\":\"${{github.event.sender.avatar_url}}\",\"color\":\"#0000FF\",\"pretext\":\"<${GITHUB_SERVER_URL}\/${GITHUB_REPOSITORY}|${GITHUB_REPOSITORY}> ${{job.status}} $GITHUB_WORKFLOW :white_check_mark:\",\"mrkdwn_in\":[\"text\"],\"fields\":[{\"title\":\"Workflow\",\"value\":\"$GITHUB_WORKFLOW-$RUNNER_OS-${GITHUB_RUN_NUMBER}\",\"short\":true},{\"title\":\"ref\",\"value\":\"$GITHUB_REF\",\"short\":true},{\"title\":\"Event\",\"value\":\"${GITHUB_REF##*\/}_${GITHUB_REF_TYPE}_${GITHUB_EVENT_NAME}\",\"short\":true},{\"title\":\"Repository\",\"value\":\"<${GITHUB_SERVER_URL}\/${GITHUB_REPOSITORY}|${GITHUB_REPOSITORY}>\",\"short\":true},{\"title\":\"Message\",\"value\":\"${{github.event.pull_request.title}}\",\"short\":true}],\"thumb_url\":\"${{github.event.organization.avatar_url}}\"}]}"
+          echo $json
+          curl -s -d "payload=$json" ${{ secrets.SLACK_URL }}
+
+  app-distribution:
+    needs: [build]
+    runs-on: ubuntu-latest
+    steps:
+      - name: Download App
+        uses: actions/download-artifact@main
+        with:
+          name: ${{ github.workflow }}-${{ github.run_number }}
+          path: ${{env.OUTPUT_FILE_NAME}}
+
+      - name: Create Firebase Credentials
+        run: |
+          echo -n "${{ secrets.FIREBASE_CREDENTIALS }}" | base64 --decode > firebase_credentials.json
+          ls -al
+
+      - name: Setup Upload File Name
+        timeout-minutes: 5
+        run: |
+          filename=$(find ./ -type f -name "*.apk" -print -quit)
+          echo "OUTPUT_FILE_NAME=$filename" >> $GITHUB_ENV
+          echo filename=$(find ./ -type f -name "*.apk" -print -quit)
+
+      - name: Upload App Artifact To Firebase App Distribution
+        uses: wzieba/Firebase-Distribution-Github-Action@master
+        with:
+          releaseNotes: "${{github.event.head_commit.message}}"
+          appId: ${{secrets.FIREBASE_APP_ID}}
+          serviceCredentialsFile: ./firebase_credentials.json
+          groups: dev
+          file: ${{env.OUTPUT_FILE_NAME}}
+          debug: true
+
+  build:
+    needs: [build-start-notify]
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@main
+        timeout-minutes: 5
+
+      - name: set up JDK 11
+        uses: actions/setup-java@main
+        timeout-minutes: 5
+        with:
+          java-version: '11'
+          distribution: 'adopt'
+
+      - name: Cache Gradle Packages
+        uses: actions/cache@main
+        timeout-minutes: 10
+        with:
+          path: |
+            ~/.gradle/caches
+            ~/.gradle/wrapper
+            ~/.gradle/android
+            ~/.android
+          key: ${{ runner.os }}-${{ github.job }}-${{ github.workflow }}-${{ github.base_ref }}-${{ github.head_ref }}-${{ hashFiles('**/*.gradle') }}
+          restore-keys: |
+            ${{ runner.os }}-${{ github.job }}-${{ github.workflow }}-${{ github.base_ref }}-${{ github.head_ref }}
+            ${{ runner.os }}-${{ github.job }}-${{ github.workflow }}-${{ github.base_ref }}
+            ${{ runner.os }}-${{ github.job }}-${{ github.workflow }}-
+            ${{ runner.os }}-${{ github.job }}-
+            ${{ runner.os }}-
+
+      - name: Grant execute permission for gradlew
+        timeout-minutes: 5
+        run: chmod +x gradlew
+
+      - name: Build
+        timeout-minutes: 20
+        run: ./gradlew assembleDebug
+
+      - name: Setup OutputFileName
+        timeout-minutes: 5
+        run: |
+          filename=$(find ./ -type f -name "*.apk" -print -quit)
+          echo "OUTPUT_FILE_NAME=$filename" >> $GITHUB_ENV
+          echo filename=$(find ./ -type f -name "*.apk" -print -quit)
+
+      - name: Upload Build File
+        uses: actions/upload-artifact@main
+        timeout-minutes: 5
+        with:
+          if-no-files-found: error
+          name: ${{ github.workflow }}-${{ github.run_number }}
+          path: ${{env.OUTPUT_FILE_NAME}}
+          retention-days: 1
