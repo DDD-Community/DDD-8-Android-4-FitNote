@@ -1,5 +1,6 @@
 package com.dogandpigs.fitnote.presentation.join
 
+import android.util.Log
 import android.util.Patterns
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
@@ -32,8 +33,16 @@ internal fun JoinScreen(
     navigateToLogin: (String) -> Unit,
 ) {
     val state by viewModel.state.collectAsStateWithLifecycle()
+    if (state.isJoinSuccess) {
+        navigateToLogin(state.email)
+        /**
+         * return 추가하면 매우 깜빡임..
+         * */
+    //        return
+    }
     Join(
         uiState = state,
+        viewModel = viewModel,
         popBackStack = popBackStack,
         navigateToLogin = navigateToLogin,
     )
@@ -42,6 +51,7 @@ internal fun JoinScreen(
 @Composable
 private fun Join(
     uiState: JoinUiState,
+    viewModel: JoinViewModel,
     popBackStack: () -> Unit,
     navigateToLogin: (String) -> Unit,
 ) {
@@ -56,10 +66,9 @@ private fun Join(
     var isCheckPwdError by remember { mutableStateOf(false) }
 
     // TODO true -> false
-    var readyCompletion by remember { mutableStateOf(true) }
-
+    var readyCompletion by remember { mutableStateOf(false) }
     FitNoteScaffold(
-        topBarTitle = "가입하기",
+        topBarTitle = stringResource(id = R.string.btn_join),
         onClickTopBarNavigationIcon = popBackStack,
     ) { paddingValue ->
         Box {
@@ -169,16 +178,25 @@ private fun Join(
             } else {
                 CompleteButton(
                     text = stringResource(id = R.string.completion),
-                    onClick = {},
+                    onClick = {
+                        viewModel.run {
+                            setState {
+                                copy(
+                                    name = name,
+                                    email = email,
+                                    firstPassword = pwd,
+                                )
+                            }
+                            join()
+                        }
+                    },
                 )
             }
         }
     }
 }
 
-private val mockUiState = JoinUiState(
-    title = "mock JoinUiState title"
-)
+private val mockUiState = JoinUiState()
 
 @FigmaPreview
 @Composable
@@ -186,6 +204,7 @@ private fun PreviewJoin() {
     FitNoteTheme {
         Join(
             uiState = mockUiState,
+            viewModel = hiltViewModel(),
             popBackStack = {},
             navigateToLogin = {},
         )
