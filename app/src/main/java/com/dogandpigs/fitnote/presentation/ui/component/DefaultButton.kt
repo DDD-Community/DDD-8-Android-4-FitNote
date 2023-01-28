@@ -42,6 +42,7 @@ private fun getButtonPadding(
     horizontal = horizontal,
 )
 
+// TODO 수정
 @Composable
 private fun getButtonModifier(): Modifier = Modifier
     .padding(
@@ -52,7 +53,7 @@ private fun getButtonModifier(): Modifier = Modifier
 
 @Composable
 internal fun DefaultTwoButton(
-    reverseModifier: Modifier.() -> Modifier = { Modifier },
+    modifier: Modifier = Modifier,
     positiveText: String? = null,
     onClickPositive: (() -> Unit)? = null,
     negativeText: String? = null,
@@ -61,10 +62,9 @@ internal fun DefaultTwoButton(
     positiveButtonColor: Color? = null,
 ) {
     Row(
-        modifier = Modifier
+        modifier = modifier
             .wrapContentHeight()
             .fillMaxWidth()
-            .reverseModifier()
     ) {
         negativeText?.also {
             DefaultNegativeButton(
@@ -163,26 +163,6 @@ internal fun DefaultPositiveButton(
             onClick = onClickPositive,
         )
     }
-}
-
-@Composable
-fun PrimaryButton(
-    modifier: Modifier = Modifier,
-    text: String,
-    textSize: TextUnit = 16.sp,
-    buttonPadding: PaddingValues = PaddingValues(vertical = 16.dp, horizontal = 0.dp),
-    onClickPositive: () -> Unit,
-) {
-    DefaultButton(
-        modifier = modifier,
-        text = text,
-        textColor = Color.White,
-        buttonColor = BrandPrimary,
-        borderColor = BrandPrimary,
-        textSize = textSize,
-        buttonPadding = buttonPadding,
-        onClick = onClickPositive
-    )
 }
 
 @Composable
@@ -292,12 +272,4 @@ private fun PreviewDefaultTwoButton() {
         negativeText = "negativeText",
         onClickNegative = {}
     )
-}
-
-@ComponentPreview
-@Composable
-private fun PreviewPrimaryButton() {
-    PrimaryButton(text = "PrimaryButton") {
-
-    }
 }
