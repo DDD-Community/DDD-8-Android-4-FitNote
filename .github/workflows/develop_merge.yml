@@ -63,7 +63,7 @@ jobs:
       - name: Upload App Artifact To Firebase App Distribution
         uses: wzieba/Firebase-Distribution-Github-Action@master
         with:
-          releaseNotes: "${{github.event.head_commit.message}}"
+          releaseNotes: "[${{ github.run_number }}] : ${{github.event.head_commit.message}}"
           appId: ${{secrets.FIREBASE_APP_ID}}
           serviceCredentialsFile: ./firebase_credentials.json
           groups: dev
