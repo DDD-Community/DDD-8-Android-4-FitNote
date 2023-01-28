@@ -77,6 +77,12 @@ jobs:
       - uses: actions/checkout@main
         timeout-minutes: 5
 
+      - name: Create Google Services Json
+        run: |
+          cd ./app/
+          echo -n "${{ secrets.GOOGLE_SERVICES }}" | base64 --decode > ./google-services.json
+          ls -al
+
       - name: set up JDK 11
         uses: actions/setup-java@main
         timeout-minutes: 5
