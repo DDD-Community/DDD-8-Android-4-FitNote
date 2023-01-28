@@ -1,4 +1,4 @@
-package com.dogandpigs.fitnote.presentation.memberlist
+package com.dogandpigs.fitnote.presentation.member.memberlist
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background

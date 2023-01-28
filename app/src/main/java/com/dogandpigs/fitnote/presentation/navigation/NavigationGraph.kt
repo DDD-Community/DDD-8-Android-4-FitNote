@@ -10,7 +10,7 @@ import com.dogandpigs.fitnote.presentation.lesson.memberlesson.addMemberLesson
 import com.dogandpigs.fitnote.presentation.lesson.memberlessonlist.addMemberLessonList
 import com.dogandpigs.fitnote.presentation.login.addLogin
 import com.dogandpigs.fitnote.presentation.login.addLoginWithEmail
-import com.dogandpigs.fitnote.presentation.memberlist.addMemberList
+import com.dogandpigs.fitnote.presentation.member.memberlist.addMemberList
 import com.dogandpigs.fitnote.presentation.splash.addSplash
 
 @Composable
