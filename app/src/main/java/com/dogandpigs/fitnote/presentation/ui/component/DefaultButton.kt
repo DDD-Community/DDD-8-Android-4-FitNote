@@ -2,9 +2,12 @@ package com.dogandpigs.fitnote.presentation.ui.component
 
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.defaultMinSize
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.wrapContentHeight
@@ -13,6 +16,7 @@ import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.TextStyle
@@ -28,6 +32,8 @@ import com.dogandpigs.fitnote.presentation.ui.theme.GrayScaleLightGray2
 import com.dogandpigs.fitnote.presentation.ui.theme.GrayScaleMidGray2
 import com.dogandpigs.fitnote.presentation.ui.theme.GrayScaleMidGray3
 import com.dogandpigs.fitnote.presentation.ui.theme.GrayScaleWhite
+import com.dogandpigs.fitnote.presentation.ui.theme.LocalFitNoteSpacing
+import com.dogandpigs.fitnote.presentation.ui.theme.LocalFitNoteTypography
 
 @Composable
 internal fun DefaultTwoButton(
@@ -231,6 +237,30 @@ private fun DefaultButton(
             color = textColor,
             style = style,
         )
+    }
+}
+
+@Composable
+internal fun DefaultBottomPositiveButton(
+    reverseModifier: Modifier.() -> Modifier = { Modifier },
+    positiveText: String,
+    buttonTextStyle: TextStyle = LocalFitNoteTypography.current.buttonDefault,
+    onClickPositive: () -> Unit,
+    content: @Composable (() -> Unit)? = null
+) {
+    Column(
+        modifier = Modifier
+            .fillMaxSize(),
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.Bottom
+    ) {
+        DefaultPositiveButton(
+            reverseModifier = reverseModifier,
+            positiveText = positiveText,
+            buttonTextStyle = buttonTextStyle,
+            onClickPositive = onClickPositive,
+        )
+        content?.invoke()
     }
 }
 

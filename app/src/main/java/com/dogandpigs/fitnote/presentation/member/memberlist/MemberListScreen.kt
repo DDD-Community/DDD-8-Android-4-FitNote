@@ -39,8 +39,8 @@ import com.dogandpigs.fitnote.R
 import com.dogandpigs.fitnote.presentation.base.ComponentPreview
 import com.dogandpigs.fitnote.presentation.base.FigmaPreview
 import com.dogandpigs.fitnote.presentation.ui.component.DebugMenu
+import com.dogandpigs.fitnote.presentation.ui.component.DefaultBottomPositiveButton
 import com.dogandpigs.fitnote.presentation.ui.component.FitNoteScaffold
-import com.dogandpigs.fitnote.presentation.ui.component.PrimaryButton
 import com.dogandpigs.fitnote.presentation.ui.theme.FitNoteTheme
 import com.dogandpigs.fitnote.presentation.ui.theme.GrayScaleLightGray2
 import com.dogandpigs.fitnote.presentation.ui.theme.GrayScaleMidGray2
@@ -51,8 +51,9 @@ import com.dogandpigs.fitnote.presentation.ui.theme.GrayScaleMidGray3
 internal fun MemberListScreen(
     viewModel: MemberListViewModel = hiltViewModel(),
     popBackStack: () -> Unit = {},
+    registration: Boolean = false,
     navigateToMemberDetail: () -> Unit = {},
-    navigateToAddMember: () -> Unit = {},
+    navigateToMemberAdd: () -> Unit = {},
     navigateToLesson: () -> Unit = {},
     navigateToSetting: () -> Unit = {}
 ) {
@@ -97,28 +98,41 @@ internal fun MemberListScreen(
                         userList = state.userList,
                         popBackStack = popBackStack,
                         onClickMemberDetail = navigateToMemberDetail,
-                        onClickAddMember = navigateToAddMember,
+                        onClickMemberAdd = navigateToMemberAdd,
                         onClickLesson = navigateToLesson,
                         onClickSetting = navigateToSetting,
                     )
                 }
-                PrimaryButton(
+//                PrimaryButton(
+//                    reverseModifier = {
+//                        padding(
+//                            PaddingValues(start = 16.dp, end = 16.dp, bottom = 24.dp)
+//                        ).fillMaxWidth()
+//                    }, text = "회원 추가"
+//                ) {
+//                    viewModel.setState {
+//                        copy(userList = userList.dropLast(1))
+//                    }
+//                }
+                DefaultBottomPositiveButton(
                     reverseModifier = {
                         padding(
                             PaddingValues(start = 16.dp, end = 16.dp, bottom = 24.dp)
                         ).fillMaxWidth()
-                    }, text = "회원 추가"
-                ) {
-                    viewModel.setState {
-                        copy(userList = userList.dropLast(1))
+                    },
+                    positiveText = "회원 추가",
+                    onClickPositive = {
+                        viewModel.setState {
+                            copy(userList = userList.dropLast(1))
+                        }
                     }
-                }
+                )
             }
 
             if (isShowDebugMenu) {
                 DebugMenu(
                     "회원 상세 정보" to navigateToMemberDetail,
-                    "회원 추가" to navigateToAddMember,
+                    "회원 추가" to navigateToMemberAdd,
                     "수업" to navigateToLesson,
                     "설정" to navigateToSetting,
                 )
@@ -156,7 +170,7 @@ private fun MemberList(
     userList: List<MemberUiModel>,
     popBackStack: () -> Unit = {},
     onClickMemberDetail: () -> Unit = {},
-    onClickAddMember: () -> Unit = {},
+    onClickMemberAdd: () -> Unit = {},
     onClickLesson: () -> Unit = {},
     onClickSetting: () -> Unit = {}
 ) {
