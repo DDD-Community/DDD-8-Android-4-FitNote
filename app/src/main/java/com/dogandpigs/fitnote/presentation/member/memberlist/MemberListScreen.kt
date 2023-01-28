@@ -31,6 +31,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.ExperimentalLifecycleComposeApi
@@ -39,8 +40,9 @@ import com.dogandpigs.fitnote.R
 import com.dogandpigs.fitnote.presentation.base.ComponentPreview
 import com.dogandpigs.fitnote.presentation.base.FigmaPreview
 import com.dogandpigs.fitnote.presentation.ui.component.DebugMenu
-import com.dogandpigs.fitnote.presentation.ui.component.DefaultBottomPositiveButton
+import com.dogandpigs.fitnote.presentation.ui.component.DefaultBottomLargePositiveButton
 import com.dogandpigs.fitnote.presentation.ui.component.FitNoteScaffold
+import com.dogandpigs.fitnote.presentation.ui.component.HeightSpacer
 import com.dogandpigs.fitnote.presentation.ui.theme.FitNoteTheme
 import com.dogandpigs.fitnote.presentation.ui.theme.GrayScaleLightGray2
 import com.dogandpigs.fitnote.presentation.ui.theme.GrayScaleMidGray2
@@ -104,19 +106,13 @@ internal fun MemberListScreen(
                         onClickSetting = navigateToSetting,
                     )
                 }
-                DefaultBottomPositiveButton(
-                    modifier = Modifier
-                        .padding(
-                            vertical = LocalFitNoteSpacing.current.spacing4,
-                        )
-                        .fillMaxWidth(),
-                    positiveText = "회원 추가",
-                    onClickPositive = {
-                        viewModel.setState {
-                            copy(userList = userList.dropLast(1))
-                        }
-                    }
-                )
+            }
+
+            DefaultBottomLargePositiveButton(
+                positiveText = stringResource(id = R.string.btn_add_member),
+                onClickPositive = navigateToMemberAdd,
+            ) {
+                HeightSpacer(height = LocalFitNoteSpacing.current.spacing5)
             }
 
             if (isShowDebugMenu) {

@@ -34,6 +34,23 @@ import com.dogandpigs.fitnote.presentation.ui.theme.LocalFitNoteSpacing
 import com.dogandpigs.fitnote.presentation.ui.theme.LocalFitNoteTypography
 
 @Composable
+private fun getButtonPadding(
+    vertical: Dp = LocalFitNoteSpacing.current.spacing4,
+    horizontal: Dp = LocalFitNoteSpacing.current.spacing4,
+): PaddingValues = PaddingValues(
+    vertical = vertical,
+    horizontal = horizontal,
+)
+
+@Composable
+private fun getButtonModifier(): Modifier = Modifier
+    .padding(
+        horizontal = LocalFitNoteSpacing.current.spacing4,
+    )
+    .fillMaxWidth()
+    .wrapContentHeight()
+
+@Composable
 internal fun DefaultTwoButton(
     reverseModifier: Modifier.() -> Modifier = { Modifier },
     positiveText: String? = null,
@@ -81,6 +98,7 @@ internal fun DefaultNegativeButton(
     modifier: Modifier = Modifier,
     negativeText: String,
     buttonTextStyle: TextStyle? = null,
+    buttonPadding: PaddingValues = getButtonPadding(),
     onClickNegative: () -> Unit,
 ) {
     val buttonModifier = modifier
@@ -98,6 +116,7 @@ internal fun DefaultNegativeButton(
             style = buttonTextStyle,
             buttonColor = Color.Transparent,
             borderColor = GrayScaleMidGray2,
+            buttonPadding = buttonPadding,
             onClick = onClickNegative,
         )
     } else {
@@ -107,6 +126,7 @@ internal fun DefaultNegativeButton(
             textColor = GrayScaleMidGray3,
             buttonColor = Color.Transparent,
             borderColor = GrayScaleLightGray2,
+            buttonPadding = buttonPadding,
             onClick = onClickNegative,
         )
     }
@@ -114,36 +134,32 @@ internal fun DefaultNegativeButton(
 
 @Composable
 internal fun DefaultPositiveButton(
-    modifier: Modifier = Modifier,
+    modifier: Modifier = getButtonModifier(),
     positiveText: String,
     positiveButtonColor: Color? = BrandPrimary,
     buttonTextStyle: TextStyle? = null,
+    buttonPadding: PaddingValues = getButtonPadding(),
     onClickPositive: () -> Unit,
 ) {
-    val buttonModifier = modifier
-        .padding(
-            horizontal = LocalFitNoteSpacing.current.spacing4,
-        )
-        .fillMaxWidth()
-        .wrapContentHeight()
-
     if (buttonTextStyle != null) {
         DefaultButton(
-            modifier = buttonModifier,
+            modifier = modifier,
             text = positiveText,
             textColor = GrayScaleWhite,
             style = buttonTextStyle,
             buttonColor = positiveButtonColor ?: BrandPrimary,
             borderColor = positiveButtonColor ?: BrandPrimary,
+            buttonPadding = buttonPadding,
             onClick = onClickPositive,
         )
     } else {
         DefaultButton(
-            modifier = buttonModifier,
+            modifier = modifier,
             text = positiveText,
             textColor = GrayScaleWhite,
             buttonColor = positiveButtonColor ?: BrandPrimary,
             borderColor = positiveButtonColor ?: BrandPrimary,
+            buttonPadding = buttonPadding,
             onClick = onClickPositive,
         )
     }
@@ -193,13 +209,13 @@ private fun DefaultOutlinedButton(
 
 @Composable
 private fun DefaultButton(
-    modifier: Modifier = Modifier,
+    modifier: Modifier,
     text: String,
     textColor: Color,
     buttonColor: Color,
     borderColor: Color,
     textSize: TextUnit = 12.sp,
-    buttonPadding: PaddingValues = PaddingValues(vertical = 12.dp, horizontal = 0.dp),
+    buttonPadding: PaddingValues,
     onClick: () -> Unit,
 ) {
     DefaultOutlinedButton(
@@ -226,7 +242,7 @@ private fun DefaultButton(
     style: TextStyle,
     buttonColor: Color,
     borderColor: Color,
-    buttonPadding: PaddingValues = PaddingValues(vertical = 12.dp, horizontal = 0.dp),
+    buttonPadding: PaddingValues,
     onClick: () -> Unit,
 ) {
     DefaultOutlinedButton(
@@ -246,8 +262,7 @@ private fun DefaultButton(
 }
 
 @Composable
-internal fun DefaultBottomPositiveButton(
-    modifier: Modifier = Modifier,
+internal fun DefaultBottomLargePositiveButton(
     positiveText: String,
     buttonTextStyle: TextStyle = LocalFitNoteTypography.current.buttonDefault,
     onClickPositive: () -> Unit,
@@ -260,7 +275,6 @@ internal fun DefaultBottomPositiveButton(
         verticalArrangement = Arrangement.Bottom
     ) {
         DefaultPositiveButton(
-            modifier = modifier,
             positiveText = positiveText,
             buttonTextStyle = buttonTextStyle,
             onClickPositive = onClickPositive,

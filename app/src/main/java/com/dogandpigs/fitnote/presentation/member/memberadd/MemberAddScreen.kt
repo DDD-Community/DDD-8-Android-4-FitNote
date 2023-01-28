@@ -18,7 +18,7 @@ import androidx.lifecycle.compose.ExperimentalLifecycleComposeApi
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.dogandpigs.fitnote.R
 import com.dogandpigs.fitnote.presentation.base.ComponentPreview
-import com.dogandpigs.fitnote.presentation.ui.component.DefaultBottomPositiveButton
+import com.dogandpigs.fitnote.presentation.ui.component.DefaultBottomLargePositiveButton
 import com.dogandpigs.fitnote.presentation.ui.component.DefaultTextField
 import com.dogandpigs.fitnote.presentation.ui.component.FitNoteScaffold
 import com.dogandpigs.fitnote.presentation.ui.component.HeightSpacer
@@ -148,7 +148,7 @@ private fun TextFieldList() {
 private fun MemberAddButton(
     onClick: () -> Unit,
 ) {
-    DefaultBottomPositiveButton(
+    DefaultBottomLargePositiveButton(
         positiveText = stringResource(id = R.string.registration),
         onClickPositive = onClick,
     ) {

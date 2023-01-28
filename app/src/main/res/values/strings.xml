@@ -20,6 +20,7 @@
     <string name="btn_add_set">세트 추가</string>
     <string name="btn_forget_pwd">비밀번호 찾기</string>
     <string name="btn_add_exercise">운동 추가</string>
+    <string name="btn_add_member">회원 추가</string>
 
     <string name="completion">완료</string>
     <string name="terms_and_conditions">회원가입하시면 핏노트의 개인정보처리방침 및\n이용약관에 동의하는 것으로 간주합니다.</string>록
