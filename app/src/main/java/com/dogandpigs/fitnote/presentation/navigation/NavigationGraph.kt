@@ -99,7 +99,7 @@ internal fun NavigationGraph(navController: NavHostController) {
                 navController.navigate(
                     route = "$ROUTE_MEMBER_LIST/$it"
                 ) {
-                    popUpTo(ROUTE_MEMBER_ADD) { inclusive = true }
+                    popUpTo(ROUTE_MEMBER_LIST) { inclusive = true }
                 }
             }
         )
