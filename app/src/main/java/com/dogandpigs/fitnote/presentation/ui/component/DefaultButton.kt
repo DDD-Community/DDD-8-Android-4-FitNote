@@ -42,24 +42,19 @@ private fun getButtonPadding(
     horizontal = horizontal,
 )
 
-// TODO 수정
-@Composable
-private fun getButtonModifier(): Modifier = Modifier
-    .padding(
-        horizontal = LocalFitNoteSpacing.current.spacing4,
-    )
-    .fillMaxWidth()
-    .wrapContentHeight()
-
 @Composable
 internal fun DefaultTwoButton(
     modifier: Modifier = Modifier,
-    positiveText: String? = null,
-    onClickPositive: (() -> Unit)? = null,
     negativeText: String? = null,
     onClickNegative: (() -> Unit)? = null,
-    spaceBetweenButtons: Dp = 9.dp,
+    negativePaddingValues: PaddingValues = PaddingValues(),
+    negativeTextStyle: TextStyle? = null,
+    positiveText: String? = null,
+    onClickPositive: (() -> Unit)? = null,
+    positivePaddingValues: PaddingValues = PaddingValues(),
+    positiveTextStyle: TextStyle? = null,
     positiveButtonColor: Color? = null,
+    spaceBetweenButtons: Dp = 0.dp,
 ) {
     Row(
         modifier = modifier
@@ -71,7 +66,9 @@ internal fun DefaultTwoButton(
                 modifier = Modifier
                     .weight(1F)
                     .wrapContentHeight(),
+                paddingValues = negativePaddingValues,
                 negativeText = it,
+                buttonTextStyle = negativeTextStyle,
                 onClickNegative = {
                     onClickNegative?.invoke()
                 },
@@ -83,7 +80,9 @@ internal fun DefaultTwoButton(
                 modifier = Modifier
                     .weight(1F)
                     .wrapContentHeight(),
+                paddingValues = positivePaddingValues,
                 positiveText = it,
+                buttonTextStyle = positiveTextStyle,
                 positiveButtonColor = positiveButtonColor,
                 onClickPositive = {
                     onClickPositive?.invoke()
@@ -96,15 +95,16 @@ internal fun DefaultTwoButton(
 @Composable
 internal fun DefaultNegativeButton(
     modifier: Modifier = Modifier,
+    paddingValues: PaddingValues = PaddingValues(
+        horizontal = LocalFitNoteSpacing.current.spacing4,
+    ),
     negativeText: String,
     buttonTextStyle: TextStyle? = null,
     buttonPadding: PaddingValues = getButtonPadding(),
     onClickNegative: () -> Unit,
 ) {
     val buttonModifier = modifier
-        .padding(
-            horizontal = LocalFitNoteSpacing.current.spacing4,
-        )
+        .padding(paddingValues)
         .fillMaxWidth()
         .wrapContentHeight()
 
@@ -134,16 +134,24 @@ internal fun DefaultNegativeButton(
 
 @Composable
 internal fun DefaultPositiveButton(
-    modifier: Modifier = getButtonModifier(),
+    modifier: Modifier = Modifier,
+    paddingValues: PaddingValues = PaddingValues(
+        horizontal = LocalFitNoteSpacing.current.spacing4,
+    ),
     positiveText: String,
     positiveButtonColor: Color? = BrandPrimary,
     buttonTextStyle: TextStyle? = null,
     buttonPadding: PaddingValues = getButtonPadding(),
     onClickPositive: () -> Unit,
 ) {
+    val buttonModifier = modifier
+        .padding(paddingValues)
+        .fillMaxWidth()
+        .wrapContentHeight()
+
     if (buttonTextStyle != null) {
         DefaultButton(
-            modifier = modifier,
+            modifier = buttonModifier,
             text = positiveText,
             textColor = GrayScaleWhite,
             style = buttonTextStyle,
@@ -154,7 +162,7 @@ internal fun DefaultPositiveButton(
         )
     } else {
         DefaultButton(
-            modifier = modifier,
+            modifier = buttonModifier,
             text = positiveText,
             textColor = GrayScaleWhite,
             buttonColor = positiveButtonColor ?: BrandPrimary,
@@ -270,6 +278,7 @@ private fun PreviewDefaultTwoButton() {
         positiveText = "positiveText",
         onClickPositive = {},
         negativeText = "negativeText",
-        onClickNegative = {}
+        onClickNegative = {},
+        spaceBetweenButtons = 9.dp,
     )
 }

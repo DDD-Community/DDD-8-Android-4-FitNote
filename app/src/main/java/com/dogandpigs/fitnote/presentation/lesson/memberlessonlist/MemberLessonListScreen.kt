@@ -270,7 +270,8 @@ private fun LessonItemButtons() {
             positiveText = "수업 시작",
             onClickPositive = {},
             negativeText = "편집",
-            onClickNegative = {}
+            onClickNegative = {},
+            spaceBetweenButtons = 9.dp,
         )
     }
 }
