@@ -2,13 +2,30 @@ package com.dogandpigs.fitnote.presentation.member.memberlist
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material3.*
-import androidx.compose.runtime.*
+import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.Divider
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -19,14 +36,20 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.ExperimentalLifecycleComposeApi
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.dogandpigs.fitnote.R
-import com.dogandpigs.fitnote.data.source.remote.model.Member
 import com.dogandpigs.fitnote.presentation.base.ComponentPreview
 import com.dogandpigs.fitnote.presentation.base.FigmaPreview
 import com.dogandpigs.fitnote.presentation.ui.component.DebugMenu
 import com.dogandpigs.fitnote.presentation.ui.component.DefaultBottomLargePositiveButton
+import com.dogandpigs.fitnote.presentation.ui.component.DefaultText
 import com.dogandpigs.fitnote.presentation.ui.component.FitNoteScaffold
 import com.dogandpigs.fitnote.presentation.ui.component.HeightSpacer
-import com.dogandpigs.fitnote.presentation.ui.theme.*
+import com.dogandpigs.fitnote.presentation.ui.component.WidthSpacer
+import com.dogandpigs.fitnote.presentation.ui.theme.FitNoteTheme
+import com.dogandpigs.fitnote.presentation.ui.theme.GrayScaleDarkGray2
+import com.dogandpigs.fitnote.presentation.ui.theme.GrayScaleLightGray2
+import com.dogandpigs.fitnote.presentation.ui.theme.GrayScaleMidGray3
+import com.dogandpigs.fitnote.presentation.ui.theme.LocalFitNoteSpacing
+import com.dogandpigs.fitnote.presentation.ui.theme.LocalFitNoteTypography
 
 @OptIn(ExperimentalLifecycleComposeApi::class)
 @Composable
@@ -43,7 +66,6 @@ internal fun MemberListScreen(
 
     var isShowDebugMenu by rememberSaveable { mutableStateOf(false) }
 
-    viewModel.getMemberList()
     FitNoteScaffold(
         topBarTitle = "회원목록",
         topBarActions = {
@@ -64,28 +86,28 @@ internal fun MemberListScreen(
                 modifier = Modifier
                     .background(Color.White)
                     .fillMaxSize()
+                    .verticalScroll(rememberScrollState())
             ) {
-                Column(
+                MemberListHeader(
+                    myName = state.myName,
+                    profileImgUrl = state.profileImgUrl,
+                )
+
+                Divider(
+                    color = GrayScaleLightGray2,
                     modifier = Modifier
                         .fillMaxWidth()
-                        .weight(1f)
-                        .verticalScroll(rememberScrollState())
-                ) {
-                    MemberListHeader(myName = state.myName, profileImgUrl = state.profileImgUrl)
-                    Divider(
-                        color = GrayScaleMidGray2, modifier = Modifier
-                            .fillMaxWidth()
-                            .height(1.dp)
-                    )
-                    MemberList(
-                        userList = state.trainerIfo.memberList,
-                        popBackStack = popBackStack,
-                        onClickMemberDetail = navigateToMemberDetail,
-                        onClickMemberAdd = navigateToMemberAdd,
-                        onClickLesson = navigateToLesson,
-                        onClickSetting = navigateToSetting
-                    )
-                }
+                        .height(1.dp),
+                )
+
+                MemberList(
+                    userList = previewUiState.userList,
+                    popBackStack = popBackStack,
+                    onClickMemberDetail = navigateToMemberDetail,
+                    onClickMemberAdd = navigateToMemberAdd,
+                    onClickLesson = navigateToLesson,
+                    onClickSetting = navigateToSetting,
+                )
             }
 
             DefaultBottomLargePositiveButton(
@@ -109,21 +131,37 @@ internal fun MemberListScreen(
 
 @Composable
 private fun MemberListHeader(
-    myName: String, profileImgUrl: String
+    myName: String,
+    profileImgUrl: String
 ) {
-    Row(
+    Column(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(PaddingValues(vertical = 32.dp, horizontal = 16.dp)),
-        verticalAlignment = Alignment.CenterVertically
+            .wrapContentHeight()
     ) {
-        Image(
-            modifier = Modifier.size(48.dp),
-            painter = painterResource(id = R.drawable.ic_profile),
-            contentDescription = ""
-        )
-        Spacer(modifier = Modifier.width(20.dp))
-        Text(text = myName)
+        HeightSpacer(height = 23.dp)
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .wrapContentHeight(),
+            verticalAlignment = Alignment.CenterVertically,
+        ) {
+            WidthSpacer(width = 20.dp)
+
+            Image(
+                painter = painterResource(id = R.drawable.ic_profile),
+                contentDescription = null,
+            )
+
+            Spacer(modifier = Modifier.width(20.dp))
+
+            DefaultText(
+                text = myName,
+                color = GrayScaleDarkGray2,
+                style = LocalFitNoteTypography.current.titleLarge,
+            )
+        }
+        HeightSpacer(height = 31.dp)
     }
 }
 
@@ -133,7 +171,7 @@ private fun MemberListHeader(
 // 설정
 @Composable
 private fun MemberList(
-    userList: List<Member>,
+    userList: List<MemberUiModel>,
     popBackStack: () -> Unit = {},
     onClickMemberDetail: () -> Unit = {},
     onClickMemberAdd: () -> Unit = {},
@@ -145,26 +183,57 @@ private fun MemberList(
             .fillMaxWidth()
             .padding(PaddingValues(vertical = 24.dp, horizontal = 16.dp))
     ) {
-        Text(text = "회원 ${userList.size}", color = GrayScaleMidGray3)
+        DefaultText(
+            text = "회원 ${userList.size}",
+            color = GrayScaleMidGray3,
+            style = LocalFitNoteTypography.current.textSmall,
+        )
+        HeightSpacer(height = LocalFitNoteSpacing.current.spacing5)
+
         userList.forEach { item ->
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(PaddingValues(top = 24.dp)),
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                Text(text = item.userName ?: "")
-                Spacer(modifier = Modifier.weight(1f))
-                Button(
-                    onClick = onClickLesson,
-                    shape = RoundedCornerShape(5.dp),
-                    colors = ButtonDefaults.buttonColors(containerColor = GrayScaleLightGray2)
-                ) {
-                    Text(text = "수업 목록", color = GrayScaleMidGray3)
-                }
-            }
+            MemberListItem(
+                item = item,
+                onClick = {
+
+                },
+            )
+        }
+        HeightSpacer(height = 75.dp)
+    }
+}
+
+@Composable
+private fun MemberListItem(
+    item: MemberUiModel,
+    onClick: () -> Unit,
+) {
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .wrapContentHeight(),
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        DefaultText(
+            text = item.userName,
+            color = GrayScaleDarkGray2,
+            style = LocalFitNoteTypography.current.textDefault,
+        )
+        Spacer(modifier = Modifier.weight(1f))
+        Button(
+            onClick = onClick,
+            shape = RoundedCornerShape(5.dp),
+            colors = ButtonDefaults.buttonColors(
+                containerColor = GrayScaleLightGray2,
+            )
+        ) {
+            DefaultText(
+                text = "수업 목록",
+                color = GrayScaleMidGray3,
+                style = LocalFitNoteTypography.current.buttonSmall,
+            )
         }
     }
+    HeightSpacer(height = LocalFitNoteSpacing.current.spacing5)
 }
 
 private val previewUiState =
@@ -175,11 +244,11 @@ private val previewUiState =
 @FigmaPreview
 @Composable
 private fun PreviewMemberListScreen() {
-//    val viewModel = MemberListViewModel().apply {
-//        setState { previewUiState }
-//    }
+    val viewModel = MemberListViewModel().apply {
+        setState { previewUiState }
+    }
     FitNoteTheme {
-        MemberListScreen(viewModel = hiltViewModel())
+        MemberListScreen(viewModel = viewModel)
     }
 }
 
@@ -188,7 +257,8 @@ private fun PreviewMemberListScreen() {
 private fun PreviewMemberListHeader() {
     FitNoteTheme {
         MemberListHeader(
-            myName = previewUiState.myName, profileImgUrl = previewUiState.profileImgUrl
+            myName = previewUiState.myName,
+            profileImgUrl = previewUiState.profileImgUrl,
         )
     }
 }
@@ -197,6 +267,6 @@ private fun PreviewMemberListHeader() {
 @Composable
 private fun PreviewMemberList() {
     FitNoteTheme {
-        MemberList(userList = previewUiState.trainerIfo.memberList)
+        MemberList(userList = previewUiState.userList)
     }
 }
