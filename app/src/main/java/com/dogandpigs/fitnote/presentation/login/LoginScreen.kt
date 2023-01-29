@@ -19,6 +19,7 @@ import com.dogandpigs.fitnote.presentation.ui.component.CompleteButton
 import com.dogandpigs.fitnote.presentation.ui.component.DefaultText
 import com.dogandpigs.fitnote.presentation.ui.component.DefaultTextField
 import com.dogandpigs.fitnote.presentation.ui.component.FitNoteScaffold
+import com.dogandpigs.fitnote.presentation.ui.component.passwordVisualTransformation
 import com.dogandpigs.fitnote.presentation.ui.theme.FitNoteTheme
 import com.dogandpigs.fitnote.presentation.ui.theme.GrayScaleMidGray2
 import com.dogandpigs.fitnote.presentation.ui.theme.LocalFitNoteTypography
@@ -95,7 +96,7 @@ private fun Login(
                     onValueChange = onPasswordValueChange,
                     labelText = stringResource(id = R.string.password),
                     placeholderText = stringResource(id = R.string.password),
-                    isPassword = true,
+                    visualTransformation = passwordVisualTransformation,
                 )
                 
                 Row(

@@ -12,14 +12,10 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Close
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
@@ -76,6 +72,11 @@ internal fun DefaultText(
     )
 }
 
+internal val passwordVisualTransformation: VisualTransformation =
+    PasswordVisualTransformation(
+        mask = '\u002A'
+    )
+
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 internal fun DefaultTextField(
@@ -84,8 +85,14 @@ internal fun DefaultTextField(
     onValueChange: (String) -> Unit,
     labelText: String,
     placeholderText: String,
-    isPassword: Boolean = false,
+    visualTransformation: VisualTransformation = VisualTransformation.None,
+    keyboardOptions: KeyboardOptions = KeyboardOptions.Default,
 ) {
+    val paddingValues = PaddingValues(
+        horizontal = 20.dp,
+        vertical = 10.dp,
+    )
+
     TextField(
         isError = isError,
         label = {
@@ -102,7 +109,7 @@ internal fun DefaultTextField(
         ),
         modifier = Modifier
             .fillMaxWidth()
-            .padding(20.dp, 10.dp)
+            .padding(paddingValues)
             .background(Color.Transparent),
         value = value,
         onValueChange = onValueChange,
@@ -113,13 +120,8 @@ internal fun DefaultTextField(
                 style = LocalFitNoteTypography.current.textDefault,
             )
         },
-        visualTransformation = if (isPassword) {
-            PasswordVisualTransformation(
-                mask = '\u002A'
-            )
-        } else {
-            VisualTransformation.None
-        }
+        visualTransformation = visualTransformation,
+        keyboardOptions = keyboardOptions,
     )
 }
 

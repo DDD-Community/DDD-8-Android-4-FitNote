@@ -11,6 +11,7 @@ import com.dogandpigs.fitnote.presentation.lesson.memberlessonlist.addMemberLess
 import com.dogandpigs.fitnote.presentation.login.addLogin
 import com.dogandpigs.fitnote.presentation.login.addLoginWithEmail
 import com.dogandpigs.fitnote.presentation.member.memberadd.addMemberAdd
+import com.dogandpigs.fitnote.presentation.member.memberedit.addMemberEdit
 import com.dogandpigs.fitnote.presentation.member.memberlist.addMemberList
 import com.dogandpigs.fitnote.presentation.member.memberlist.addMemberListWithRegistration
 import com.dogandpigs.fitnote.presentation.splash.addSplash
@@ -93,6 +94,17 @@ internal fun NavigationGraph(navController: NavHostController) {
         )
         addMemberAdd(
             route = ROUTE_MEMBER_ADD,
+            popBackStack = { navController.popBackStack() },
+            navigateToMemberListWithRegistration = {
+                navController.navigate(
+                    route = "$ROUTE_MEMBER_LIST/$it"
+                ) {
+                    popUpTo(ROUTE_MEMBER_LIST) { inclusive = true }
+                }
+            }
+        )
+        addMemberEdit(
+            route = ROUTE_MEMBER_EDIT,
             popBackStack = { navController.popBackStack() },
             navigateToMemberListWithRegistration = {
                 navController.navigate(

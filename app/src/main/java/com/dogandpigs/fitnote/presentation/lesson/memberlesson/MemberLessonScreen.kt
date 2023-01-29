@@ -49,7 +49,7 @@ import com.dogandpigs.fitnote.presentation.ui.theme.GrayScaleMidGray2
 import com.dogandpigs.fitnote.presentation.ui.theme.GrayScaleMidGray3
 import com.dogandpigs.fitnote.presentation.ui.theme.LocalFitNoteSpacing
 import com.dogandpigs.fitnote.presentation.ui.theme.LocalFitNoteTypography
-import kotlin.math.roundToInt
+import com.dogandpigs.fitnote.presentation.util.format
 
 @OptIn(ExperimentalLifecycleComposeApi::class)
 @Composable
@@ -311,25 +311,6 @@ fun ExerciseSetItemText(
         color = GrayScaleMidGray3,
         style = LocalFitNoteTypography.current.buttonMedium
     )
-}
-
-private fun Int.format(): String = this.toString().format()
-private fun Double.format(): String = this.toString().format()
-
-private fun String.format(originalText: String = "0"): String {
-    return if (this.isEmpty()) {
-        "0"
-    } else {
-        this.toIntOrNull()?.toString()
-            ?: this.toDoubleOrNull()?.let {
-//                if (it % 1 == 0.0) {
-//                    it.roundToInt()
-//                } else {
-                ((it * 100).roundToInt() / 100)
-//                }
-                    .toString()
-            } ?: originalText
-    }
 }
 
 @Composable

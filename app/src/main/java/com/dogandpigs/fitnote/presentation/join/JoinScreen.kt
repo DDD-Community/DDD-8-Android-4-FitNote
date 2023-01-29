@@ -20,6 +20,7 @@ import com.dogandpigs.fitnote.presentation.ui.component.CompleteButton
 import com.dogandpigs.fitnote.presentation.ui.component.DefaultTextField
 import com.dogandpigs.fitnote.presentation.ui.component.FitNoteScaffold
 import com.dogandpigs.fitnote.presentation.ui.component.HeightSpacer
+import com.dogandpigs.fitnote.presentation.ui.component.passwordVisualTransformation
 import com.dogandpigs.fitnote.presentation.ui.theme.FitNoteTheme
 import com.dogandpigs.fitnote.presentation.ui.theme.GrayScaleMidGray3
 import com.dogandpigs.fitnote.presentation.ui.theme.LocalFitNoteTypography
@@ -134,7 +135,7 @@ private fun Join(
                     },
                     labelText = stringResource(id = R.string.password),
                     placeholderText = stringResource(id = R.string.password),
-                    isPassword = true,
+                    visualTransformation = passwordVisualTransformation,
                 )
                 /**
                  * 비밀번호 확인
@@ -155,7 +156,7 @@ private fun Join(
                     },
                     labelText = stringResource(id = R.string.check_password),
                     placeholderText = stringResource(id = R.string.check_password),
-                    isPassword = true,
+                    visualTransformation = passwordVisualTransformation,
                 )
             }
 
