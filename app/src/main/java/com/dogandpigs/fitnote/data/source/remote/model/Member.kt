@@ -10,7 +10,7 @@ data class TrainerInfo(
     var memberCount: Int? = null,
     
     @SerializedName("getMemberList")
-    var memberList: List<Member>? = null
+    var memberList: List<Member> = mutableListOf()
 
 )
 

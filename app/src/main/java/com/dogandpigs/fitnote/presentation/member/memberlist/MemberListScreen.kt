@@ -19,6 +19,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.ExperimentalLifecycleComposeApi
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.dogandpigs.fitnote.R
+import com.dogandpigs.fitnote.data.source.remote.model.Member
 import com.dogandpigs.fitnote.presentation.base.ComponentPreview
 import com.dogandpigs.fitnote.presentation.base.FigmaPreview
 import com.dogandpigs.fitnote.presentation.ui.component.DebugMenu
@@ -77,7 +78,7 @@ internal fun MemberListScreen(
                             .height(1.dp)
                     )
                     MemberList(
-                        userList = state.userList,
+                        userList = state.trainerIfo.memberList,
                         popBackStack = popBackStack,
                         onClickMemberDetail = navigateToMemberDetail,
                         onClickMemberAdd = navigateToMemberAdd,
@@ -132,7 +133,7 @@ private fun MemberListHeader(
 // 설정
 @Composable
 private fun MemberList(
-    userList: List<MemberUiModel>,
+    userList: List<Member>,
     popBackStack: () -> Unit = {},
     onClickMemberDetail: () -> Unit = {},
     onClickMemberAdd: () -> Unit = {},
@@ -196,6 +197,6 @@ private fun PreviewMemberListHeader() {
 @Composable
 private fun PreviewMemberList() {
     FitNoteTheme {
-        MemberList(userList = previewUiState.userList)
+        MemberList(userList = previewUiState.trainerIfo.memberList)
     }
 }
