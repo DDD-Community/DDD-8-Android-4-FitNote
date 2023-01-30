@@ -51,8 +51,7 @@ internal fun NavigationGraph(navController: NavHostController) {
             route = ROUTE_LOGIN,
             popBackStack = { navController.popBackStack() },
             navigateToHome = {
-                navController.navigate(ROUTE_ADD_LESSON) {
-//                navController.navigate(ROUTE_HOME) {
+                navController.navigate(ROUTE_HOME) {
                     popUpTo(navController.graph.id) {
                         inclusive = true
                     }

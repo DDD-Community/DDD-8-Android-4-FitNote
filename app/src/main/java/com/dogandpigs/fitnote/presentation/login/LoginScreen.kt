@@ -1,5 +1,6 @@
 package com.dogandpigs.fitnote.presentation.login
 
+import android.widget.Toast
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.*
@@ -31,18 +32,21 @@ internal fun LoginScreen(
     navigateToHome: () -> Unit
 ) {
     val state by viewModel.state.collectAsStateWithLifecycle()
+    val context = rememberCompositionContext()
     LaunchedEffect(state.loginState) {
         if (state.loginState == LoginState.Success) {
             navigateToHome()
+        } else if (state.loginState == LoginState.Failed) {
+            // TODO: 로그인 실패 처리
         }
     }
-
+    
     email?.also {
         viewModel.setState {
             copy(email = email)
         }
     }
-
+    
     Login(
         state = state,
         popBackStack = popBackStack,
@@ -85,7 +89,7 @@ private fun Login(
                     labelText = stringResource(id = R.string.email),
                     placeholderText = stringResource(id = R.string.placeholder_email),
                 )
-
+                
                 DefaultTextField(
                     value = state.password,
                     onValueChange = onPasswordValueChange,
@@ -93,7 +97,7 @@ private fun Login(
                     placeholderText = stringResource(id = R.string.password),
                     isPassword = true,
                 )
-
+                
                 Row(
                     modifier = Modifier
                         .fillMaxWidth()
@@ -108,7 +112,7 @@ private fun Login(
                         color = GrayScaleMidGray2,
                         style = LocalFitNoteTypography.current.textSmall,
                     )
-
+                    
                     TextButton(onClick = {}) {
                         Text(
                             text = stringResource(id = R.string.btn_forget_pwd), color = Color.Blue

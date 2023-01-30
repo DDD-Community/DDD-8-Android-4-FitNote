@@ -5,11 +5,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
+import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
@@ -34,11 +30,17 @@ internal fun MemberAddScreen(
 ) {
     val uiState by viewModel.state.collectAsStateWithLifecycle()
 
+    LaunchedEffect(uiState.isAddSuccess) {
+        if (uiState.isAddSuccess) {
+            navigateToMemberListWithRegistration(true)
+        }
+    }
     MemberAdd(
         uiState = uiState,
+        viewModel = viewModel,
         popBackStack = popBackStack,
         onClickAddButton = {
-            navigateToMemberListWithRegistration(true)
+            viewModel.addMember()
         }
     )
 }
@@ -46,6 +48,7 @@ internal fun MemberAddScreen(
 @Composable
 private fun MemberAdd(
     uiState: MemberAddUiState,
+    viewModel: MemberAddViewModel,
     popBackStack: () -> Unit,
     onClickAddButton: () -> Unit,
 ) {
@@ -61,7 +64,7 @@ private fun MemberAdd(
             ) {
                 HeightSpacer(height = LocalFitNoteSpacing.current.spacing5)
 
-                TextFieldList()
+                TextFieldList(viewModel)
             }
 
             MemberAddButton(
@@ -72,7 +75,7 @@ private fun MemberAdd(
 }
 
 @Composable
-private fun TextFieldList() {
+private fun TextFieldList(viewModel: MemberAddViewModel) {
     var name by remember { mutableStateOf("") }
     var date by remember { mutableStateOf("") }
     var gender by remember { mutableStateOf("") }
@@ -84,6 +87,7 @@ private fun TextFieldList() {
     var isGenderError by remember { mutableStateOf(false) }
     var isCheckPwdError by remember { mutableStateOf(false) }
 
+    
     Column {
         /**
          * 이름
@@ -91,6 +95,7 @@ private fun TextFieldList() {
         DefaultTextField(
             value = name,
             onValueChange = { newText ->
+                viewModel.setName(newText)
                 name = newText
             },
             labelText = stringResource(id = R.string.name),
@@ -115,6 +120,11 @@ private fun TextFieldList() {
             value = gender,
             onValueChange = {
                 gender = it
+                if (it == "남성") {
+                    viewModel.setGender(gender = 1)
+                } else if(it == "여성") {
+                    viewModel.setGender(gender = 0)
+                }
             },
             labelText = stringResource(id = R.string.gender),
             placeholderText = stringResource(id = R.string.gender_male),
@@ -126,6 +136,7 @@ private fun TextFieldList() {
             value = height,
             onValueChange = {
                 height = it
+                viewModel.setHeight(it.toInt())
             },
             labelText = stringResource(id = R.string.height),
             placeholderText = stringResource(id = R.string.default_height),
@@ -137,6 +148,7 @@ private fun TextFieldList() {
             value = weight,
             onValueChange = {
                 weight = it
+                viewModel.setWeight(it.toInt())
             },
             labelText = stringResource(id = R.string.weight),
             placeholderText = stringResource(id = R.string.default_weight),
@@ -156,7 +168,7 @@ private fun MemberAddButton(
     }
 }
 
-private val previewUiState = MemberAddUiState(myName = "김코치", profileImgUrl = "")
+private val previewUiState = MemberAddUiState(name = "김코치", profileImgUrl = "")
 
 @ComponentPreview
 @Composable
@@ -164,6 +176,7 @@ private fun PreviewMemberAdd() {
     FitNoteTheme {
         MemberAdd(
             uiState = previewUiState,
+            viewModel = hiltViewModel(),
             onClickAddButton = {},
             popBackStack = {},
         )

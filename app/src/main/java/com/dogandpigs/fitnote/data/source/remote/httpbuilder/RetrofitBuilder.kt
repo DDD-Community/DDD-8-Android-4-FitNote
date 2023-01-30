@@ -19,10 +19,10 @@ class RetrofitBuilder {
         return Retrofit.Builder().addConverterFactory(GsonConverterFactory.create()).apply {
             client(OkHttpClient.Builder().apply {
                 readTimeout(60, TimeUnit.SECONDS) //1분
-                addInterceptor(HttpLoggingInterceptor().apply {
-                    level = HttpLoggingInterceptor.Level.BODY
-                })
-            }.addNetworkInterceptor(NetworkInterceptor()).build())
+                addInterceptor(NetworkInterceptor())
+            }.addNetworkInterceptor(HttpLoggingInterceptor().apply {
+                level = HttpLoggingInterceptor.Level.BODY
+            }).build())
             baseUrl(baseUrl)
         }.build()
     }
@@ -33,7 +33,7 @@ class RetrofitBuilder {
             
             val builder = orgRequest.newBuilder().apply {
                 TokenManager.accessToken?.let { token ->
-                    addHeader("Authorization", token)
+                    addHeader("Authorization", "Bearer $token")
                 }
             }
             return try {
