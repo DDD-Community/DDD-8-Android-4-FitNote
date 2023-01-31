@@ -83,7 +83,7 @@ internal fun MemberListScreen(
                         onClickMemberDetail = navigateToMemberDetail,
                         onClickMemberAdd = navigateToMemberAdd,
                         onClickLesson = navigateToLesson,
-                        onClickSetting = navigateToSetting,
+                        onClickSetting = navigateToSetting
                     )
                 }
             }
@@ -156,7 +156,7 @@ private fun MemberList(
                 Text(text = item.userName ?: "")
                 Spacer(modifier = Modifier.weight(1f))
                 Button(
-                    onClick = { /*TODO*/ },
+                    onClick = onClickLesson,
                     shape = RoundedCornerShape(5.dp),
                     colors = ButtonDefaults.buttonColors(containerColor = GrayScaleLightGray2)
                 ) {

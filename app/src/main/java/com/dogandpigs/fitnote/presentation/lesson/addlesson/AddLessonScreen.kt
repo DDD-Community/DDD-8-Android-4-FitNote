@@ -66,7 +66,7 @@ private fun AddLesson(
 
     FitNoteScaffold(
         topBarTitle = stringResource(id = R.string.add_lesson),
-        onClickTopBarNavigationIcon = { navController.navigateUp() },
+        onClickTopBarNavigationIcon = onClickClose,
         topBarNavigationIconImageVector = Icons.Filled.Close,
         topBarActions = {
             TextButton(onClick = onClickLoadLesson) {

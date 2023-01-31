@@ -80,7 +80,7 @@ internal fun NavigationGraph(navController: NavHostController) {
             popBackStack = { navController.popBackStack() },
             navigateToMemberDetail = {},
             navigateToMemberAdd = { navController.navigate(ROUTE_MEMBER_ADD) },
-            navigateToLesson = {},
+            navigateToLesson = { navController.navigate(ROUTE_LESSON) },
             navigateToSetting = {}
         )
         addMemberListWithRegistration(

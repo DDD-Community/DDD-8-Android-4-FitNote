@@ -12,7 +12,7 @@ fun NavGraphBuilder.addMemberList(
     navigateToMemberDetail: () -> Unit,
     navigateToMemberAdd: () -> Unit,
     navigateToLesson: () -> Unit,
-    navigateToSetting: () -> Unit,
+    navigateToSetting: () -> Unit
 ) {
     composable(route = route) {
         MemberListScreen(
@@ -20,7 +20,7 @@ fun NavGraphBuilder.addMemberList(
             navigateToMemberDetail = navigateToMemberDetail,
             navigateToMemberAdd = navigateToMemberAdd,
             navigateToLesson = navigateToLesson,
-            navigateToSetting = navigateToSetting,
+            navigateToSetting = navigateToSetting
         )
     }
 }
