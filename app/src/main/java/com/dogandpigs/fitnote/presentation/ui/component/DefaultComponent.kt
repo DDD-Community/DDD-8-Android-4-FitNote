@@ -61,11 +61,13 @@ internal fun Modifier.defaultBorder(): Modifier = composed {
 
 @Composable
 internal fun DefaultText(
+    modifier: Modifier = Modifier,
     text: String,
     color: Color,
     style: TextStyle,
 ) {
     Text(
+        modifier = modifier,
         text = text,
         color = color,
         style = style,
