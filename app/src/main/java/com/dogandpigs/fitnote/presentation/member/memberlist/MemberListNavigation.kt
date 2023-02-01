@@ -8,7 +8,6 @@ import com.dogandpigs.fitnote.presentation.navigation.ARGUMENT_REGISTRATION
 
 fun NavGraphBuilder.addMemberList(
     route: String,
-    popBackStack: () -> Unit,
     navigateToMemberDetail: () -> Unit,
     navigateToMemberAdd: () -> Unit,
     navigateToLesson: () -> Unit,
@@ -16,10 +15,9 @@ fun NavGraphBuilder.addMemberList(
 ) {
     composable(route = route) {
         MemberListScreen(
-            popBackStack = popBackStack,
             navigateToMemberDetail = navigateToMemberDetail,
             navigateToMemberAdd = navigateToMemberAdd,
-            navigateToLesson = navigateToLesson,
+            navigateToMemberLessonList = navigateToLesson,
             navigateToSetting = navigateToSetting
         )
     }
@@ -27,7 +25,6 @@ fun NavGraphBuilder.addMemberList(
 
 internal fun NavGraphBuilder.addMemberListWithRegistration(
     route: String,
-    popBackStack: () -> Unit,
     navigateToMemberDetail: () -> Unit,
     navigateToMemberAdd: () -> Unit,
     navigateToLesson: () -> Unit,
@@ -42,11 +39,10 @@ internal fun NavGraphBuilder.addMemberListWithRegistration(
         val registration = backStackEntry.arguments?.getBoolean(argument, false) ?: false
 
         MemberListScreen(
-            popBackStack = popBackStack,
             registration = registration,
             navigateToMemberDetail = navigateToMemberDetail,
             navigateToMemberAdd = navigateToMemberAdd,
-            navigateToLesson = navigateToLesson,
+            navigateToMemberLessonList = navigateToLesson,
             navigateToSetting = navigateToSetting,
         )
     }

@@ -82,10 +82,10 @@ private fun MemberDetail(
             }
 
             BottomButtons(
-                onClickStartButton = {
+                onClickNegativeButton = {
                     onClickInformationModificationButton()
                 },
-                onClickEndButton = {
+                onClickPositiveButton = {
                     onClickLessonListButton()
                 },
             )
@@ -144,8 +144,8 @@ private fun TextRow(
 
 @Composable
 private fun BottomButtons(
-    onClickStartButton: () -> Unit,
-    onClickEndButton: () -> Unit,
+    onClickNegativeButton: () -> Unit,
+    onClickPositiveButton: () -> Unit,
 ) {
     Column(
         modifier = Modifier
@@ -155,13 +155,13 @@ private fun BottomButtons(
     ) {
         DefaultTwoButton(
             negativeText = stringResource(id = R.string.information_modification),
-            onClickNegative = onClickEndButton,
+            onClickNegative = onClickNegativeButton,
             negativePaddingValues = PaddingValues(
                 start = LocalFitNoteSpacing.current.spacing4,
             ),
             negativeTextStyle = LocalFitNoteTypography.current.buttonDefault,
             positiveText = stringResource(id = R.string.lesson_list),
-            onClickPositive = onClickStartButton,
+            onClickPositive = onClickPositiveButton,
             positivePaddingValues = PaddingValues(
                 end = LocalFitNoteSpacing.current.spacing4,
             ),

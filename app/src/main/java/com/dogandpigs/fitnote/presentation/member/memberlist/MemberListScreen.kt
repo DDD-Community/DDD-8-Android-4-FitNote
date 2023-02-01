@@ -2,8 +2,10 @@ package com.dogandpigs.fitnote.presentation.member.memberlist
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -56,11 +58,10 @@ import com.dogandpigs.fitnote.presentation.ui.theme.LocalFitNoteTypography
 @Composable
 internal fun MemberListScreen(
     viewModel: MemberListViewModel = hiltViewModel(),
-    popBackStack: () -> Unit = {},
     registration: Boolean = false,
     navigateToMemberDetail: () -> Unit = {},
     navigateToMemberAdd: () -> Unit = {},
-    navigateToLesson: () -> Unit = {},
+    navigateToMemberLessonList: () -> Unit = {},
     navigateToSetting: () -> Unit = {}
 ) {
     val uiState by viewModel.state.collectAsStateWithLifecycle()
@@ -107,11 +108,8 @@ internal fun MemberListScreen(
 
                 MemberList(
                     userList = uiState.userList,
-                    popBackStack = popBackStack,
                     onClickMemberDetail = navigateToMemberDetail,
-                    onClickMemberAdd = navigateToMemberAdd,
-                    onClickLesson = navigateToLesson,
-                    onClickSetting = navigateToSetting,
+                    onClickMemberLessonList = navigateToMemberLessonList,
                 )
             }
 
@@ -126,7 +124,7 @@ internal fun MemberListScreen(
                 DebugMenu(
                     "회원 상세 정보" to navigateToMemberDetail,
                     "회원 추가" to navigateToMemberAdd,
-                    "수업" to navigateToLesson,
+                    "수업" to navigateToMemberLessonList,
                     "설정" to navigateToSetting,
                 )
             }
@@ -177,11 +175,8 @@ private fun MemberListHeader(
 @Composable
 private fun MemberList(
     userList: List<MemberUiModel>,
-    popBackStack: () -> Unit = {},
     onClickMemberDetail: () -> Unit = {},
-    onClickMemberAdd: () -> Unit = {},
-    onClickLesson: () -> Unit = {},
-    onClickSetting: () -> Unit = {}
+    onClickMemberLessonList: () -> Unit = {},
 ) {
     Column(
         modifier = Modifier
@@ -198,9 +193,8 @@ private fun MemberList(
         userList.forEach { item ->
             MemberListItem(
                 item = item,
-                onClick = {
-
-                },
+                onClickText = onClickMemberDetail,
+                onClickButton = onClickMemberLessonList,
             )
         }
         HeightSpacer(height = 75.dp)
@@ -210,7 +204,8 @@ private fun MemberList(
 @Composable
 private fun MemberListItem(
     item: MemberUiModel,
-    onClick: () -> Unit,
+    onClickText: () -> Unit,
+    onClickButton: () -> Unit,
 ) {
     Row(
         modifier = Modifier
@@ -219,13 +214,18 @@ private fun MemberListItem(
         verticalAlignment = Alignment.CenterVertically
     ) {
         DefaultText(
+            modifier = Modifier
+                .weight(1f)
+                .height(IntrinsicSize.Max)
+                .clickable {
+                    onClickText()
+                },
             text = item.userName,
             color = GrayScaleDarkGray2,
             style = LocalFitNoteTypography.current.textDefault,
         )
-        Spacer(modifier = Modifier.weight(1f))
         Button(
-            onClick = onClick,
+            onClick = onClickButton,
             shape = RoundedCornerShape(5.dp),
             colors = ButtonDefaults.buttonColors(
                 containerColor = GrayScaleLightGray2,

@@ -1,6 +1,7 @@
 package com.dogandpigs.fitnote.presentation.navigation
 
 import androidx.compose.runtime.Composable
+import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import com.dogandpigs.fitnote.presentation.join.addJoin
@@ -11,6 +12,7 @@ import com.dogandpigs.fitnote.presentation.lesson.memberlessonlist.addMemberLess
 import com.dogandpigs.fitnote.presentation.login.addLogin
 import com.dogandpigs.fitnote.presentation.login.addLoginWithEmail
 import com.dogandpigs.fitnote.presentation.member.memberadd.addMemberAdd
+import com.dogandpigs.fitnote.presentation.member.memberdetail.addMemberDetail
 import com.dogandpigs.fitnote.presentation.member.memberedit.addMemberEdit
 import com.dogandpigs.fitnote.presentation.member.memberlist.addMemberList
 import com.dogandpigs.fitnote.presentation.member.memberlist.addMemberListWithRegistration
@@ -33,7 +35,7 @@ internal fun NavigationGraph(navController: NavHostController) {
             },
             navigateToJoin = { navController.navigate(ROUTE_JOIN) },
             navigateToLogin = { navController.navigate(ROUTE_LOGIN) },
-            navigateToLesson = { navController.navigate(ROUTE_LESSON) },
+            navigateToLesson = { navController.navigate(ROUTE_MEMBER_LESSON_LIST) },
             navigateToMemberList = { navController.navigate(ROUTE_MEMBER_LIST) },
             navigateToMemberLesson = { navController.navigate(ROUTE_MEMBER_LESSON) },
         )
@@ -64,65 +66,81 @@ internal fun NavigationGraph(navController: NavHostController) {
             popBackStack = { navController.popBackStack() },
             navigateToHome = { navController.navigate(ROUTE_HOME) }
         )
-        addMemberLessonList(
-            route = ROUTE_LESSON,
-            popBackStack = { navController.popBackStack() },
-            navigateToAddLesson = { navController.navigate(ROUTE_ADD_LESSON) },
-            navigateToSetting = {},
-        )
-        addAddLesson(
-            route = ROUTE_ADD_LESSON,
-            popBackStack = { navController.popBackStack() },
-            navigateToLoadLesson = { navController.navigate(ROUTE_LOAD_LESSON) },
-            navigateToAddExercise = {},
-        )
-        addMemberList(
-            route = ROUTE_MEMBER_LIST,
-            popBackStack = { navController.popBackStack() },
-            navigateToMemberDetail = {},
-            navigateToMemberAdd = { navController.navigate(ROUTE_MEMBER_ADD) },
-            navigateToLesson = { navController.navigate(ROUTE_LESSON) },
-            navigateToSetting = {}
-        )
-        addMemberListWithRegistration(
-            route = "$ROUTE_MEMBER_LIST/{$ARGUMENT_REGISTRATION}",
-            popBackStack = { navController.popBackStack() },
-            navigateToMemberDetail = {},
-            navigateToMemberAdd = { navController.navigate(ROUTE_MEMBER_ADD) },
-            navigateToLesson = {},
-            navigateToSetting = {}
-        )
-        addMemberAdd(
-            route = ROUTE_MEMBER_ADD,
-            popBackStack = { navController.popBackStack() },
-            navigateToMemberListWithRegistration = {
-                navController.navigate(
-                    route = "$ROUTE_MEMBER_LIST/$it"
-                ) {
-                    popUpTo(ROUTE_MEMBER_LIST) { inclusive = true }
-                }
-            }
-        )
-        addMemberEdit(
-            route = ROUTE_MEMBER_EDIT,
-            popBackStack = { navController.popBackStack() },
-            navigateToMemberListWithRegistration = {
-                navController.navigate(
-                    route = "$ROUTE_MEMBER_LIST/$it"
-                ) {
-                    popUpTo(ROUTE_MEMBER_LIST) { inclusive = true }
-                }
-            }
-        )
-        addMemberLesson(
-            route = ROUTE_MEMBER_LESSON,
-            popBackStack = { navController.popBackStack() },
-            navigateToAddLesson = { navController.navigate(ROUTE_ADD_LESSON) },
-            navigateToSetting = {},
-        )
-        addLoadLesson(
-            route = ROUTE_LOAD_LESSON,
-            popBackStack = { navController.popBackStack() }
-        )
+        addMember(navController)
+        addLesson(navController)
     }
+}
+
+private fun NavGraphBuilder.addMember(
+    navController: NavHostController,
+) {
+    addMemberList(
+        route = ROUTE_MEMBER_LIST,
+        navigateToMemberDetail = { navController.navigate(ROUTE_MEMBER_DETAIL) },
+        navigateToMemberAdd = { navController.navigate(ROUTE_MEMBER_ADD) },
+        navigateToLesson = { navController.navigate(ROUTE_MEMBER_LESSON_LIST) },
+        navigateToSetting = {}
+    )
+    addMemberListWithRegistration(
+        route = "$ROUTE_MEMBER_LIST/{$ARGUMENT_REGISTRATION}",
+        navigateToMemberDetail = {},
+        navigateToMemberAdd = { navController.navigate(ROUTE_MEMBER_ADD) },
+        navigateToLesson = {},
+        navigateToSetting = {}
+    )
+    addMemberAdd(
+        route = ROUTE_MEMBER_ADD,
+        popBackStack = { navController.popBackStack() },
+        navigateToMemberListWithRegistration = {
+            navController.navigate(
+                route = "$ROUTE_MEMBER_LIST/$it"
+            ) {
+                popUpTo(ROUTE_MEMBER_LIST) { inclusive = true }
+            }
+        }
+    )
+    addMemberEdit(
+        route = ROUTE_MEMBER_EDIT,
+        popBackStack = { navController.popBackStack() },
+        navigateToMemberListWithRegistration = {
+            navController.navigate(
+                route = "$ROUTE_MEMBER_LIST/$it"
+            ) {
+                popUpTo(ROUTE_MEMBER_LIST) { inclusive = true }
+            }
+        }
+    )
+    addMemberDetail(
+        route = ROUTE_MEMBER_DETAIL,
+        popBackStack = { navController.popBackStack() },
+        navigateToMemberEdit = { navController.navigate(ROUTE_MEMBER_EDIT) },
+        navigateToMemberLessonList = { navController.navigate(ROUTE_MEMBER_LESSON_LIST) }
+    )
+}
+
+private fun NavGraphBuilder.addLesson(
+    navController: NavHostController,
+) {
+    addMemberLessonList(
+        route = ROUTE_MEMBER_LESSON_LIST,
+        popBackStack = { navController.popBackStack() },
+        navigateToAddLesson = { navController.navigate(ROUTE_ADD_LESSON) },
+        navigateToSetting = {},
+    )
+    addAddLesson(
+        route = ROUTE_ADD_LESSON,
+        popBackStack = { navController.popBackStack() },
+        navigateToLoadLesson = { navController.navigate(ROUTE_LOAD_LESSON) },
+        navigateToAddExercise = {},
+    )
+    addMemberLesson(
+        route = ROUTE_MEMBER_LESSON,
+        popBackStack = { navController.popBackStack() },
+        navigateToAddLesson = { navController.navigate(ROUTE_ADD_LESSON) },
+        navigateToSetting = {},
+    )
+    addLoadLesson(
+        route = ROUTE_LOAD_LESSON,
+        popBackStack = { navController.popBackStack() }
+    )
 }
