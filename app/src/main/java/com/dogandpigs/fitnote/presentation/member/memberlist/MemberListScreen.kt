@@ -37,7 +37,6 @@ import androidx.lifecycle.compose.ExperimentalLifecycleComposeApi
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.dogandpigs.fitnote.R
 import com.dogandpigs.fitnote.presentation.base.ComponentPreview
-import com.dogandpigs.fitnote.presentation.base.FigmaPreview
 import com.dogandpigs.fitnote.presentation.ui.component.DebugMenu
 import com.dogandpigs.fitnote.presentation.ui.component.DefaultBottomLargePositiveButton
 import com.dogandpigs.fitnote.presentation.ui.component.DefaultText
@@ -65,6 +64,8 @@ internal fun MemberListScreen(
     val state by viewModel.state.collectAsStateWithLifecycle()
 
     var isShowDebugMenu by rememberSaveable { mutableStateOf(false) }
+
+    viewModel.getMemberList()
 
     FitNoteScaffold(
         topBarTitle = "회원목록",
@@ -240,17 +241,6 @@ private val previewUiState =
     MemberListUiState(myName = "김코치", profileImgUrl = "", userList = (0..30).map {
         MemberUiModel(id = it.toLong(), userName = "이름 $it")
     })
-
-@FigmaPreview
-@Composable
-private fun PreviewMemberListScreen() {
-    val viewModel = MemberListViewModel().apply {
-        setState { previewUiState }
-    }
-    FitNoteTheme {
-        MemberListScreen(viewModel = viewModel)
-    }
-}
 
 @ComponentPreview
 @Composable
