@@ -22,6 +22,7 @@ import androidx.compose.material3.Divider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
@@ -62,11 +63,13 @@ internal fun MemberListScreen(
     navigateToLesson: () -> Unit = {},
     navigateToSetting: () -> Unit = {}
 ) {
-    val state by viewModel.state.collectAsStateWithLifecycle()
+    val uiState by viewModel.state.collectAsStateWithLifecycle()
 
     var isShowDebugMenu by rememberSaveable { mutableStateOf(false) }
 
-    viewModel.getMemberList()
+    LaunchedEffect(Unit) {
+        viewModel.getMemberList()
+    }
 
     FitNoteScaffold(
         topBarTitle = "회원목록",
@@ -91,8 +94,8 @@ internal fun MemberListScreen(
                     .verticalScroll(rememberScrollState())
             ) {
                 MemberListHeader(
-                    myName = state.myName,
-                    profileImgUrl = state.profileImgUrl,
+                    myName = uiState.myName,
+                    profileImgUrl = uiState.profileImgUrl,
                 )
 
                 Divider(
@@ -103,7 +106,7 @@ internal fun MemberListScreen(
                 )
 
                 MemberList(
-                    userList = previewUiState.userList,
+                    userList = uiState.userList,
                     popBackStack = popBackStack,
                     onClickMemberDetail = navigateToMemberDetail,
                     onClickMemberAdd = navigateToMemberAdd,
@@ -239,9 +242,13 @@ private fun MemberListItem(
 }
 
 private val previewUiState =
-    MemberListUiState(myName = "김코치", profileImgUrl = "", userList = (0..30).map {
-        MemberUiModel(id = it.toLong(), userName = "이름 $it")
-    })
+    MemberListUiState(
+        myName = "김코치",
+        profileImgUrl = "",
+        userList = (0..30).map {
+            MemberUiModel(id = it.toLong(), userName = "이름 $it")
+        }
+    )
 
 @ComponentPreview
 @Composable
