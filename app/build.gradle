@@ -29,8 +29,12 @@ android {
         applicationId "com.dogandpigs.fitnote"
         minSdk 21
         targetSdk 32
-        versionCode getVersionCodeByDate()
-        versionName getVersionNameByDate()
+        versionCode 1
+        versionName "0.0.1"
+//        versionCode getVersionCodeByDate()
+//        versionName getVersionNameByDate()
+
+        setProperty("archivesBaseName", "fitnote_" + versionName + "(" + versionCode + ")")
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables {
