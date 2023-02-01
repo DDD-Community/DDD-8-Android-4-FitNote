@@ -35,6 +35,7 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.ExperimentalLifecycleComposeApi
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.dogandpigs.fitnote.BuildConfig
 import com.dogandpigs.fitnote.R
 import com.dogandpigs.fitnote.presentation.base.ComponentPreview
 import com.dogandpigs.fitnote.presentation.ui.component.DebugMenu
@@ -118,7 +119,7 @@ internal fun MemberListScreen(
                 HeightSpacer(height = LocalFitNoteSpacing.current.spacing5)
             }
 
-            if (isShowDebugMenu) {
+            if (isShowDebugMenu && BuildConfig.DEBUG) {
                 DebugMenu(
                     "회원 상세 정보" to navigateToMemberDetail,
                     "회원 추가" to navigateToMemberAdd,

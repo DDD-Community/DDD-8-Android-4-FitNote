@@ -21,6 +21,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import com.dogandpigs.fitnote.BuildConfig
 import com.dogandpigs.fitnote.R
 import com.dogandpigs.fitnote.presentation.base.FigmaPreview
 import com.dogandpigs.fitnote.presentation.ui.component.DebugMenu
@@ -65,7 +66,7 @@ internal fun SplashScreen(
                 viewModel.cancelCheckLogin()
             }
         )
-        if (isShowDebugMenu) {
+        if (isShowDebugMenu && BuildConfig.DEBUG) {
             DebugMenu(
                 "홈" to navigateToHome,
                 "가입하기" to navigateToJoin,
