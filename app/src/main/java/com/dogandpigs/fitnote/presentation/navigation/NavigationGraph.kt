@@ -16,6 +16,7 @@ import com.dogandpigs.fitnote.presentation.member.memberdetail.addMemberDetail
 import com.dogandpigs.fitnote.presentation.member.memberedit.addMemberEdit
 import com.dogandpigs.fitnote.presentation.member.memberlist.addMemberList
 import com.dogandpigs.fitnote.presentation.member.memberlist.addMemberListWithRegistration
+import com.dogandpigs.fitnote.presentation.setting.addSettingScreen
 import com.dogandpigs.fitnote.presentation.splash.addSplash
 
 @Composable
@@ -66,6 +67,10 @@ internal fun NavigationGraph(navController: NavHostController) {
             popBackStack = { navController.popBackStack() },
             navigateToHome = { navController.navigate(ROUTE_HOME) }
         )
+        addSettingScreen(
+            route = ROUTE_SETTING,
+            popBackStack = { navController.popBackStack() },
+        )
         addMember(navController)
         addLesson(navController)
     }
@@ -79,7 +84,7 @@ private fun NavGraphBuilder.addMember(
         navigateToMemberDetail = { navController.navigate(ROUTE_MEMBER_DETAIL) },
         navigateToMemberAdd = { navController.navigate(ROUTE_MEMBER_ADD) },
         navigateToLesson = { navController.navigate(ROUTE_MEMBER_LESSON_LIST) },
-        navigateToSetting = {}
+        navigateToSetting = { navController.navigate(ROUTE_SETTING) }
     )
     addMemberListWithRegistration(
         route = "$ROUTE_MEMBER_LIST/{$ARGUMENT_REGISTRATION}",

@@ -3,6 +3,7 @@ package com.dogandpigs.fitnote.presentation.navigation
 internal const val ROUTE_SPLASH = "route_splash"
 internal const val ROUTE_JOIN = "route_join"
 internal const val ROUTE_LOGIN = "route_login"
+internal const val ROUTE_SETTING = "route_setting"
 
 // member
 internal const val ROUTE_MEMBER_LIST = "route_member_list"
