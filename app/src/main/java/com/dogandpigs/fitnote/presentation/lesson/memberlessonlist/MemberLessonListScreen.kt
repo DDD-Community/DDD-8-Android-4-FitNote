@@ -2,6 +2,7 @@ package com.dogandpigs.fitnote.presentation.lesson.memberlessonlist
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -24,6 +25,9 @@ import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -31,7 +35,6 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -47,6 +50,7 @@ import com.dogandpigs.fitnote.presentation.ui.component.defaultBorder
 import com.dogandpigs.fitnote.presentation.ui.theme.BrandPrimary
 import com.dogandpigs.fitnote.presentation.ui.theme.FitNoteTheme
 import com.dogandpigs.fitnote.presentation.ui.theme.GrayScaleLightGray1
+import com.dogandpigs.fitnote.presentation.ui.theme.GrayScaleLightGray2
 import com.dogandpigs.fitnote.presentation.ui.theme.GrayScaleMidGray2
 import com.dogandpigs.fitnote.presentation.ui.theme.GrayScaleMidGray3
 
@@ -56,7 +60,6 @@ internal fun MemberLessonListScreen(
     viewModel: MemberLessonListViewModel = hiltViewModel(),
     popBackStack: () -> Unit,
     navigateToAddLesson: () -> Unit,
-    navigateToSetting: () -> Unit,
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
 
@@ -64,7 +67,6 @@ internal fun MemberLessonListScreen(
         uiState = uiState,
         popBackStack = popBackStack,
         onClickAddLesson = navigateToAddLesson,
-        navigateToSetting = navigateToSetting,
     )
 }
 
@@ -73,75 +75,112 @@ private fun MemberLessonList(
     uiState: MemberLessonListUiState,
     popBackStack: () -> Unit,
     onClickAddLesson: () -> Unit,
-    navigateToSetting: () -> Unit,
 ) {
+    var selectedTabType by remember { mutableStateOf(MemberLessonListUiState.Tab.TabType.SCHEDULED) }
+
     FitNoteScaffold(
         topBarTitle = "${
             String.format(
-                stringResource(id = R.string.some_member),
-                uiState.userName
+                stringResource(id = R.string.some_member), uiState.userName
             )
-        } ${stringResource(id = R.string.lesson_list)}",
-        onClickTopBarNavigationIcon = popBackStack
+        } ${stringResource(id = R.string.lesson_list)}", onClickTopBarNavigationIcon = popBackStack
     ) {
         Box(modifier = Modifier.padding(it)) {
-            Column {
+            Column(
+                modifier = Modifier
+                    .background(Color.White)
+                    .fillMaxSize()
+            ) {
                 Spacer(modifier = Modifier.height(24.dp))
                 LessonTabList(
-                    uiState.tabs
+                    selectedTabType = selectedTabType,
+                    scheduledLessonTab = uiState.scheduledLessonTab,
+                    completedLessonTab = uiState.completedLessonTab,
+                    onClickLessonTab = { tabType ->
+                        selectedTabType = tabType
+                    }
                 )
             }
 
-            AddLessonButton(
-                onClickAddLesson
-            )
+            if (selectedTabType == MemberLessonListUiState.Tab.TabType.SCHEDULED) {
+                AddLessonButton(
+                    onClickAddLesson
+                )
+            }
         }
     }
 }
 
 @Composable
 private fun LessonTabList(
-    tabs: List<MemberLessonListUiState.Tab>,
+    selectedTabType: MemberLessonListUiState.Tab.TabType,
+    scheduledLessonTab: MemberLessonListUiState.Tab,
+    completedLessonTab: MemberLessonListUiState.Tab,
+    onClickLessonTab: (MemberLessonListUiState.Tab.TabType) -> Unit,
 ) {
     val tabHeight = 42.dp
 
     Column {
         Row {
-            for (tab in tabs) {
-                LessonTab(
-                    modifier = Modifier
-                        .weight(1F)
-                        .height(tabHeight),
-                    title = tab.name,
-                    isSelected = tab.isSelected,
-                )
-            }
-        }
-        val selectedTab = tabs.first {
-            it.isSelected
+            LessonTab(
+                modifier = Modifier
+                    .weight(1F)
+                    .height(tabHeight),
+                title = scheduledLessonTab.name,
+                isSelected = selectedTabType == scheduledLessonTab.tabType,
+                onClickLessonTab = {
+                    onClickLessonTab(scheduledLessonTab.tabType)
+                },
+            )
+            LessonTab(
+                modifier = Modifier
+                    .weight(1F)
+                    .height(tabHeight),
+                title = completedLessonTab.name,
+                isSelected = selectedTabType == completedLessonTab.tabType,
+                onClickLessonTab = {
+                    onClickLessonTab(completedLessonTab.tabType)
+                },
+            )
         }
 
-        Column(
-            modifier = Modifier
-                .padding(
-                    horizontal = 16.dp
-                )
-                .fillMaxSize()
-                .verticalScroll(rememberScrollState()),
-            horizontalAlignment = Alignment.CenterHorizontally,
-        ) {
-            if (selectedTab.lessons.isEmpty()) {
+        val selectedTab = when (selectedTabType) {
+            MemberLessonListUiState.Tab.TabType.SCHEDULED -> scheduledLessonTab
+            MemberLessonListUiState.Tab.TabType.COMPLETED -> completedLessonTab
+        }
+
+        if (selectedTab.lessons.isEmpty()) {
+            Column(
+                modifier = Modifier
+                    .padding(
+                        horizontal = 16.dp
+                    )
+                    .fillMaxSize(),
+                horizontalAlignment = Alignment.CenterHorizontally,
+                verticalArrangement = Arrangement.Center,
+            ) {
                 Image(
                     modifier = Modifier.size(123.dp),
-                    painter = painterResource(id = R.drawable.image_lesson_empty),
+                    painter = painterResource(id = R.drawable.image_empty_lesson),
                     contentDescription = ""
                 )
+                HeightSpacer(height = 26.dp)
                 Text(
                     text = "${selectedTab.name}이 없습니다!${selectedTab.emptySubText}",
                     color = GrayScaleMidGray2,
                     textAlign = TextAlign.Center,
                 )
-            } else {
+            }
+        } else {
+            Column(
+                modifier = Modifier
+                    .padding(
+                        horizontal = 16.dp
+                    )
+                    .fillMaxSize()
+                    .verticalScroll(rememberScrollState()),
+                horizontalAlignment = Alignment.CenterHorizontally,
+            ) {
                 LessonList(selectedTab.lessons)
             }
         }
@@ -153,15 +192,24 @@ private fun LessonTab(
     modifier: Modifier,
     title: String,
     isSelected: Boolean,
+    onClickLessonTab: () -> Unit,
 ) {
     val color = if (isSelected) {
+        BrandPrimary
+    } else {
+        GrayScaleLightGray2
+    }
+
+    val textColor = if (isSelected) {
         BrandPrimary
     } else {
         GrayScaleMidGray2
     }
 
     Column(
-        modifier = modifier,
+        modifier = modifier.clickable {
+            onClickLessonTab()
+        },
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
@@ -169,7 +217,7 @@ private fun LessonTab(
             text = title,
             modifier = Modifier.weight(1F),
             fontSize = 16.sp,
-            color = color,
+            color = textColor,
             textAlign = TextAlign.Center,
         )
         Spacer(
@@ -187,10 +235,9 @@ private fun LessonTab(
     }
 }
 
-@Preview
 @Composable
 private fun LessonList(
-    lessons: List<MemberLessonListUiState.Tab.Lesson> = previewUiState.tabs.first().lessons
+    lessons: List<MemberLessonListUiState.Tab.Lesson>
 ) {
     for (lesson in lessons) {
         HeightSpacer(height = 24.dp)
@@ -233,8 +280,7 @@ private fun ExerciseRow(
     exercises: List<String>,
 ) {
     Row(
-        modifier = Modifier
-            .horizontalScroll(rememberScrollState())
+        modifier = Modifier.horizontalScroll(rememberScrollState())
     ) {
         for (exercise in exercises) {
             ExerciseItem(exercise)
@@ -313,53 +359,49 @@ private fun AddLessonButton(
     }
 }
 
-internal val previewTabs = listOf(
-    MemberLessonListUiState.Tab(
-        isSelected = true,
-        name = "예정된 수업",
-        emptySubText = "\n 수업을 추가해보세요!",
-        lessons = listOf(
-            MemberLessonListUiState.Tab.Lesson(
-                dateString = "2022년 12월 25일",
-                exercises = listOf(
-                    "벤치 프레스",
-                    "덤벨 프레스",
-                    "덤벨 플라이",
-                    "인클라인 벤치 프레스",
-                )
-            ),
-            MemberLessonListUiState.Tab.Lesson(
-                dateString = "2022년 12월 25일",
-                exercises = listOf(
-                    "벤치 프레스",
-                    "덤벨 프레스",
-                    "덤벨 플라이",
-                    "인클라인 벤치 프레스",
-                )
-            ),
+internal val previewScheduledLessonTab = MemberLessonListUiState.Tab(
+    tabType = MemberLessonListUiState.Tab.TabType.SCHEDULED,
+    name = "예정된 수업",
+    emptySubText = "\n 수업을 추가해보세요!",
+    lessons = listOf(
+        MemberLessonListUiState.Tab.Lesson(
+            dateString = "2022년 12월 25일", exercises = listOf(
+                "벤치 프레스",
+                "덤벨 프레스",
+                "덤벨 플라이",
+                "인클라인 벤치 프레스",
+            )
+        ),
+        MemberLessonListUiState.Tab.Lesson(
+            dateString = "2022년 12월 25일", exercises = listOf(
+                "벤치 프레스",
+                "덤벨 프레스",
+                "덤벨 플라이",
+                "인클라인 벤치 프레스",
+            )
         ),
     ),
-    MemberLessonListUiState.Tab(
-        isSelected = false,
-        name = "완료한 수업",
-        emptySubText = "",
-        lessons = listOf(
-            MemberLessonListUiState.Tab.Lesson(
-                dateString = "2022년 12월 25일",
-                exercises = listOf(
-                    "벤치 프레스",
-                    "덤벨 프레스",
-                    "덤벨 플라이",
-                    "인클라인 벤치 프레스",
-                )
-            ),
+)
+internal val previewCompletedLessonTab = MemberLessonListUiState.Tab(
+    tabType = MemberLessonListUiState.Tab.TabType.COMPLETED,
+    name = "완료한 수업",
+    emptySubText = "",
+    lessons = listOf(
+        MemberLessonListUiState.Tab.Lesson(
+            dateString = "2022년 12월 25일", exercises = listOf(
+                "벤치 프레스",
+                "덤벨 프레스",
+                "덤벨 플라이",
+                "인클라인 벤치 프레스",
+            )
         ),
     ),
 )
 
 private val previewUiState = MemberLessonListUiState(
     userName = "나초보",
-    tabs = previewTabs,
+    scheduledLessonTab = previewScheduledLessonTab,
+    completedLessonTab = previewCompletedLessonTab,
 )
 
 @FigmaPreview
@@ -370,7 +412,6 @@ private fun PreviewLesson() {
             uiState = previewUiState,
             popBackStack = {},
             onClickAddLesson = {},
-            navigateToSetting = {},
         )
     }
 }
