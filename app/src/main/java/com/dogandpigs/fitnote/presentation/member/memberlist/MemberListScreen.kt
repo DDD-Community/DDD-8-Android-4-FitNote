@@ -76,9 +76,10 @@ internal fun MemberListScreen(
         topBarTitle = "회원목록",
         topBarActions = {
             IconButton(onClick = {
-                // TODO 설정으로 이동
-//                navigateToSetting
-                isShowDebugMenu = !isShowDebugMenu
+                if (BuildConfig.DEBUG) {
+                    isShowDebugMenu = !isShowDebugMenu
+                }
+                navigateToSetting()
             }) {
                 Icon(
                     painter = painterResource(id = R.drawable.ic_setting),
