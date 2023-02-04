@@ -107,8 +107,8 @@ private fun ItemList(
         val items = listOf(
             stringResource(id = R.string.registration_date) to uiState.date,
             stringResource(id = R.string.gender) to uiState.gender,
-            stringResource(id = R.string.height) to uiState.height.toString(),
-            stringResource(id = R.string.weight) to uiState.weight.toString(),
+            stringResource(id = R.string.height) to uiState.height,
+            stringResource(id = R.string.weight) to uiState.weight,
         )
         Column {
             for (item in items) {
@@ -182,8 +182,8 @@ private val previewUiState = MemberDetailUiState(
     name = "나초보",
     date = "2022년 11월 18일",
     gender = "남성",
-    height = 165.0,
-    weight = 52.0,
+    height = "165cm",
+    weight = "52kg",
 )
 
 @ComponentPreview
