@@ -5,6 +5,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.dogandpigs.fitnote.core.TokenManager
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
@@ -27,17 +28,16 @@ internal class SplashViewModel @Inject constructor(
     // TODO UseCase 필요
     private fun checkLogin() {
         checkLoginJob = viewModelScope.launch {
-            delay(2_000L)
-            // 실패 시
-            uiState = uiState.copy(
-                isShowJoinOrLogin = true
-            )
-
-            delay(5_000L)
-            // 성공 시
-            uiState = uiState.copy(
-                isLogin = true
-            )
+            delay(SHOW_SPLASH_MILLIS)
+            uiState = if (TokenManager.accessToken == null) {
+                uiState.copy(
+                    isShowJoinOrLogin = true
+                )
+            } else {
+                uiState.copy(
+                    isLogin = true
+                )
+            }
         }
     }
 
@@ -46,5 +46,9 @@ internal class SplashViewModel @Inject constructor(
             checkLoginJob?.cancel()
             checkLoginJob = null
         }
+    }
+
+    companion object {
+        private const val SHOW_SPLASH_MILLIS = 1_500L
     }
 }
