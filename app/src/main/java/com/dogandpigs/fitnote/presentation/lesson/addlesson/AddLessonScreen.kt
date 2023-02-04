@@ -18,19 +18,18 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.PathEffect
 import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.AnnotatedString
-import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.ExperimentalLifecycleComposeApi
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.compose.rememberNavController
 import com.dogandpigs.fitnote.R
 import com.dogandpigs.fitnote.presentation.base.FigmaPreview
+import com.dogandpigs.fitnote.presentation.lesson.memberlesson.SuffixVisualTransformation
 import com.dogandpigs.fitnote.presentation.ui.component.*
 import com.dogandpigs.fitnote.presentation.ui.theme.*
 import com.google.android.material.datepicker.MaterialDatePicker
@@ -70,12 +69,14 @@ private fun AddLesson(
         topBarNavigationIconImageVector = Icons.Filled.Close,
         topBarActions = {
             TextButton(onClick = onClickLoadLesson) {
-                Text(
+                DefaultText(
                     text = stringResource(id = R.string.btn_load),
-                    color = colorResource(id = R.color.brand_primary)
+                    color = BrandPrimary,
+                    style = LocalFitNoteTypography.current.buttonMedium
                 )
             }
-        }) {
+        }
+    ) {
         Box(
             modifier = Modifier
                 .padding(it)
@@ -87,7 +88,8 @@ private fun AddLesson(
                 modifier = Modifier
                     .padding(paddingValues)
                     .background(color = Color.White)
-                    .verticalScroll(scrollState), horizontalAlignment = Alignment.CenterHorizontally
+                    .verticalScroll(scrollState),
+                horizontalAlignment = Alignment.CenterHorizontally
             ) {
                 DateLabel(
                     viewModel,
@@ -111,11 +113,11 @@ private fun AddLessonCard(
         Column(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(vertical = 16.dp)
+                .padding(vertical = LocalFitNoteSpacing.current.spacing4)
         ) {
-            Spacer(modifier = Modifier.height(20.dp))
+            HeightSpacer(height = LocalFitNoteSpacing.current.spacing5)
             InputLesson(viewModel, uiState)
-            Spacer(modifier = Modifier.height(20.dp))
+            HeightSpacer(height = LocalFitNoteSpacing.current.spacing5)
             AddExercise()
         }
     }
@@ -137,17 +139,15 @@ private fun DateLabel(
             .padding(16.dp, 16.dp),
         verticalAlignment = Alignment.CenterVertically
     ) {
-        Text(
-            modifier = Modifier
-                .wrapContentSize()
-                .padding(end = 24.dp),
+        DefaultText(
             text = stringResource(id = R.string.txt_date),
             color = Color.Black,
-            fontSize = 12.sp,
+            style = LocalFitNoteTypography.current.titleDefault
         )
+        WidthSpacer(width = LocalFitNoteSpacing.current.spacing5)
         ClickableText(
             text = AnnotatedString(dateString),
-            style = TextStyle.Default,
+            style = LocalFitNoteTypography.current.textDefault,
             onClick = {
                 showDatePicker(
                     viewModel,
@@ -178,49 +178,32 @@ private fun showDatePicker(
 private fun InputLesson(
     viewModel: AddLessonViewModel, uiState: AddLessonUiState
 ) {
-    var exerciseName by remember {
-        mutableStateOf("")
-    }
+    var exerciseName by remember { mutableStateOf("") }
+
     Column(
         modifier = Modifier
             .fillMaxSize()
             .defaultBorder()
             .padding(16.dp, 16.dp),
     ) {
-        Row(
-            modifier = Modifier.fillMaxWidth(),
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            BasicTextField(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .weight(1F),
-                value = exerciseName,
-                onValueChange = { textValue ->
-                    exerciseName = textValue
-                },
-                decorationBox = { innerTextField ->
-                    Row(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .background(
-                                color = GrayScaleLightGray1,
-                                shape = RoundedCornerShape(size = 5.dp)
-                            )
-                            .padding(16.dp, 6.dp),
-                        verticalAlignment = Alignment.CenterVertically
-                    ) {
-                        innerTextField()
-                    }
-                }
-            )
-        }
-        Spacer(modifier = Modifier.height(20.dp))
+        AddLessonTextField(
+            modifier = Modifier
+                .fillMaxWidth()
+                .wrapContentHeight(),
+            value = exerciseName,
+            onValueChange = { textValue ->
+                exerciseName = textValue
+            },
+            placeholderValue = "운동명"
+        )
+        HeightSpacer(height = LocalFitNoteSpacing.current.spacing4)
+
         Routine(
             Routine(0, 0, 0),
             viewModel = viewModel,
             btnRoutineCloseVisibility = false,
         )
+
         Spacer(modifier = Modifier.height(20.dp))
         ExpandableCard(
             header = stringResource(id = R.string.edit_per_set),
@@ -244,6 +227,51 @@ private fun InputLesson(
 }
 
 @Composable
+private fun AddLessonTextField(
+    modifier: Modifier,
+    value: String,
+    onValueChange: (String) -> Unit,
+    placeholderValue: String = "",
+    suffix: String? = null,
+) {
+    BasicTextField(
+        modifier = modifier,
+        value = value,
+        onValueChange = onValueChange,
+        textStyle = LocalFitNoteTypography.current.buttonMedium.copy(
+            color = GrayScaleMidGray3,
+        ),
+        visualTransformation = if (suffix != null) {
+            SuffixVisualTransformation(suffix)
+        } else {
+            VisualTransformation.None
+        },
+        decorationBox = { innerTextField ->
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .wrapContentHeight()
+                    .background(
+                        color = GrayScaleLightGray1,
+                        shape = RoundedCornerShape(size = 5.dp)
+                    )
+                    .padding(16.dp, 6.dp),
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                if (value.isEmpty() && placeholderValue.isNotEmpty()) {
+                    DefaultText(
+                        text = placeholderValue,
+                        color = GrayScaleMidGray3,
+                        style = LocalFitNoteTypography.current.buttonMedium,
+                    )
+                }
+                innerTextField()
+            }
+        }
+    )
+}
+
+@Composable
 private fun Routine(
     routine: Routine,
     viewModel: AddLessonViewModel,
@@ -260,8 +288,10 @@ private fun Routine(
         mutableStateOf(routine.count)
     }
     Row(
-        modifier = Modifier.fillMaxWidth(),
-        verticalAlignment = Alignment.CenterVertically
+        modifier = Modifier
+            .fillMaxWidth()
+            .wrapContentHeight(),
+        verticalAlignment = Alignment.CenterVertically,
     ) {
         if (isEdit) {
             Text(
@@ -270,74 +300,36 @@ private fun Routine(
                 color = GrayScaleMidGray3
             )
         } else {
-            BasicTextField(
-                value = "$set",
-                onValueChange = { value ->
-                    set = value.toInt()
-                },
+            AddLessonTextField(
                 modifier = Modifier
                     .weight(1F),
-                decorationBox = { innerTextField ->
-                    Row(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .background(
-                                color = GrayScaleLightGray1,
-                                shape = RoundedCornerShape(size = 5.dp)
-                            )
-                            .padding(16.dp, 6.dp),
-                        verticalAlignment = Alignment.CenterVertically
-                    ) {
-                        innerTextField()
-                    }
-                }
+                value = "$set",
+                onValueChange = { value ->
+                    set = value.toIntOrNull() ?: 0
+                },
+                suffix = "세트",
             )
         }
         WidthSpacer(width = 10.dp)
-        BasicTextField(
+        AddLessonTextField(
+            modifier = Modifier
+                .weight(1F)
+                .wrapContentHeight(),
             value = "$weight",
             onValueChange = { value ->
-                weight = value.toInt()
+                weight = value.toIntOrNull() ?: 0
             },
-            modifier = Modifier
-                .weight(1F),
-            decorationBox = { innerTextField ->
-                Row(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .background(
-                            color = GrayScaleLightGray1,
-                            shape = RoundedCornerShape(size = 5.dp)
-                        )
-                        .padding(16.dp, 6.dp),
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
-                    innerTextField()
-                }
-            }
+            suffix = "kg",
         )
         WidthSpacer(width = 10.dp)
-        BasicTextField(
-            value = "$count",
-            onValueChange = { value ->
-                count = value.toInt()
-            },
+        AddLessonTextField(
             modifier = Modifier
                 .weight(1F),
-            decorationBox = { innerTextField ->
-                Row(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .background(
-                            color = GrayScaleLightGray1,
-                            shape = RoundedCornerShape(size = 5.dp)
-                        )
-                        .padding(16.dp, 6.dp),
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
-                    innerTextField()
-                }
-            }
+            value = "$count",
+            onValueChange = { value ->
+                count = value.toIntOrNull() ?: 0
+            },
+            suffix = "회",
         )
         if (btnRoutineCloseVisibility) {
             WidthSpacer(width = 10.dp)
@@ -381,10 +373,10 @@ private fun AddExercise() {
                 imageVector = Icons.Default.Add, tint = Color.Black, // Icon Color
                 contentDescription = "Add Exercise"
             )
-            Text(
+            DefaultText(
                 text = stringResource(id = R.string.btn_add_exercise),
-                fontSize = 14.sp,
-                color = Color.Black
+                color = GrayScaleDarkGray1,
+                style = LocalFitNoteTypography.current.buttonMedium,
             )
         }
     }

@@ -1,14 +1,15 @@
 package com.dogandpigs.fitnote.presentation.lesson.addlesson
 
-import com.dogandpigs.fitnote.core.FormatUtil
+import com.dogandpigs.fitnote.presentation.util.format
+import java.util.Date
 
 internal data class AddLessonUiState(
     val title: String = "",
-    val dateMilliSeconds: Long = 0L,
+    val dateMilliSeconds: Long = System.currentTimeMillis(),
     val btnRoutineCloseVisibility: Boolean = false,
     val routineList: List<Routine> = emptyList(),
     val isExpand: Boolean = false
 ) {
     val dateString: String
-        get() = FormatUtil.millToDate(dateMilliSeconds)
+        get() = Date(dateMilliSeconds).format()
 }
