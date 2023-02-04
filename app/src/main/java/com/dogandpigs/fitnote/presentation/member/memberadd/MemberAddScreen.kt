@@ -123,7 +123,7 @@ private fun TextFieldList(viewModel: MemberAddViewModel) {
                 if (it == "남성") {
                     viewModel.setGender(gender = 1)
                 } else if(it == "여성") {
-                    viewModel.setGender(gender = 0)
+                    viewModel.setGender(gender = 2)
                 }
             },
             labelText = stringResource(id = R.string.gender),

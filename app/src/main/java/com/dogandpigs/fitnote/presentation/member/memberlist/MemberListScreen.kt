@@ -69,7 +69,7 @@ internal fun MemberListScreen(
     var isShowDebugMenu by rememberSaveable { mutableStateOf(false) }
 
     LaunchedEffect(Unit) {
-        viewModel.getMemberList()
+        viewModel.initialize()
     }
 
     FitNoteScaffold(
