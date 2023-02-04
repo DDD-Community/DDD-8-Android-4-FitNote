@@ -59,10 +59,10 @@ import com.dogandpigs.fitnote.presentation.ui.theme.LocalFitNoteTypography
 internal fun MemberListScreen(
     viewModel: MemberListViewModel = hiltViewModel(),
     registration: Boolean = false,
-    navigateToMemberDetail: () -> Unit = {},
-    navigateToMemberAdd: () -> Unit = {},
-    navigateToMemberLessonList: () -> Unit = {},
-    navigateToSetting: () -> Unit = {}
+    navigateToMemberDetail: (Int) -> Unit,
+    navigateToMemberAdd: () -> Unit,
+    navigateToMemberLessonList: (Int) -> Unit,
+    navigateToSetting: () -> Unit,
 ) {
     val uiState by viewModel.state.collectAsStateWithLifecycle()
 
@@ -123,9 +123,9 @@ internal fun MemberListScreen(
 
             if (isShowDebugMenu && BuildConfig.DEBUG) {
                 DebugMenu(
-                    "회원 상세 정보" to navigateToMemberDetail,
+                    "회원 상세 정보" to { navigateToMemberDetail(0) },
                     "회원 추가" to navigateToMemberAdd,
-                    "수업" to navigateToMemberLessonList,
+                    "수업" to { navigateToMemberLessonList(0) },
                     "설정" to navigateToSetting,
                 )
             }
@@ -176,8 +176,8 @@ private fun MemberListHeader(
 @Composable
 private fun MemberList(
     userList: List<MemberUiModel>,
-    onClickMemberDetail: () -> Unit = {},
-    onClickMemberLessonList: () -> Unit = {},
+    onClickMemberDetail: (Int) -> Unit,
+    onClickMemberLessonList: (Int) -> Unit,
 ) {
     Column(
         modifier = Modifier
@@ -205,8 +205,8 @@ private fun MemberList(
 @Composable
 private fun MemberListItem(
     item: MemberUiModel,
-    onClickText: () -> Unit,
-    onClickButton: () -> Unit,
+    onClickText: (Int) -> Unit,
+    onClickButton: (Int) -> Unit,
 ) {
     Row(
         modifier = Modifier
@@ -219,14 +219,16 @@ private fun MemberListItem(
                 .weight(1f)
                 .height(IntrinsicSize.Max)
                 .clickable {
-                    onClickText()
+                    onClickText(item.id)
                 },
             text = item.userName,
             color = GrayScaleDarkGray2,
             style = LocalFitNoteTypography.current.textDefault,
         )
         Button(
-            onClick = onClickButton,
+            onClick = {
+                onClickButton(item.id)
+            },
             shape = RoundedCornerShape(5.dp),
             colors = ButtonDefaults.buttonColors(
                 containerColor = GrayScaleLightGray2,
@@ -247,7 +249,7 @@ private val previewUiState =
         myName = "김코치",
         profileImgUrl = "",
         userList = (0..30).map {
-            MemberUiModel(id = it.toLong(), userName = "이름 $it")
+            MemberUiModel(id = it, userName = "이름 $it")
         }
     )
 
@@ -266,6 +268,10 @@ private fun PreviewMemberListHeader() {
 @Composable
 private fun PreviewMemberList() {
     FitNoteTheme {
-        MemberList(userList = previewUiState.userList)
+        MemberList(
+            userList = previewUiState.userList,
+            onClickMemberDetail = {},
+            onClickMemberLessonList = {},
+        )
     }
 }

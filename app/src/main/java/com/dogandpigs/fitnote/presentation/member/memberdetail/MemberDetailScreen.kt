@@ -10,6 +10,7 @@ import androidx.compose.foundation.layout.defaultMinSize
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -34,22 +35,27 @@ import com.dogandpigs.fitnote.presentation.ui.theme.LocalFitNoteTypography
 @Composable
 internal fun MemberDetailScreen(
     viewModel: MemberDetailViewModel = hiltViewModel(),
+    memberId: Int,
     popBackStack: () -> Unit,
     navigateToMemberEdit: (Int) -> Unit,
     navigateToMemberLessonList: (Int) -> Unit,
 ) {
     val uiState by viewModel.state.collectAsStateWithLifecycle()
 
-    val id = 1
+    LaunchedEffect(Unit) {
+        viewModel.initialize(
+            memberId = memberId,
+        )
+    }
 
     MemberDetail(
         uiState = uiState,
         popBackStack = popBackStack,
         onClickInformationModificationButton = {
-            navigateToMemberEdit(id)
+            navigateToMemberEdit(memberId)
         },
         onClickLessonListButton = {
-            navigateToMemberLessonList(id)
+            navigateToMemberLessonList(memberId)
         },
     )
 }

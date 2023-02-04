@@ -24,6 +24,7 @@ import androidx.compose.material3.Divider
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -58,10 +59,17 @@ import com.dogandpigs.fitnote.presentation.ui.theme.GrayScaleMidGray3
 @Composable
 internal fun MemberLessonListScreen(
     viewModel: MemberLessonListViewModel = hiltViewModel(),
+    memberId: Int,
     popBackStack: () -> Unit,
     navigateToAddLesson: () -> Unit,
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
+
+    LaunchedEffect(Unit) {
+        viewModel.initialize(
+            memberId = memberId,
+        )
+    }
 
     MemberLessonList(
         uiState = uiState,
