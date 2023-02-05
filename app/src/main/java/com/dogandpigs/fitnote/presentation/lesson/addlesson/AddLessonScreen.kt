@@ -1,5 +1,7 @@
 package com.dogandpigs.fitnote.presentation.lesson.addlesson
 
+import android.telephony.CarrierConfigManager.ImsWfc
+import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
@@ -28,6 +30,7 @@ import androidx.lifecycle.compose.ExperimentalLifecycleComposeApi
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.compose.rememberNavController
 import com.dogandpigs.fitnote.R
+import com.dogandpigs.fitnote.core.Constants
 import com.dogandpigs.fitnote.presentation.base.FigmaPreview
 import com.dogandpigs.fitnote.presentation.lesson.memberlesson.SuffixVisualTransformation
 import com.dogandpigs.fitnote.presentation.ui.component.*
@@ -43,7 +46,7 @@ internal fun AddLessonScreen(
     navigateToAddExercise: () -> Unit,
 ) {
     val state by viewModel.state.collectAsStateWithLifecycle()
-
+    
     AddLesson(
         viewModel,
         state = state,
@@ -57,14 +60,13 @@ internal fun AddLessonScreen(
 private fun AddLesson(
     viewModel: AddLessonViewModel,
     state: AddLessonUiState,
-    onClickClose: () -> Unit,
-    onClickLoadLesson: () -> Unit,
-    onClickAddExercise: () -> Unit,
+    onClickClose: () -> Unit = {},
+    onClickLoadLesson: () -> Unit = {},
+    onClickAddExercise: () -> Unit = {},
 ) {
     val navController = rememberNavController()
-
-    FitNoteScaffold(
-        topBarTitle = stringResource(id = R.string.add_lesson),
+    
+    FitNoteScaffold(topBarTitle = stringResource(id = R.string.add_lesson),
         onClickTopBarNavigationIcon = onClickClose,
         topBarNavigationIconImageVector = Icons.Filled.Close,
         topBarActions = {
@@ -75,8 +77,7 @@ private fun AddLesson(
                     style = LocalFitNoteTypography.current.buttonMedium
                 )
             }
-        }
-    ) {
+        }) {
         Box(
             modifier = Modifier
                 .padding(it)
@@ -88,15 +89,18 @@ private fun AddLesson(
                 modifier = Modifier
                     .padding(paddingValues)
                     .background(color = Color.White)
-                    .verticalScroll(scrollState),
-                horizontalAlignment = Alignment.CenterHorizontally
+                    .verticalScroll(scrollState), horizontalAlignment = Alignment.CenterHorizontally
             ) {
                 DateLabel(
-                    viewModel,
-                    state.dateMilliSeconds,
-                    state.dateString
+                    viewModel, state.dateMilliSeconds, state.dateString
                 )
-                AddLessonCard(state, viewModel)
+                AddLessonCard(
+                    state,
+                    viewModel,
+                    onClickAddExercise = {
+//                        viewModel.addLesson()
+                    }
+                )
             }
             CompleteButton(stringResource(id = R.string.btn_save), onClick = {})
         }
@@ -105,7 +109,9 @@ private fun AddLesson(
 
 @Composable
 private fun AddLessonCard(
-    uiState: AddLessonUiState, viewModel: AddLessonViewModel
+    uiState: AddLessonUiState,
+    viewModel: AddLessonViewModel,
+    onClickAddExercise: () -> Unit = {}
 ) {
     Box(
         modifier = Modifier.fillMaxSize()
@@ -116,9 +122,11 @@ private fun AddLessonCard(
                 .padding(vertical = LocalFitNoteSpacing.current.spacing4)
         ) {
             HeightSpacer(height = LocalFitNoteSpacing.current.spacing5)
-            InputLesson(viewModel, uiState)
-            HeightSpacer(height = LocalFitNoteSpacing.current.spacing5)
-            AddExercise()
+            for (i in uiState.exerciseList.indices) {
+                InputLesson(viewModel, uiState)
+                HeightSpacer(height = LocalFitNoteSpacing.current.spacing5)
+            }
+            AddExercise(onClickAddExercise = onClickAddExercise)
         }
     }
 }
@@ -130,7 +138,7 @@ private fun DateLabel(
     dateString: String,
 ) {
     val context = LocalContext.current
-
+    
     Row(
         modifier = Modifier
             .height(58.dp)
@@ -145,24 +153,18 @@ private fun DateLabel(
             style = LocalFitNoteTypography.current.titleDefault
         )
         WidthSpacer(width = LocalFitNoteSpacing.current.spacing5)
-        ClickableText(
-            text = AnnotatedString(dateString),
+        ClickableText(text = AnnotatedString(dateString),
             style = LocalFitNoteTypography.current.textDefault,
             onClick = {
                 showDatePicker(
-                    viewModel,
-                    dateMilliSeconds,
-                    context as AppCompatActivity
+                    viewModel, dateMilliSeconds, context as AppCompatActivity
                 )
-            }
-        )
+            })
     }
 }
 
 private fun showDatePicker(
-    viewModel: AddLessonViewModel,
-    dateMilliSeconds: Long,
-    activity: AppCompatActivity
+    viewModel: AddLessonViewModel, dateMilliSeconds: Long, activity: AppCompatActivity
 ) {
     val fm = activity.supportFragmentManager
     val picker = MaterialDatePicker.Builder.datePicker().setSelection(dateMilliSeconds).build()
@@ -179,34 +181,45 @@ private fun InputLesson(
     viewModel: AddLessonViewModel, uiState: AddLessonUiState
 ) {
     var exerciseName by remember { mutableStateOf("") }
-
+    
     Column(
         modifier = Modifier
             .fillMaxSize()
             .defaultBorder()
             .padding(16.dp, 16.dp),
     ) {
-        AddLessonTextField(
-            modifier = Modifier
-                .fillMaxWidth()
-                .wrapContentHeight(),
-            value = exerciseName,
-            onValueChange = { textValue ->
-                exerciseName = textValue
-            },
-            placeholderValue = "운동명"
-        )
+        Row(modifier = Modifier.fillMaxSize()) {
+            AddLessonTextField(
+                modifier = Modifier
+                    .weight(1f)
+                    .wrapContentHeight(),
+                value = exerciseName,
+                onValueChange = { textValue ->
+                    exerciseName = textValue
+                },
+                placeholderValue = "운동명"
+            )
+            WidthSpacer(width = 10.dp)
+            IconButton(onClick = {
+                viewModel.removeExercise(exerciseName)
+            }) {
+                Icon(
+                    painter = painterResource(id = R.drawable.trash),
+//                    imageVector = Icons.Filled.Close,
+                    contentDescription = "Back"
+                )
+            }
+        }
         HeightSpacer(height = LocalFitNoteSpacing.current.spacing4)
-
+        
         Routine(
-            Routine(0, 0, 0),
+            Routine(set = 0, weight = 0, count = 0),
             viewModel = viewModel,
             btnRoutineCloseVisibility = false,
         )
-
+        
         Spacer(modifier = Modifier.height(20.dp))
-        ExpandableCard(
-            header = stringResource(id = R.string.edit_per_set),
+        ExpandableCard(header = stringResource(id = R.string.edit_per_set),
             color = Color.LightGray,
             routineView = { routine ->
                 Routine(
@@ -221,8 +234,7 @@ private fun InputLesson(
                 viewModel.addRoutine(
                     Routine(weight = 0, count = 0)
                 )
-            }
-        )
+            })
     }
 }
 
@@ -234,8 +246,7 @@ private fun AddLessonTextField(
     placeholderValue: String = "",
     suffix: String? = null,
 ) {
-    BasicTextField(
-        modifier = modifier,
+    BasicTextField(modifier = modifier,
         value = value,
         onValueChange = onValueChange,
         textStyle = LocalFitNoteTypography.current.buttonMedium.copy(
@@ -252,11 +263,9 @@ private fun AddLessonTextField(
                     .fillMaxWidth()
                     .wrapContentHeight()
                     .background(
-                        color = GrayScaleLightGray1,
-                        shape = RoundedCornerShape(size = 5.dp)
+                        color = GrayScaleLightGray1, shape = RoundedCornerShape(size = 5.dp)
                     )
-                    .padding(16.dp, 6.dp),
-                verticalAlignment = Alignment.CenterVertically
+                    .padding(16.dp, 6.dp), verticalAlignment = Alignment.CenterVertically
             ) {
                 if (value.isEmpty() && placeholderValue.isNotEmpty()) {
                     DefaultText(
@@ -267,8 +276,7 @@ private fun AddLessonTextField(
                 }
                 innerTextField()
             }
-        }
-    )
+        })
 }
 
 @Composable
@@ -301,8 +309,7 @@ private fun Routine(
             )
         } else {
             AddLessonTextField(
-                modifier = Modifier
-                    .weight(1F),
+                modifier = Modifier.weight(1F),
                 value = "$set",
                 onValueChange = { value ->
                     set = value.toIntOrNull() ?: 0
@@ -323,8 +330,7 @@ private fun Routine(
         )
         WidthSpacer(width = 10.dp)
         AddLessonTextField(
-            modifier = Modifier
-                .weight(1F),
+            modifier = Modifier.weight(1F),
             value = "$count",
             onValueChange = { value ->
                 count = value.toIntOrNull() ?: 0
@@ -347,12 +353,17 @@ private fun Routine(
 }
 
 @Composable
-private fun AddExercise() {
+private fun AddExercise(
+    onClickAddExercise: () -> Unit
+) {
     val stroke = Stroke(
         width = 2f, pathEffect = PathEffect.dashPathEffect(floatArrayOf(10f, 10f), 0f)
     )
     Box(
-        Modifier.fillMaxWidth(), contentAlignment = Alignment.Center
+        Modifier
+            .fillMaxWidth()
+            .clickable { onClickAddExercise() },
+        contentAlignment = Alignment.Center
     ) {
         Canvas(
             modifier = Modifier
@@ -360,9 +371,7 @@ private fun AddExercise() {
                 .height(60.dp)
         ) {
             drawRoundRect(
-                color = Color.LightGray,
-                style = stroke,
-                cornerRadius = CornerRadius(10.dp.toPx())
+                color = Color.LightGray, style = stroke, cornerRadius = CornerRadius(10.dp.toPx())
             )
         }
         Row(
@@ -382,9 +391,7 @@ private fun AddExercise() {
     }
 }
 
-private val mockUiState = AddLessonUiState(
-    title = "mock AddLesson title"
-)
+private val mockUiState = AddLessonUiState()
 
 @FigmaPreview
 @Composable
