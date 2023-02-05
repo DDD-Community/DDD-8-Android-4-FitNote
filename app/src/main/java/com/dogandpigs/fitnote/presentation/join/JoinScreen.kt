@@ -1,7 +1,6 @@
 package com.dogandpigs.fitnote.presentation.join
 
 import android.util.Log
-import android.util.Patterns
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.*
@@ -17,14 +16,15 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.dogandpigs.fitnote.R
 import com.dogandpigs.fitnote.presentation.base.FigmaPreview
 import com.dogandpigs.fitnote.presentation.ui.component.CompleteButton
+import com.dogandpigs.fitnote.presentation.ui.component.DefaultText
 import com.dogandpigs.fitnote.presentation.ui.component.DefaultTextField
 import com.dogandpigs.fitnote.presentation.ui.component.FitNoteScaffold
 import com.dogandpigs.fitnote.presentation.ui.component.HeightSpacer
 import com.dogandpigs.fitnote.presentation.ui.component.passwordVisualTransformation
+import com.dogandpigs.fitnote.presentation.ui.theme.Alert
 import com.dogandpigs.fitnote.presentation.ui.theme.FitNoteTheme
 import com.dogandpigs.fitnote.presentation.ui.theme.GrayScaleMidGray3
 import com.dogandpigs.fitnote.presentation.ui.theme.LocalFitNoteTypography
-import java.util.regex.Pattern
 
 @OptIn(ExperimentalLifecycleComposeApi::class)
 @Composable
@@ -34,6 +34,7 @@ internal fun JoinScreen(
     navigateToLogin: (String) -> Unit,
 ) {
     val state by viewModel.state.collectAsStateWithLifecycle()
+
     LaunchedEffect(state.isJoinSuccess) {
         Log.d("test", "JoinScreen: ")
         if (state.isJoinSuccess) {
@@ -44,11 +45,11 @@ internal fun JoinScreen(
             //        return
         }
     }
+
     Join(
         uiState = state,
         viewModel = viewModel,
         popBackStack = popBackStack,
-        navigateToLogin = navigateToLogin,
     )
 }
 
@@ -57,20 +58,16 @@ private fun Join(
     uiState: JoinUiState,
     viewModel: JoinViewModel,
     popBackStack: () -> Unit,
-    navigateToLogin: (String) -> Unit,
 ) {
     var name by remember { mutableStateOf("") }
     var email by remember { mutableStateOf("") }
     var pwd by remember { mutableStateOf("") }
     var checkPwd by remember { mutableStateOf("") }
 
-    var isNameError by remember { mutableStateOf(false) }
     var isEmailError by remember { mutableStateOf(false) }
     var isPwdError by remember { mutableStateOf(false) }
     var isCheckPwdError by remember { mutableStateOf(false) }
 
-    // TODO true -> false
-    var readyCompletion by remember { mutableStateOf(false) }
     FitNoteScaffold(
         topBarTitle = stringResource(id = R.string.btn_join),
         onClickTopBarNavigationIcon = popBackStack,
@@ -87,10 +84,9 @@ private fun Join(
                  * 이름
                  */
                 DefaultTextField(
-                    isError = isNameError,
                     value = name,
                     onValueChange = { newText ->
-                        isNameError = true
+                        // TODO 정규식 isNameError = true
                         name = newText
                     },
                     labelText = stringResource(id = R.string.name),
@@ -102,19 +98,26 @@ private fun Join(
                 DefaultTextField(
                     isError = isEmailError,
                     value = email,
-                    onValueChange = { emailValue ->
-                        email = emailValue
-                        if (emailValue == "" || Patterns.EMAIL_ADDRESS.matcher(
-                                emailValue
-                            ).matches()
-                        ) {
-                            isEmailError = false
-                            return@DefaultTextField
-                        }
-                        isEmailError = true
+                    onValueChange = { newEmail ->
+                        email = newEmail
+                        isEmailError = viewModel.checkEmail(email)
+                        viewModel.check(
+                            isCheckEmail = !isEmailError,
+                            isCheckPassword = !isPwdError,
+                            isCheckCheckPassword = !isCheckPwdError,
+                        )
                     },
                     labelText = stringResource(id = R.string.email),
                     placeholderText = stringResource(id = R.string.placeholder_email),
+                    supportingText = {
+                        if (isEmailError) {
+                            DefaultText(
+                                text = "이메일 형식에 맞게 입력해주세요",
+                                color = Alert,
+                                style = LocalFitNoteTypography.current.textSmall,
+                            )
+                        }
+                    },
                 )
                 /**
                  * 비밀번호
@@ -122,20 +125,27 @@ private fun Join(
                 DefaultTextField(
                     isError = isPwdError,
                     value = pwd,
-                    onValueChange = { textValue ->
-                        pwd = textValue
-                        if (Pattern.matches("^[a-zA-Z0-9]*\$", pwd)
-                            && pwd.length > 7
-                            && pwd.length < 17
-                        ) {
-                            isPwdError = false
-                            return@DefaultTextField
-                        }
-                        isPwdError = true
+                    onValueChange = { newPwd ->
+                        pwd = newPwd
+                        isPwdError = viewModel.checkPassword(pwd)
+                        viewModel.check(
+                            isCheckEmail = !isEmailError,
+                            isCheckPassword = !isPwdError,
+                            isCheckCheckPassword = !isCheckPwdError,
+                        )
                     },
                     labelText = stringResource(id = R.string.password),
                     placeholderText = stringResource(id = R.string.password),
                     visualTransformation = passwordVisualTransformation,
+                    supportingText = {
+                        if (isPwdError) {
+                            DefaultText(
+                                text = "8-16자의 영문/숫자 조합으로 공백없이 입력해주세요",
+                                color = Alert,
+                                style = LocalFitNoteTypography.current.textSmall,
+                            )
+                        }
+                    },
                 )
                 /**
                  * 비밀번호 확인
@@ -143,20 +153,27 @@ private fun Join(
                 DefaultTextField(
                     isError = isCheckPwdError,
                     value = checkPwd,
-                    onValueChange = { textValue ->
-                        checkPwd = textValue
-                        if (Pattern.matches("^[a-zA-Z0-9]*\$", checkPwd)
-                            && checkPwd.length > 7
-                            && checkPwd.length < 17
-                        ) {
-                            isCheckPwdError = false
-                            return@DefaultTextField
-                        }
-                        isCheckPwdError = true
+                    onValueChange = { newCheckPwd ->
+                        checkPwd = newCheckPwd
+                        isCheckPwdError = viewModel.checkCheckPassword(pwd, checkPwd)
+                        viewModel.check(
+                            isCheckEmail = !isEmailError,
+                            isCheckPassword = !isPwdError,
+                            isCheckCheckPassword = !isCheckPwdError,
+                        )
                     },
                     labelText = stringResource(id = R.string.check_password),
                     placeholderText = stringResource(id = R.string.check_password),
                     visualTransformation = passwordVisualTransformation,
+                    supportingText = {
+                        if (isCheckPwdError) {
+                            DefaultText(
+                                text = "비밀번호가 일치하지 않습니다",
+                                color = Alert,
+                                style = LocalFitNoteTypography.current.textSmall,
+                            )
+                        }
+                    },
                 )
             }
 
@@ -174,28 +191,23 @@ private fun Join(
                 HeightSpacer(height = 99.dp)
             }
 
-            if (readyCompletion) {
-                CompleteButton(
-                    text = stringResource(id = R.string.completion),
-                    onClick = { navigateToLogin(email) },
-                )
-            } else {
-                CompleteButton(
-                    text = stringResource(id = R.string.completion),
-                    onClick = {
-                        viewModel.run {
-                            setState {
-                                copy(
-                                    name = name,
-                                    email = email,
-                                    firstPassword = pwd,
-                                )
-                            }
-                            join()
+            CompleteButton(
+                text = stringResource(id = R.string.completion),
+                isReadyComplete = uiState.isReadyJoin,
+                onClick = {
+                    viewModel.run {
+                        setState {
+                            copy(
+                                name = name,
+                                email = email,
+                                firstPassword = pwd,
+                                verifyPassword = checkPwd,
+                            )
                         }
-                    },
-                )
-            }
+                        join()
+                    }
+                },
+            )
         }
     }
 }
@@ -210,7 +222,6 @@ private fun PreviewJoin() {
             uiState = mockUiState,
             viewModel = hiltViewModel(),
             popBackStack = {},
-            navigateToLogin = {},
         )
     }
 }

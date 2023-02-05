@@ -5,5 +5,6 @@ internal data class JoinUiState(
     val email: String = "",
     val firstPassword: String = "",
     val verifyPassword: String = "",
-    val isJoinSuccess: Boolean = false
+    val isJoinSuccess: Boolean = false,
+    val isReadyJoin: Boolean = false,
 )

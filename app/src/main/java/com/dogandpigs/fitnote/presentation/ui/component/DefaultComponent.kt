@@ -32,13 +32,14 @@ import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import com.dogandpigs.fitnote.R
 import com.dogandpigs.fitnote.presentation.base.FigmaPreview
 import com.dogandpigs.fitnote.presentation.ui.theme.Alert
 import com.dogandpigs.fitnote.presentation.ui.theme.BrandPrimary
 import com.dogandpigs.fitnote.presentation.ui.theme.GrayScaleDarkGray2
+import com.dogandpigs.fitnote.presentation.ui.theme.GrayScaleMidGray1
 import com.dogandpigs.fitnote.presentation.ui.theme.GrayScaleMidGray2
+import com.dogandpigs.fitnote.presentation.ui.theme.GrayScaleWhite
 import com.dogandpigs.fitnote.presentation.ui.theme.LocalFitNoteTypography
 
 @Composable
@@ -89,6 +90,7 @@ internal fun DefaultTextField(
     placeholderText: String,
     visualTransformation: VisualTransformation = VisualTransformation.None,
     keyboardOptions: KeyboardOptions = KeyboardOptions.Default,
+    supportingText: @Composable (() -> Unit)? = null,
 ) {
     val paddingValues = PaddingValues(
         horizontal = 20.dp,
@@ -124,11 +126,16 @@ internal fun DefaultTextField(
         },
         visualTransformation = visualTransformation,
         keyboardOptions = keyboardOptions,
+        supportingText = supportingText,
     )
 }
 
 @Composable
-internal fun CompleteButton(text: String, onClick: () -> Unit) {
+internal fun CompleteButton(
+    text: String,
+    isReadyComplete: Boolean = true,
+    onClick: () -> Unit,
+) {
     val buttonHeight = 52.dp
     val paddingValues = PaddingValues(
         horizontal = 16.dp,
@@ -146,17 +153,23 @@ internal fun CompleteButton(text: String, onClick: () -> Unit) {
                 .fillMaxWidth()
                 .height(buttonHeight)
                 .background(Color.Transparent),
+            enabled = isReadyComplete,
             onClick = onClick,
             shape = RoundedCornerShape(5.dp),
             colors = ButtonDefaults.buttonColors(
-                containerColor = BrandPrimary
-            )
+                containerColor = if (isReadyComplete) {
+                    BrandPrimary
+                } else {
+                    GrayScaleMidGray1
+                }
+            ),
+            border = null,
         ) {
             Text(
                 text = text,
                 textAlign = TextAlign.Center,
-                fontSize = 16.sp,
-                color = Color.White
+                style = LocalFitNoteTypography.current.buttonDefault,
+                color = GrayScaleWhite,
             )
         }
     }
