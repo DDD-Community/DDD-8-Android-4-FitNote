@@ -2,7 +2,6 @@ package com.dogandpigs.fitnote.presentation.lesson.addlesson
 
 import android.os.Build
 import android.util.Log
-import androidx.compose.runtime.referentialEqualityPolicy
 import androidx.lifecycle.viewModelScope
 import com.dogandpigs.fitnote.core.Constants
 import com.dogandpigs.fitnote.data.repository.LessonRepository
@@ -36,29 +35,52 @@ internal class AddLessonViewModel @Inject constructor(
     }
     
     fun addLesson(routine: Routine) = currentState {
-        Log.d(Constants.TAG_DEBUG, "addLesson: ")
         val exerciseList = exerciseList.toMutableList()
+        if (exerciseList.isNotEmpty()) {
+            routine.index = exerciseList.last().index + 1
+        }
         exerciseList.add(routine)
         setState {
             copy(
                 exerciseList = exerciseList
             )
         }
+        exerciseList.forEach {
+            Log.d(Constants.TAG_DEBUG, "addLesson: ${it.index}")
+        }
         viewModelScope.launch {
 //            lessonRepository.addLesson(routine)
         }
     }
     
-    fun removeExercise(name: String) = currentState {
+    fun removeExercise(index: Int, name: String) = currentState {
         val removedList = exerciseList.toMutableList()
         
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
             removedList.removeIf {
-                it.name == name
+                it.index == index
+            }
+            
+            removedList.forEach {
+                Log.d(Constants.TAG_DEBUG, "removeExercise: ${it.index} / ${it.name}")
             }
             setState {
                 copy(exerciseList = removedList)
             }
+        }
+    }
+    
+    fun setLessonName(index: Int, name: String) = currentState {
+        Log.d(Constants.TAG_DEBUG, "setLessonName: [$index] ${name}")
+        val list = exerciseList.toMutableList()
+        val routine = Routine(
+            name = name,
+            index = index
+        )
+        list[index] = routine
+        
+        setState {
+            copy(exerciseList = list)
         }
     }
     

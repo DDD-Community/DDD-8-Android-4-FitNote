@@ -1,7 +1,5 @@
 package com.dogandpigs.fitnote.presentation.lesson.addlesson
 
-import android.telephony.CarrierConfigManager.ImsWfc
-import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
@@ -30,7 +28,6 @@ import androidx.lifecycle.compose.ExperimentalLifecycleComposeApi
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.compose.rememberNavController
 import com.dogandpigs.fitnote.R
-import com.dogandpigs.fitnote.core.Constants
 import com.dogandpigs.fitnote.presentation.base.FigmaPreview
 import com.dogandpigs.fitnote.presentation.lesson.memberlesson.SuffixVisualTransformation
 import com.dogandpigs.fitnote.presentation.ui.component.*
@@ -98,7 +95,7 @@ private fun AddLesson(
                     state,
                     viewModel,
                     onClickAddExercise = {
-//                        viewModel.addLesson()
+                        viewModel.addLesson(Routine())
                     }
                 )
             }
@@ -123,7 +120,7 @@ private fun AddLessonCard(
         ) {
             HeightSpacer(height = LocalFitNoteSpacing.current.spacing5)
             for (i in uiState.exerciseList.indices) {
-                InputLesson(viewModel, uiState)
+                InputLesson(uiState.exerciseList[i], viewModel, uiState)
                 HeightSpacer(height = LocalFitNoteSpacing.current.spacing5)
             }
             AddExercise(onClickAddExercise = onClickAddExercise)
@@ -157,7 +154,9 @@ private fun DateLabel(
             style = LocalFitNoteTypography.current.textDefault,
             onClick = {
                 showDatePicker(
-                    viewModel, dateMilliSeconds, context as AppCompatActivity
+                    viewModel,
+                    dateMilliSeconds,
+                    context as AppCompatActivity
                 )
             })
     }
@@ -178,10 +177,14 @@ private fun showDatePicker(
 
 @Composable
 private fun InputLesson(
-    viewModel: AddLessonViewModel, uiState: AddLessonUiState
+    exercise: Routine,
+    viewModel: AddLessonViewModel,
+    uiState: AddLessonUiState
 ) {
     var exerciseName by remember { mutableStateOf("") }
-    
+    val name = exercise.name.ifBlank {
+        exerciseName
+    }
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -193,19 +196,19 @@ private fun InputLesson(
                 modifier = Modifier
                     .weight(1f)
                     .wrapContentHeight(),
-                value = exerciseName,
+                value = name,
                 onValueChange = { textValue ->
                     exerciseName = textValue
+                    viewModel.setLessonName(exercise.index, exerciseName)
                 },
                 placeholderValue = "운동명"
             )
             WidthSpacer(width = 10.dp)
             IconButton(onClick = {
-                viewModel.removeExercise(exerciseName)
+                viewModel.removeExercise(exercise.index, exerciseName)
             }) {
                 Icon(
                     painter = painterResource(id = R.drawable.trash),
-//                    imageVector = Icons.Filled.Close,
                     contentDescription = "Back"
                 )
             }
