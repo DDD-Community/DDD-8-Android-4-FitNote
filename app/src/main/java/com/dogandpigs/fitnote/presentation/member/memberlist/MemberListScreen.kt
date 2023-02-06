@@ -44,6 +44,7 @@ import com.dogandpigs.fitnote.presentation.base.ComponentPreview
 import com.dogandpigs.fitnote.presentation.ui.component.DebugMenu
 import com.dogandpigs.fitnote.presentation.ui.component.DefaultBottomLargePositiveButton
 import com.dogandpigs.fitnote.presentation.ui.component.DefaultText
+import com.dogandpigs.fitnote.presentation.ui.component.DefaultToast
 import com.dogandpigs.fitnote.presentation.ui.component.FitNoteScaffold
 import com.dogandpigs.fitnote.presentation.ui.component.HeightSpacer
 import com.dogandpigs.fitnote.presentation.ui.component.WidthSpacer
@@ -68,6 +69,7 @@ internal fun MemberListScreen(
 
     var isShowDebugMenu by rememberSaveable { mutableStateOf(false) }
 
+    // FIXME registration true일 경우 MemberListScreen -> 다른 화면 -> Back 시 토스트가 계속 보여지는 이슈
     LaunchedEffect(Unit) {
         viewModel.initialize()
     }
@@ -121,6 +123,12 @@ internal fun MemberListScreen(
                 HeightSpacer(height = LocalFitNoteSpacing.current.spacing5)
             }
 
+            if (registration) {
+                DefaultToast(
+                    text = "회원 등록이 완료되었습니다!",
+                    timeMillis = 3_000L,
+                )
+            }
             if (isShowDebugMenu && BuildConfig.DEBUG) {
                 DebugMenu(
                     "회원 상세 정보" to { navigateToMemberDetail(0) },
