@@ -134,7 +134,7 @@ private fun LessonTabList(
                 modifier = Modifier
                     .weight(1F)
                     .height(tabHeight),
-                title = scheduledLessonTab.name,
+                title = scheduledLessonTab.tabType.title,
                 isSelected = selectedTabType == scheduledLessonTab.tabType,
                 onClickLessonTab = {
                     onClickLessonTab(scheduledLessonTab.tabType)
@@ -144,7 +144,7 @@ private fun LessonTabList(
                 modifier = Modifier
                     .weight(1F)
                     .height(tabHeight),
-                title = completedLessonTab.name,
+                title = completedLessonTab.tabType.title,
                 isSelected = selectedTabType == completedLessonTab.tabType,
                 onClickLessonTab = {
                     onClickLessonTab(completedLessonTab.tabType)
@@ -174,7 +174,7 @@ private fun LessonTabList(
                 )
                 HeightSpacer(height = 26.dp)
                 Text(
-                    text = "${selectedTab.name}이 없습니다!${selectedTab.emptySubText}",
+                    text = "${selectedTab.tabType.title}이 없습니다!${selectedTab.tabType.message}",
                     color = GrayScaleMidGray2,
                     textAlign = TextAlign.Center,
                 )
@@ -369,8 +369,6 @@ private fun AddLessonButton(
 
 internal val previewScheduledLessonTab = MemberLessonListUiState.Tab(
     tabType = MemberLessonListUiState.Tab.TabType.SCHEDULED,
-    name = "예정된 수업",
-    emptySubText = "\n 수업을 추가해보세요!",
     lessons = listOf(
         MemberLessonListUiState.Tab.Lesson(
             dateString = "2022년 12월 25일", exercises = listOf(
@@ -392,8 +390,6 @@ internal val previewScheduledLessonTab = MemberLessonListUiState.Tab(
 )
 internal val previewCompletedLessonTab = MemberLessonListUiState.Tab(
     tabType = MemberLessonListUiState.Tab.TabType.COMPLETED,
-    name = "완료한 수업",
-    emptySubText = "",
     lessons = listOf(
         MemberLessonListUiState.Tab.Lesson(
             dateString = "2022년 12월 25일", exercises = listOf(
