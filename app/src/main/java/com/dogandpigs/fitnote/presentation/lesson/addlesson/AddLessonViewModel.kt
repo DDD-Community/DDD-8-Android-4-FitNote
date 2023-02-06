@@ -84,6 +84,14 @@ internal class AddLessonViewModel @Inject constructor(
         }
     }
     
+    fun addAllLessons() = currentState {
+        viewModelScope.launch {
+            exerciseList.forEach {
+                lessonRepository.addLesson(it)
+            }
+        }
+    }
+    
     private fun sortSet(routineList: MutableList<Routine>): MutableList<Routine> = currentState {
         for (i in routineList.indices) {
             routineList[i].set = i + 1

@@ -99,7 +99,9 @@ private fun AddLesson(
                     }
                 )
             }
-            CompleteButton(stringResource(id = R.string.btn_save), onClick = {})
+            CompleteButton(stringResource(id = R.string.btn_save), onClick = {
+            
+            })
         }
     }
 }
@@ -158,7 +160,8 @@ private fun DateLabel(
                     dateMilliSeconds,
                     context as AppCompatActivity
                 )
-            })
+            }
+        )
     }
 }
 

@@ -12,4 +12,13 @@ class LessonRepository @Inject constructor(
             return body()?.data ?: -1
         }
     }
+    
+    suspend fun getIntendedLessons(id: Int): HashMap<String, Any>? {
+        lessonApi.getIntendedLessonList(id).run {
+            if (!isSuccessful || body() == null || body()?.data == null) {
+                return null
+            }
+            return body()?.data
+        }
+    }
 }

@@ -1,6 +1,7 @@
 package com.dogandpigs.fitnote.presentation.lesson.memberlessonlist
 
 internal data class MemberLessonListUiState(
+    val memberId: Int = 0,
     val userName: String = "",
     val scheduledLessonTab: Tab = previewScheduledLessonTab,
     val completedLessonTab: Tab = previewCompletedLessonTab,

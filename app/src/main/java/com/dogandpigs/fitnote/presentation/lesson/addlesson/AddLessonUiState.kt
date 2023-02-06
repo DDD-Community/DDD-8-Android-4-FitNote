@@ -1,6 +1,7 @@
 package com.dogandpigs.fitnote.presentation.lesson.addlesson
 
 import com.dogandpigs.fitnote.presentation.util.format
+import com.dogandpigs.fitnote.presentation.util.formatYYYYMMDD
 import java.util.Date
 
 internal data class AddLessonUiState(
@@ -13,4 +14,6 @@ internal data class AddLessonUiState(
 ) {
     val dateString: String
         get() = Date(dateMilliSeconds).format()
+    val dateStringYYYYMMDD: String
+        get() = Date(dateMilliSeconds).formatYYYYMMDD()
 }

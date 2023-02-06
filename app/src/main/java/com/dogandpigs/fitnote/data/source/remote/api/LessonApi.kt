@@ -9,4 +9,7 @@ import retrofit2.http.POST
 interface LessonApi {
     @POST
     suspend fun addLesson(@Body lesson: Routine): Response<ResBase<Int>>
+    
+    @POST
+    suspend fun getIntendedLessonList(@Body id: Int): Response<ResBase<HashMap<String, Any>>>
 }

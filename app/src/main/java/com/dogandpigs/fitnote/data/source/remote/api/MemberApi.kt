@@ -14,4 +14,9 @@ interface MemberApi {
     
     @POST("/attention/add/")
     suspend fun addMember(@Body member: Member): Response<ResBase<Any>>
+    
+    @POST("/attention/info/")
+    suspend fun getMemberInfo() {
+    
+    }
 }
