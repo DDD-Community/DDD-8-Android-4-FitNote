@@ -1,5 +1,6 @@
 package com.dogandpigs.fitnote.data.source.remote.api
 
+import com.dogandpigs.fitnote.data.source.remote.model.LessonResponse
 import com.dogandpigs.fitnote.data.source.remote.model.Member
 import com.dogandpigs.fitnote.data.source.remote.model.ResBase
 import com.dogandpigs.fitnote.data.source.remote.model.TrainerInfo
@@ -16,7 +17,5 @@ interface MemberApi {
     suspend fun addMember(@Body member: Member): Response<ResBase<Any>>
     
     @POST("/attention/info/")
-    suspend fun getMemberInfo() {
-    
-    }
+    suspend fun getMemberInfo(): Response<ResBase<LessonResponse>>
 }

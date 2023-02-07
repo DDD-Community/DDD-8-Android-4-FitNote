@@ -132,7 +132,7 @@ private fun NavGraphBuilder.addLesson(
         navigateToAddLesson = { navController.navigate(ROUTE_ADD_LESSON) },
     )
     addAddLesson(
-        route = ROUTE_ADD_LESSON,
+        route = "$ROUTE_ADD_LESSON/${ARGUMENT_MEMBER_ID}",
         popBackStack = { navController.popBackStack() },
         navigateToLoadLesson = { navController.navigate(ROUTE_LOAD_LESSON) },
         navigateToAddExercise = {},

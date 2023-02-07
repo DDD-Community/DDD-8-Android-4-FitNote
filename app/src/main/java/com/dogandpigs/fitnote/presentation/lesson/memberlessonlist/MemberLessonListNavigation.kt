@@ -9,7 +9,7 @@ import com.dogandpigs.fitnote.presentation.navigation.ARGUMENT_MEMBER_ID
 fun NavGraphBuilder.addMemberLessonList(
     route: String,
     popBackStack: () -> Unit,
-    navigateToAddLesson: () -> Unit,
+    navigateToAddLesson: (Int) -> Unit,
 ) {
     val argument = ARGUMENT_MEMBER_ID
 

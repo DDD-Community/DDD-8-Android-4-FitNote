@@ -1,15 +1,17 @@
 package com.dogandpigs.fitnote.data.source.remote.api
 
+import com.dogandpigs.fitnote.data.source.remote.model.LessonResponse
 import com.dogandpigs.fitnote.data.source.remote.model.ResBase
 import com.dogandpigs.fitnote.presentation.lesson.addlesson.Routine
+import com.google.gson.JsonObject
 import retrofit2.Response
 import retrofit2.http.Body
 import retrofit2.http.POST
 
 interface LessonApi {
-    @POST
+    @POST("/hypeboy/add/")
     suspend fun addLesson(@Body lesson: Routine): Response<ResBase<Int>>
     
-    @POST
-    suspend fun getIntendedLessonList(@Body id: Int): Response<ResBase<HashMap<String, Any>>>
+    @POST("/hypeboy/ing/")
+    suspend fun getIntendedLessonList(@Body request: JsonObject): Response<ResBase<LessonResponse>>
 }

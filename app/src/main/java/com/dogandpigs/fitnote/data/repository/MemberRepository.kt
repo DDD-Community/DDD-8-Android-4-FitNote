@@ -1,6 +1,7 @@
 package com.dogandpigs.fitnote.data.repository
 
 import com.dogandpigs.fitnote.data.source.remote.api.MemberApi
+import com.dogandpigs.fitnote.data.source.remote.model.LessonResponse
 import com.dogandpigs.fitnote.data.source.remote.model.Member
 import com.dogandpigs.fitnote.data.source.remote.model.TrainerInfo
 import javax.inject.Inject
@@ -23,6 +24,15 @@ class MemberRepository @Inject constructor(
                 return false
             }
             return true
+        }
+    }
+    
+    suspend fun getMemberInfo(): LessonResponse? {
+        memberApi.getMemberInfo().run {
+            if (!isSuccessful || body() == null || body()?.data == null) {
+                return null
+            }
+            return body()?.data
         }
     }
 }

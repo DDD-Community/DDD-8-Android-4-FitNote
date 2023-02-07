@@ -1,5 +1,6 @@
 package com.dogandpigs.fitnote.presentation.lesson.addlesson
 
+import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
@@ -22,12 +23,14 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.input.VisualTransformation
+import androidx.compose.ui.unit.Constraints
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.ExperimentalLifecycleComposeApi
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.compose.rememberNavController
 import com.dogandpigs.fitnote.R
+import com.dogandpigs.fitnote.core.Constants
 import com.dogandpigs.fitnote.presentation.base.FigmaPreview
 import com.dogandpigs.fitnote.presentation.lesson.memberlesson.SuffixVisualTransformation
 import com.dogandpigs.fitnote.presentation.ui.component.*
@@ -37,11 +40,13 @@ import com.google.android.material.datepicker.MaterialDatePicker
 @OptIn(ExperimentalLifecycleComposeApi::class)
 @Composable
 internal fun AddLessonScreen(
+    memberId: Int,
     viewModel: AddLessonViewModel = hiltViewModel(),
     popBackStack: () -> Unit,
     navigateToLoadLesson: () -> Unit,
     navigateToAddExercise: () -> Unit,
 ) {
+    Log.d(Constants.TAG_DEBUG, "AddLessonScreen: $memberId")
     val state by viewModel.state.collectAsStateWithLifecycle()
     
     AddLesson(

@@ -61,16 +61,17 @@ internal fun MemberLessonListScreen(
     viewModel: MemberLessonListViewModel = hiltViewModel(),
     memberId: Int,
     popBackStack: () -> Unit,
-    navigateToAddLesson: () -> Unit,
+    navigateToAddLesson: (Int) -> Unit,
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
-
+    
     LaunchedEffect(Unit) {
         viewModel.initialize(
             memberId = memberId,
         )
+        viewModel.getIntendedLessonList()
     }
-
+    
     MemberLessonList(
         uiState = uiState,
         popBackStack = popBackStack,
@@ -82,10 +83,10 @@ internal fun MemberLessonListScreen(
 private fun MemberLessonList(
     uiState: MemberLessonListUiState,
     popBackStack: () -> Unit,
-    onClickAddLesson: () -> Unit,
+    onClickAddLesson: (Int) -> Unit,
 ) {
     var selectedTabType by remember { mutableStateOf(MemberLessonListUiState.Tab.TabType.SCHEDULED) }
-
+    
     FitNoteScaffold(
         topBarTitle = "${
             String.format(
@@ -109,9 +110,10 @@ private fun MemberLessonList(
                     }
                 )
             }
-
+            
             if (selectedTabType == MemberLessonListUiState.Tab.TabType.SCHEDULED) {
                 AddLessonButton(
+                    uiState,
                     onClickAddLesson
                 )
             }
@@ -127,7 +129,7 @@ private fun LessonTabList(
     onClickLessonTab: (MemberLessonListUiState.Tab.TabType) -> Unit,
 ) {
     val tabHeight = 42.dp
-
+    
     Column {
         Row {
             LessonTab(
@@ -151,12 +153,12 @@ private fun LessonTabList(
                 },
             )
         }
-
+        
         val selectedTab = when (selectedTabType) {
             MemberLessonListUiState.Tab.TabType.SCHEDULED -> scheduledLessonTab
             MemberLessonListUiState.Tab.TabType.COMPLETED -> completedLessonTab
         }
-
+        
         if (selectedTab.lessons.isEmpty()) {
             Column(
                 modifier = Modifier
@@ -207,13 +209,13 @@ private fun LessonTab(
     } else {
         GrayScaleLightGray2
     }
-
+    
     val textColor = if (isSelected) {
         BrandPrimary
     } else {
         GrayScaleMidGray2
     }
-
+    
     Column(
         modifier = modifier.clickable {
             onClickLessonTab()
@@ -305,7 +307,7 @@ private fun ExerciseItem(
         horizontal = 10.dp,
         vertical = 6.dp,
     )
-
+    
     Text(
         modifier = Modifier
             .clip(RoundedCornerShape(5.dp))
@@ -332,14 +334,15 @@ private fun LessonItemButtons() {
 
 @Composable
 private fun AddLessonButton(
-    onClickAddLesson: () -> Unit,
+    uiState: MemberLessonListUiState,
+    onClickAddLesson: (Int) -> Unit,
 ) {
     val paddingValues = PaddingValues(
         horizontal = 16.dp,
         vertical = 24.dp,
     )
     val buttonHeight = 52.dp
-
+    
     Row(
         modifier = Modifier
             .fillMaxSize()
@@ -348,7 +351,7 @@ private fun AddLessonButton(
         verticalAlignment = Alignment.Bottom
     ) {
         OutlinedButton(
-            onClick = onClickAddLesson,
+            onClick = { onClickAddLesson(uiState.memberId) },
             modifier = Modifier
                 .height(buttonHeight)
                 .fillMaxWidth(),
