@@ -20,7 +20,7 @@ internal class MemberAddViewModel @Inject constructor(
                 userName = name
                 userHeight = height.toDouble()
                 userWeight = weight.toDouble()
-                userGender = gender
+                userGender = gender.value
             }
             viewModelScope.launch {
                 memberRepository.addMember(member).let { result ->
@@ -46,7 +46,7 @@ internal class MemberAddViewModel @Inject constructor(
         copy(weight = weight)
     }
     
-    fun setGender(gender: Int) = setState {
+    fun setGender(gender: MemberAddUiState.Gender) = setState {
         copy(gender = gender)
     }
 }

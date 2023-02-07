@@ -1,25 +1,41 @@
 package com.dogandpigs.fitnote.presentation.member.memberadd
 
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.OutlinedButton
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.ExperimentalLifecycleComposeApi
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.dogandpigs.fitnote.R
 import com.dogandpigs.fitnote.presentation.base.ComponentPreview
 import com.dogandpigs.fitnote.presentation.ui.component.DefaultBottomLargePositiveButton
+import com.dogandpigs.fitnote.presentation.ui.component.DefaultText
 import com.dogandpigs.fitnote.presentation.ui.component.DefaultTextField
 import com.dogandpigs.fitnote.presentation.ui.component.FitNoteScaffold
 import com.dogandpigs.fitnote.presentation.ui.component.HeightSpacer
+import com.dogandpigs.fitnote.presentation.ui.component.WidthSpacer
+import com.dogandpigs.fitnote.presentation.ui.theme.BrandPrimary
 import com.dogandpigs.fitnote.presentation.ui.theme.FitNoteTheme
+import com.dogandpigs.fitnote.presentation.ui.theme.GrayScaleLightGray1
+import com.dogandpigs.fitnote.presentation.ui.theme.GrayScaleLightGray2
+import com.dogandpigs.fitnote.presentation.ui.theme.GrayScaleMidGray2
+import com.dogandpigs.fitnote.presentation.ui.theme.GrayScaleMidGray3
 import com.dogandpigs.fitnote.presentation.ui.theme.LocalFitNoteSpacing
+import com.dogandpigs.fitnote.presentation.ui.theme.LocalFitNoteTypography
+import com.dogandpigs.fitnote.presentation.ui.theme.SubPrimary
 
 @OptIn(ExperimentalLifecycleComposeApi::class)
 @Composable
@@ -64,7 +80,10 @@ private fun MemberAdd(
             ) {
                 HeightSpacer(height = LocalFitNoteSpacing.current.spacing5)
 
-                TextFieldList(viewModel)
+                TextFieldList(
+                    uiState = uiState,
+                    viewModel = viewModel,
+                )
             }
 
             MemberAddButton(
@@ -75,19 +94,17 @@ private fun MemberAdd(
 }
 
 @Composable
-private fun TextFieldList(viewModel: MemberAddViewModel) {
+private fun TextFieldList(
+    uiState: MemberAddUiState,
+    viewModel: MemberAddViewModel,
+) {
     var name by remember { mutableStateOf("") }
     var date by remember { mutableStateOf("") }
-    var gender by remember { mutableStateOf("") }
     var height by remember { mutableStateOf("") }
     var weight by remember { mutableStateOf("") }
 
-    var isNameError by remember { mutableStateOf(false) }
     var isDateError by remember { mutableStateOf(false) }
-    var isGenderError by remember { mutableStateOf(false) }
-    var isCheckPwdError by remember { mutableStateOf(false) }
 
-    
     Column {
         /**
          * 이름
@@ -113,22 +130,14 @@ private fun TextFieldList(viewModel: MemberAddViewModel) {
             labelText = stringResource(id = R.string.registration_date),
             placeholderText = "now",
         )
-        /**
-         * 성별 / 남성
-         */
-        DefaultTextField(
-            value = gender,
-            onValueChange = {
-                gender = it
-                if (it == "남성") {
-                    viewModel.setGender(gender = 1)
-                } else if(it == "여성") {
-                    viewModel.setGender(gender = 2)
-                }
-            },
-            labelText = stringResource(id = R.string.gender),
-            placeholderText = stringResource(id = R.string.gender_male),
+
+        HeightSpacer(height = LocalFitNoteSpacing.current.spacing6)
+        GenderComponent(
+            selectedGender = uiState.gender,
+            onClick = viewModel::setGender,
         )
+        HeightSpacer(height = LocalFitNoteSpacing.current.spacing6)
+
         /**
          * 키 / 165cm -> 100
          */
@@ -152,6 +161,75 @@ private fun TextFieldList(viewModel: MemberAddViewModel) {
             },
             labelText = stringResource(id = R.string.weight),
             placeholderText = stringResource(id = R.string.default_weight),
+        )
+    }
+}
+
+@Composable
+private fun GenderComponent(
+    selectedGender: MemberAddUiState.Gender,
+    onClick: (MemberAddUiState.Gender) -> Unit
+) {
+    Column(
+        modifier = Modifier.padding(
+            horizontal = LocalFitNoteSpacing.current.spacing4,
+        )
+    ) {
+        DefaultText(
+            text = stringResource(id = R.string.gender),
+            color = GrayScaleMidGray2,
+            style = LocalFitNoteTypography.current.textSmall,
+        )
+        HeightSpacer(height = 10.dp)
+        Row {
+            GenderOutlinedButton(
+                gender = MemberAddUiState.Gender.MALE,
+                isSelected = (selectedGender == MemberAddUiState.Gender.MALE),
+                onClick = onClick,
+            )
+            WidthSpacer(width = LocalFitNoteSpacing.current.spacing4)
+            GenderOutlinedButton(
+                gender = MemberAddUiState.Gender.FEMALE,
+                isSelected = (selectedGender == MemberAddUiState.Gender.FEMALE),
+                onClick = onClick,
+            )
+        }
+    }
+}
+
+@Composable
+private fun GenderOutlinedButton(
+    gender: MemberAddUiState.Gender,
+    isSelected: Boolean,
+    onClick: (MemberAddUiState.Gender) -> Unit
+) {
+    OutlinedButton(
+        onClick = { onClick(gender) },
+        shape = RoundedCornerShape(50.dp),
+        colors = ButtonDefaults.buttonColors(
+            containerColor = if (isSelected) {
+                SubPrimary
+            } else {
+                GrayScaleLightGray1
+            },
+        ),
+        border = BorderStroke(
+            1.dp, if (isSelected) {
+                BrandPrimary
+            } else {
+                GrayScaleLightGray2
+            }
+        ),
+        contentPadding = PaddingValues(0.dp)
+    ) {
+        DefaultText(
+            modifier = Modifier.padding(
+                horizontal = 12.dp,
+                vertical = 6.dp,
+            ),
+            text = gender.text,
+            color = GrayScaleMidGray3,
+            style = LocalFitNoteTypography.current.buttonSmall,
         )
     }
 }
