@@ -63,15 +63,15 @@ internal fun MemberLessonListScreen(
     popBackStack: () -> Unit,
     navigateToAddLesson: (Int) -> Unit,
 ) {
-    val uiState by viewModel.uiState.collectAsStateWithLifecycle()
-    
+    val uiState by viewModel.state.collectAsStateWithLifecycle()
+
     LaunchedEffect(Unit) {
         viewModel.initialize(
             memberId = memberId,
         )
         viewModel.getIntendedLessonList()
     }
-    
+
     MemberLessonList(
         uiState = uiState,
         popBackStack = popBackStack,
@@ -86,7 +86,7 @@ private fun MemberLessonList(
     onClickAddLesson: (Int) -> Unit,
 ) {
     var selectedTabType by remember { mutableStateOf(MemberLessonListUiState.Tab.TabType.SCHEDULED) }
-    
+
     FitNoteScaffold(
         topBarTitle = "${
             String.format(
@@ -110,7 +110,7 @@ private fun MemberLessonList(
                     }
                 )
             }
-            
+
             if (selectedTabType == MemberLessonListUiState.Tab.TabType.SCHEDULED) {
                 AddLessonButton(
                     uiState,
@@ -129,7 +129,7 @@ private fun LessonTabList(
     onClickLessonTab: (MemberLessonListUiState.Tab.TabType) -> Unit,
 ) {
     val tabHeight = 42.dp
-    
+
     Column {
         Row {
             LessonTab(
@@ -153,12 +153,12 @@ private fun LessonTabList(
                 },
             )
         }
-        
+
         val selectedTab = when (selectedTabType) {
             MemberLessonListUiState.Tab.TabType.SCHEDULED -> scheduledLessonTab
             MemberLessonListUiState.Tab.TabType.COMPLETED -> completedLessonTab
         }
-        
+
         if (selectedTab.lessons.isEmpty()) {
             Column(
                 modifier = Modifier
@@ -209,13 +209,13 @@ private fun LessonTab(
     } else {
         GrayScaleLightGray2
     }
-    
+
     val textColor = if (isSelected) {
         BrandPrimary
     } else {
         GrayScaleMidGray2
     }
-    
+
     Column(
         modifier = modifier.clickable {
             onClickLessonTab()
@@ -307,7 +307,7 @@ private fun ExerciseItem(
         horizontal = 10.dp,
         vertical = 6.dp,
     )
-    
+
     Text(
         modifier = Modifier
             .clip(RoundedCornerShape(5.dp))
@@ -342,7 +342,7 @@ private fun AddLessonButton(
         vertical = 24.dp,
     )
     val buttonHeight = 52.dp
-    
+
     Row(
         modifier = Modifier
             .fillMaxSize()

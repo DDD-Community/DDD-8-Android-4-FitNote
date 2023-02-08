@@ -8,7 +8,7 @@ import com.dogandpigs.fitnote.presentation.join.addJoin
 import com.dogandpigs.fitnote.presentation.lesson.addlesson.addAddLesson
 import com.dogandpigs.fitnote.presentation.lesson.loadlesson.addLoadLesson
 import com.dogandpigs.fitnote.presentation.lesson.memberlesson.addMemberLesson
-import com.dogandpigs.fitnote.presentation.lesson.memberlessonlist.addMemberLessonList
+import com.dogandpigs.fitnote.presentation.lesson.memberlessonlist.addMemberLessonListScreen
 import com.dogandpigs.fitnote.presentation.login.addLogin
 import com.dogandpigs.fitnote.presentation.login.addLoginWithEmail
 import com.dogandpigs.fitnote.presentation.member.memberadd.addMemberAdd
@@ -126,10 +126,12 @@ private fun NavGraphBuilder.addMember(
 private fun NavGraphBuilder.addLesson(
     navController: NavHostController,
 ) {
-    addMemberLessonList(
+    addMemberLessonListScreen(
         route = "$ROUTE_MEMBER_LESSON_LIST/{$ARGUMENT_MEMBER_ID}",
         popBackStack = { navController.popBackStack() },
-        navigateToAddLesson = { navController.navigate(ROUTE_ADD_LESSON) },
+        navigateToAddLesson = {
+            navController.navigate("$ROUTE_ADD_LESSON/$it")
+        },
     )
     addAddLesson(
         route = "$ROUTE_ADD_LESSON/${ARGUMENT_MEMBER_ID}",

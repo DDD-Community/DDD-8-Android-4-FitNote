@@ -6,7 +6,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
 import com.dogandpigs.fitnote.presentation.navigation.ARGUMENT_MEMBER_ID
 
-fun NavGraphBuilder.addMemberLessonList(
+fun NavGraphBuilder.addMemberLessonListScreen(
     route: String,
     popBackStack: () -> Unit,
     navigateToAddLesson: (Int) -> Unit,
