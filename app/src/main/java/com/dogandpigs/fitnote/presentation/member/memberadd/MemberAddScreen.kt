@@ -9,12 +9,14 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.ExperimentalLifecycleComposeApi
@@ -149,6 +151,7 @@ private fun TextFieldList(
             },
             labelText = stringResource(id = R.string.height),
             placeholderText = stringResource(id = R.string.default_height),
+            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
         )
         /**
          * 몸무게 / 52kg -> 52
@@ -161,6 +164,7 @@ private fun TextFieldList(
             },
             labelText = stringResource(id = R.string.weight),
             placeholderText = stringResource(id = R.string.default_weight),
+            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
         )
     }
 }
