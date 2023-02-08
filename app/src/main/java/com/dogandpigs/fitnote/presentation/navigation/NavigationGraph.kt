@@ -119,7 +119,7 @@ private fun NavGraphBuilder.addMember(
         route = "$ROUTE_MEMBER_DETAIL/{$ARGUMENT_MEMBER_ID}",
         popBackStack = { navController.popBackStack() },
         navigateToMemberEdit = { navController.navigate(ROUTE_MEMBER_EDIT) },
-        navigateToMemberLessonList = { navController.navigate(ROUTE_MEMBER_LESSON_LIST) }
+        navigateToMemberLessonList = { navController.navigate("$ROUTE_MEMBER_LESSON_LIST/$it") },
     )
 }
 
