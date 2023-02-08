@@ -1,5 +1,6 @@
 package com.dogandpigs.fitnote.presentation.member.memberadd
 
+import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
@@ -9,13 +10,16 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.ClickableText
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -38,6 +42,9 @@ import com.dogandpigs.fitnote.presentation.ui.theme.GrayScaleMidGray3
 import com.dogandpigs.fitnote.presentation.ui.theme.LocalFitNoteSpacing
 import com.dogandpigs.fitnote.presentation.ui.theme.LocalFitNoteTypography
 import com.dogandpigs.fitnote.presentation.ui.theme.SubPrimary
+import com.dogandpigs.fitnote.presentation.util.format
+import com.google.android.material.datepicker.MaterialDatePicker
+import java.util.Date
 
 @OptIn(ExperimentalLifecycleComposeApi::class)
 @Composable
@@ -82,7 +89,7 @@ private fun MemberAdd(
             ) {
                 HeightSpacer(height = LocalFitNoteSpacing.current.spacing5)
 
-                TextFieldList(
+                MemberInfoList(
                     uiState = uiState,
                     viewModel = viewModel,
                 )
@@ -96,16 +103,16 @@ private fun MemberAdd(
 }
 
 @Composable
-private fun TextFieldList(
+private fun MemberInfoList(
     uiState: MemberAddUiState,
     viewModel: MemberAddViewModel,
 ) {
+    val context = LocalContext.current
+
     var name by remember { mutableStateOf("") }
-    var date by remember { mutableStateOf("") }
+    var dateMilliSeconds by remember { mutableStateOf(System.currentTimeMillis()) }
     var height by remember { mutableStateOf("") }
     var weight by remember { mutableStateOf("") }
-
-    var isDateError by remember { mutableStateOf(false) }
 
     Column {
         /**
@@ -123,22 +130,24 @@ private fun TextFieldList(
         /**
          * 등록일 / 2022년 11월 18일
          */
-        DefaultTextField(
-            isError = isDateError,
-            value = date,
-            onValueChange = {
-                date = it
-            },
-            labelText = stringResource(id = R.string.registration_date),
-            placeholderText = "now",
-        )
+        MemberInfoItem(
+            text = stringResource(id = R.string.registration_date),
+        ) {
+            DateComponent(
+                activity = context as AppCompatActivity,
+                dateMilliSeconds = dateMilliSeconds,
+                changeDateMilliSeconds = { dateMilliSeconds = it },
+            )
+        }
 
-        HeightSpacer(height = LocalFitNoteSpacing.current.spacing6)
-        GenderComponent(
-            selectedGender = uiState.gender,
-            onClick = viewModel::setGender,
-        )
-        HeightSpacer(height = LocalFitNoteSpacing.current.spacing6)
+        MemberInfoItem(
+            text = stringResource(id = R.string.gender),
+        ) {
+            GenderComponent(
+                selectedGender = uiState.gender,
+                onClick = viewModel::setGender,
+            )
+        }
 
         /**
          * 키 / 165cm -> 100
@@ -170,34 +179,79 @@ private fun TextFieldList(
 }
 
 @Composable
-private fun GenderComponent(
-    selectedGender: MemberAddUiState.Gender,
-    onClick: (MemberAddUiState.Gender) -> Unit
+private fun MemberInfoItem(
+    text: String,
+    content: @Composable () -> Unit,
 ) {
+    HeightSpacer(height = LocalFitNoteSpacing.current.spacing6)
     Column(
         modifier = Modifier.padding(
-            horizontal = LocalFitNoteSpacing.current.spacing4,
+            horizontal = LocalFitNoteSpacing.current.spacing5,
         )
     ) {
         DefaultText(
-            text = stringResource(id = R.string.gender),
+            text = text,
             color = GrayScaleMidGray2,
             style = LocalFitNoteTypography.current.textSmall,
         )
         HeightSpacer(height = 10.dp)
-        Row {
-            GenderOutlinedButton(
-                gender = MemberAddUiState.Gender.MALE,
-                isSelected = (selectedGender == MemberAddUiState.Gender.MALE),
-                onClick = onClick,
-            )
-            WidthSpacer(width = LocalFitNoteSpacing.current.spacing4)
-            GenderOutlinedButton(
-                gender = MemberAddUiState.Gender.FEMALE,
-                isSelected = (selectedGender == MemberAddUiState.Gender.FEMALE),
-                onClick = onClick,
+
+        content()
+    }
+    HeightSpacer(height = LocalFitNoteSpacing.current.spacing6)
+}
+
+@Composable
+private fun DateComponent(
+    activity: AppCompatActivity,
+    dateMilliSeconds: Long,
+    changeDateMilliSeconds: (Long) -> Unit,
+) {
+    ClickableText(
+        text = AnnotatedString(Date(dateMilliSeconds).format()),
+        style = LocalFitNoteTypography.current.textDefault,
+        onClick = {
+            showDatePicker(
+                activity = activity,
+                dateMilliSeconds = dateMilliSeconds,
+                changeDateMilliSeconds = changeDateMilliSeconds,
             )
         }
+    )
+}
+
+private fun showDatePicker(
+    activity: AppCompatActivity,
+    dateMilliSeconds: Long,
+    changeDateMilliSeconds: (Long) -> Unit,
+) {
+    val fm = activity.supportFragmentManager
+    val picker = MaterialDatePicker.Builder.datePicker().setSelection(dateMilliSeconds).build()
+    fm.let {
+        picker.show(fm, picker.toString())
+        picker.addOnPositiveButtonClickListener {
+            changeDateMilliSeconds(it)
+        }
+    }
+}
+
+@Composable
+private fun GenderComponent(
+    selectedGender: MemberAddUiState.Gender,
+    onClick: (MemberAddUiState.Gender) -> Unit
+) {
+    Row {
+        GenderOutlinedButton(
+            gender = MemberAddUiState.Gender.MALE,
+            isSelected = (selectedGender == MemberAddUiState.Gender.MALE),
+            onClick = onClick,
+        )
+        WidthSpacer(width = LocalFitNoteSpacing.current.spacing4)
+        GenderOutlinedButton(
+            gender = MemberAddUiState.Gender.FEMALE,
+            isSelected = (selectedGender == MemberAddUiState.Gender.FEMALE),
+            onClick = onClick,
+        )
     }
 }
 
