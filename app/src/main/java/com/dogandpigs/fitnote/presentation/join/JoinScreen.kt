@@ -3,12 +3,19 @@ package com.dogandpigs.fitnote.presentation.join
 import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.text.ClickableText
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.AnnotatedString
+import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.buildAnnotatedString
+import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.ExperimentalLifecycleComposeApi
@@ -22,8 +29,8 @@ import com.dogandpigs.fitnote.presentation.ui.component.FitNoteScaffold
 import com.dogandpigs.fitnote.presentation.ui.component.HeightSpacer
 import com.dogandpigs.fitnote.presentation.ui.component.passwordVisualTransformation
 import com.dogandpigs.fitnote.presentation.ui.theme.Alert
+import com.dogandpigs.fitnote.presentation.ui.theme.BrandPrimary
 import com.dogandpigs.fitnote.presentation.ui.theme.FitNoteTheme
-import com.dogandpigs.fitnote.presentation.ui.theme.GrayScaleMidGray3
 import com.dogandpigs.fitnote.presentation.ui.theme.LocalFitNoteTypography
 
 @OptIn(ExperimentalLifecycleComposeApi::class)
@@ -180,11 +187,7 @@ private fun Join(
                 horizontalAlignment = Alignment.CenterHorizontally,
                 verticalArrangement = Arrangement.Bottom
             ) {
-                Text(
-                    text = stringResource(id = R.string.terms_and_conditions),
-                    color = GrayScaleMidGray3,
-                    style = LocalFitNoteTypography.current.textSmall,
-                )
+                JoinInfo()
                 HeightSpacer(height = 99.dp)
             }
 
@@ -205,6 +208,51 @@ private fun Join(
             )
         }
     }
+}
+
+@Composable
+private fun JoinInfo() {
+    val linkText = stringResource(id = R.string.personal_policy)
+    val tag = "URL"
+    val url = "https://fitnote.notion.site/fitnote/f6b7a4feb0fc4c13b5a860baa82006e0"
+
+    val annotatedLinkString: AnnotatedString = buildAnnotatedString {
+        val text = stringResource(id = R.string.terms_and_conditions)
+        val startIndex = text.indexOf(linkText)
+        val endIndex = startIndex + linkText.length
+        append(text)
+        addStyle(
+            style = LocalFitNoteTypography.current.textSmall
+                .toSpanStyle()
+                .copy(
+                    color = BrandPrimary,
+                    textDecoration = TextDecoration.Underline,
+                ),
+            start = startIndex,
+            end = endIndex,
+        )
+
+        addStringAnnotation(
+            tag = tag,
+            annotation = url,
+            start = startIndex,
+            end = endIndex,
+        )
+    }
+
+    val uriHandler = LocalUriHandler.current
+
+    ClickableText(
+        text = annotatedLinkString,
+        style = LocalFitNoteTypography.current.textSmall + TextStyle(textAlign = TextAlign.Center),
+        onClick = {
+            annotatedLinkString
+                .getStringAnnotations(tag, it, it)
+                .firstOrNull()?.let { stringAnnotation ->
+                    uriHandler.openUri(stringAnnotation.item)
+                }
+        },
+    )
 }
 
 private val mockUiState = JoinUiState()

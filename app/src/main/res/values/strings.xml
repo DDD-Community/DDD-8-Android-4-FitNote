@@ -26,7 +26,8 @@
     <string name="btn_add_member">회원 추가</string>
 
     <string name="completion">완료</string>
-    <string name="terms_and_conditions">회원가입하시면 핏노트의 개인정보처리방침 및\n이용약관에 동의하는 것으로 간주합니다.</string>록
+    <string name="terms_and_conditions">회원가입하시면 핏노트의 개인정보처리방침 및\n이용약관에 동의하는 것으로 간주합니다.</string>
+    <string name="personal_policy">개인정보처리방침</string>
     <string name="registration">등록</string>
     <string name="member_registration">회원 등록</string>
     <string name="registration_date">등록일</string>
