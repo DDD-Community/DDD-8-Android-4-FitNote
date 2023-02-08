@@ -7,7 +7,6 @@ import com.dogandpigs.fitnote.data.repository.AccountRepository
 import com.dogandpigs.fitnote.data.source.remote.model.JoinRequest
 import com.dogandpigs.fitnote.presentation.base.BaseViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.launch
 import java.util.regex.Pattern
 import javax.inject.Inject
@@ -16,17 +15,15 @@ import javax.inject.Inject
 internal class JoinViewModel @Inject constructor(
     private val accountRepo: AccountRepository
 ) : BaseViewModel<JoinUiState>() {
-    override fun createInitialState(): JoinUiState = JoinUiState()
-    val uiState: MutableStateFlow<JoinUiState> = MutableStateFlow(JoinUiState())
+    override fun createInitialState(): com.dogandpigs.fitnote.presentation.join.JoinUiState =
+        JoinUiState()
 
     fun check(
-        isCheckEmail: Boolean,
-        isCheckPassword: Boolean,
-        isCheckCheckPassword: Boolean,
+        value: Boolean,
     ) {
         setState {
             copy(
-                isReadyJoin = (isCheckEmail && isCheckPassword && isCheckCheckPassword)
+                isReadyJoin = value,
             )
         }
     }
@@ -40,6 +37,17 @@ internal class JoinViewModel @Inject constructor(
 
     fun checkCheckPassword(password: String, checkPassword: String): Boolean =
         password != checkPassword
+
+    fun setUiState(joinUiState: JoinUiState) = currentState {
+        setState {
+            copy(
+                name = joinUiState.name,
+                email = joinUiState.email,
+                firstPassword = joinUiState.firstPassword,
+                verifyPassword = joinUiState.verifyPassword,
+            )
+        }
+    }
 
     fun join() = currentState {
         viewModelScope.launch {
@@ -63,4 +71,11 @@ internal class JoinViewModel @Inject constructor(
             }
         }
     }
+
+    data class JoinUiState(
+        val name: String,
+        val email: String,
+        val firstPassword: String,
+        val verifyPassword: String,
+    )
 }

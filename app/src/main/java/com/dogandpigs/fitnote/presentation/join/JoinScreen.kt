@@ -48,7 +48,12 @@ internal fun JoinScreen(
 
     Join(
         uiState = state,
-        viewModel = viewModel,
+        checkEmail = viewModel::checkEmail,
+        checkPassword = viewModel::checkPassword,
+        checkCheckPassword = viewModel::checkCheckPassword,
+        check = viewModel::check,
+        setUiState = viewModel::setUiState,
+        join = viewModel::join,
         popBackStack = popBackStack,
     )
 }
@@ -56,7 +61,12 @@ internal fun JoinScreen(
 @Composable
 private fun Join(
     uiState: JoinUiState,
-    viewModel: JoinViewModel,
+    checkEmail: (String) -> Boolean,
+    checkPassword: (String) -> Boolean,
+    checkCheckPassword: (password: String, checkPassword: String) -> Boolean,
+    check: (Boolean) -> Unit,
+    setUiState: (JoinViewModel.JoinUiState) -> Unit,
+    join: () -> Unit,
     popBackStack: () -> Unit,
 ) {
     var name by remember { mutableStateOf("") }
@@ -100,12 +110,8 @@ private fun Join(
                     value = email,
                     onValueChange = { newEmail ->
                         email = newEmail
-                        isEmailError = viewModel.checkEmail(email)
-                        viewModel.check(
-                            isCheckEmail = !isEmailError,
-                            isCheckPassword = !isPwdError,
-                            isCheckCheckPassword = !isCheckPwdError,
-                        )
+                        isEmailError = checkEmail(email)
+                        check(!isEmailError && !isPwdError && !isCheckPwdError)
                     },
                     labelText = stringResource(id = R.string.email),
                     placeholderText = stringResource(id = R.string.placeholder_email),
@@ -127,12 +133,8 @@ private fun Join(
                     value = pwd,
                     onValueChange = { newPwd ->
                         pwd = newPwd
-                        isPwdError = viewModel.checkPassword(pwd)
-                        viewModel.check(
-                            isCheckEmail = !isEmailError,
-                            isCheckPassword = !isPwdError,
-                            isCheckCheckPassword = !isCheckPwdError,
-                        )
+                        isPwdError = checkPassword(pwd)
+                        check(!isEmailError && !isPwdError && !isCheckPwdError)
                     },
                     labelText = stringResource(id = R.string.password),
                     placeholderText = stringResource(id = R.string.password),
@@ -155,12 +157,8 @@ private fun Join(
                     value = checkPwd,
                     onValueChange = { newCheckPwd ->
                         checkPwd = newCheckPwd
-                        isCheckPwdError = viewModel.checkCheckPassword(pwd, checkPwd)
-                        viewModel.check(
-                            isCheckEmail = !isEmailError,
-                            isCheckPassword = !isPwdError,
-                            isCheckCheckPassword = !isCheckPwdError,
-                        )
+                        isCheckPwdError = checkCheckPassword(pwd, checkPwd)
+                        check(!isEmailError && !isPwdError && !isCheckPwdError)
                     },
                     labelText = stringResource(id = R.string.check_password),
                     placeholderText = stringResource(id = R.string.check_password),
@@ -178,8 +176,7 @@ private fun Join(
             }
 
             Column(
-                modifier = Modifier
-                    .fillMaxSize(),
+                modifier = Modifier.fillMaxSize(),
                 horizontalAlignment = Alignment.CenterHorizontally,
                 verticalArrangement = Arrangement.Bottom
             ) {
@@ -195,17 +192,15 @@ private fun Join(
                 text = stringResource(id = R.string.completion),
                 isReadyComplete = uiState.isReadyJoin,
                 onClick = {
-                    viewModel.run {
-                        setState {
-                            copy(
-                                name = name,
-                                email = email,
-                                firstPassword = pwd,
-                                verifyPassword = checkPwd,
-                            )
-                        }
-                        join()
-                    }
+                    setUiState(
+                        JoinViewModel.JoinUiState(
+                            name = name,
+                            email = email,
+                            firstPassword = pwd,
+                            verifyPassword = checkPwd,
+                        )
+                    )
+                    join()
                 },
             )
         }
@@ -220,7 +215,12 @@ private fun PreviewJoin() {
     FitNoteTheme {
         Join(
             uiState = mockUiState,
-            viewModel = hiltViewModel(),
+            checkEmail = { true },
+            checkPassword = { true },
+            checkCheckPassword = { _: String, _: String -> true },
+            check = {},
+            setUiState = {},
+            join = {},
             popBackStack = {},
         )
     }
