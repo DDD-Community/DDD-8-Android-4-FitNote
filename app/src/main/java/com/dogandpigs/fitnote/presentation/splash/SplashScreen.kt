@@ -7,7 +7,10 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -156,7 +159,6 @@ private fun JoinOrLogin(
         modifier = Modifier
             .fillMaxSize()
             .background(color = Color.White),
-        verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         HeightSpacer(height = 80.dp)
@@ -170,18 +172,27 @@ private fun JoinOrLogin(
             painter = painterResource(id = R.drawable.image_fitnote_splash),
             contentDescription = null,
         )
-        HeightSpacer(height = 205.dp)
-        DefaultPositiveButton(
-            positiveText = stringResource(id = R.string.btn_join),
-            buttonTextStyle = LocalFitNoteTypography.current.buttonDefault,
-            onClickPositive = navigateToJoin,
-        )
-        HeightSpacer(height = 24.dp)
-        DefaultNegativeButton(
-            negativeText = stringResource(id = R.string.btn_login),
-            buttonTextStyle = LocalFitNoteTypography.current.buttonDefault,
-            onClickNegative = navigateToLogin,
-        )
+        Spacer(modifier = Modifier.weight(1f))
+        Column(
+            modifier = Modifier
+                .fillMaxWidth()
+                .wrapContentHeight(),
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.Bottom,
+        ) {
+            DefaultPositiveButton(
+                positiveText = stringResource(id = R.string.btn_join),
+                buttonTextStyle = LocalFitNoteTypography.current.buttonDefault,
+                onClickPositive = navigateToJoin,
+            )
+            HeightSpacer(height = 24.dp)
+            DefaultNegativeButton(
+                negativeText = stringResource(id = R.string.btn_login),
+                buttonTextStyle = LocalFitNoteTypography.current.buttonDefault,
+                onClickNegative = navigateToLogin,
+            )
+            HeightSpacer(height = 40.dp)
+        }
     }
 }
 
