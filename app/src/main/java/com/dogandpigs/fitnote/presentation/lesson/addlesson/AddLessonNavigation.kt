@@ -6,18 +6,26 @@ import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
 import com.dogandpigs.fitnote.presentation.navigation.ARGUMENT_MEMBER_ID
 
-fun NavGraphBuilder.addAddLesson(
+fun NavGraphBuilder.addAddLessonScreen(
     route: String,
     popBackStack: () -> Unit,
     navigateToLoadLesson: () -> Unit,
     navigateToAddExercise: () -> Unit,
 ) {
     val argument = ARGUMENT_MEMBER_ID
+
     composable(
         route = route,
-        arguments = listOf(navArgument(argument) { type = NavType.IntType })
+        arguments = listOf(
+            navArgument(argument) {
+                type = NavType.IntType
+                nullable = false
+                defaultValue = 0
+            }
+        )
     ) {
         val memberId = it.arguments?.getInt(argument, 0) ?: 0
+
         AddLessonScreen(
             memberId = memberId,
             popBackStack = popBackStack,
