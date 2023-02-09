@@ -1,6 +1,5 @@
 package com.dogandpigs.fitnote.presentation.lesson.addlesson
 
-import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
@@ -23,14 +22,12 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.input.VisualTransformation
-import androidx.compose.ui.unit.Constraints
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.ExperimentalLifecycleComposeApi
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.compose.rememberNavController
 import com.dogandpigs.fitnote.R
-import com.dogandpigs.fitnote.core.Constants
 import com.dogandpigs.fitnote.presentation.base.FigmaPreview
 import com.dogandpigs.fitnote.presentation.lesson.memberlesson.SuffixVisualTransformation
 import com.dogandpigs.fitnote.presentation.ui.component.*
@@ -46,9 +43,8 @@ internal fun AddLessonScreen(
     navigateToLoadLesson: () -> Unit,
     navigateToAddExercise: () -> Unit,
 ) {
-    Log.d(Constants.TAG_DEBUG, "AddLessonScreen: $memberId")
     val state by viewModel.state.collectAsStateWithLifecycle()
-    
+    viewModel.setMemberId(memberId)
     AddLesson(
         viewModel,
         state = state,
@@ -61,7 +57,7 @@ internal fun AddLessonScreen(
 @Composable
 private fun AddLesson(
     viewModel: AddLessonViewModel,
-    state: AddLessonUiState,
+    state: AddLessonState,
     onClickClose: () -> Unit = {},
     onClickLoadLesson: () -> Unit = {},
     onClickAddExercise: () -> Unit = {},
@@ -94,7 +90,9 @@ private fun AddLesson(
                     .verticalScroll(scrollState), horizontalAlignment = Alignment.CenterHorizontally
             ) {
                 DateLabel(
-                    viewModel, state.dateMilliSeconds, state.dateString
+                    viewModel,
+                    state.dateMilliSeconds,
+                    state.dateString
                 )
                 AddLessonCard(
                     state,
@@ -105,7 +103,7 @@ private fun AddLesson(
                 )
             }
             CompleteButton(stringResource(id = R.string.btn_save), onClick = {
-            
+                viewModel.addAllLessons()
             })
         }
     }
@@ -113,7 +111,7 @@ private fun AddLesson(
 
 @Composable
 private fun AddLessonCard(
-    uiState: AddLessonUiState,
+    uiState: AddLessonState,
     viewModel: AddLessonViewModel,
     onClickAddExercise: () -> Unit = {}
 ) {
@@ -178,7 +176,11 @@ private fun showDatePicker(
     fm.let {
         picker.show(fm, picker.toString())
         picker.addOnPositiveButtonClickListener {
-            viewModel.setState { copy(dateMilliSeconds = it) }
+            viewModel.setState {
+                copy(dateMilliSeconds = it)
+            }
+            
+            viewModel.setLessonDate()
         }
     }
 }
@@ -187,7 +189,7 @@ private fun showDatePicker(
 private fun InputLesson(
     exercise: Routine,
     viewModel: AddLessonViewModel,
-    uiState: AddLessonUiState
+    uiState: AddLessonState
 ) {
     var exerciseName by remember { mutableStateOf("") }
     val name = exercise.name.ifBlank {
@@ -224,6 +226,7 @@ private fun InputLesson(
         HeightSpacer(height = LocalFitNoteSpacing.current.spacing4)
         
         Routine(
+            index = exercise.index,
             Routine(set = 0, weight = 0, count = 0),
             viewModel = viewModel,
             btnRoutineCloseVisibility = false,
@@ -234,6 +237,7 @@ private fun InputLesson(
             color = Color.LightGray,
             routineView = { routine ->
                 Routine(
+                    index = exercise.index,
                     routine = routine,
                     viewModel = viewModel,
                     btnRoutineCloseVisibility = true,
@@ -292,6 +296,7 @@ private fun AddLessonTextField(
 
 @Composable
 private fun Routine(
+    index: Int,
     routine: Routine,
     viewModel: AddLessonViewModel,
     btnRoutineCloseVisibility: Boolean,
@@ -324,6 +329,7 @@ private fun Routine(
                 value = "$set",
                 onValueChange = { value ->
                     set = value.toIntOrNull() ?: 0
+                    viewModel.setLessonSet(index = index, set = set)
                 },
                 suffix = "세트",
             )
@@ -336,6 +342,7 @@ private fun Routine(
             value = "$weight",
             onValueChange = { value ->
                 weight = value.toIntOrNull() ?: 0
+                viewModel.setLessonWeight(index, weight)
             },
             suffix = "kg",
         )
@@ -345,6 +352,7 @@ private fun Routine(
             value = "$count",
             onValueChange = { value ->
                 count = value.toIntOrNull() ?: 0
+                viewModel.setLessonCount(index, count)
             },
             suffix = "회",
         )
@@ -402,7 +410,7 @@ private fun AddExercise(
     }
 }
 
-private val mockUiState = AddLessonUiState()
+private val mockUiState = AddLessonState()
 
 @FigmaPreview
 @Composable

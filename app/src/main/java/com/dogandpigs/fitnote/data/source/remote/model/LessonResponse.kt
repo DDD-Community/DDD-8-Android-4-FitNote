@@ -7,7 +7,7 @@ data class LessonResponse (
     val memberInfo: Description = Description(),
     
     @SerializedName("getLessonInfo")
-    val lessonIngo: Description = Description()
+    val lessonInfo: List<Description> = mutableListOf()
 ) {
     data class Description(
         @SerializedName("user_id")
@@ -49,7 +49,7 @@ data class LessonResponse (
         @SerializedName("lessons_date")
         val lessonsDate: String = "",
         
-        @SerializedName("lessonsName")
-        val lessonsName: String = ""
+        @SerializedName("lessons_name")
+        val lessonsName: List<String> = mutableListOf()
     )
 }

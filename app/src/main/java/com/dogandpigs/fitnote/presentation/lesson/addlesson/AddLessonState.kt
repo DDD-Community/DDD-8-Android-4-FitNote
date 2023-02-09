@@ -4,13 +4,14 @@ import com.dogandpigs.fitnote.presentation.util.format
 import com.dogandpigs.fitnote.presentation.util.formatYYYYMMDD
 import java.util.Date
 
-internal data class AddLessonUiState(
+internal data class AddLessonState(
+    val id: Int = 0,
     val dateMilliSeconds: Long = System.currentTimeMillis(),
     val btnRoutineCloseVisibility: Boolean = false,
     val routineList: List<Routine> = emptyList(),
     val isExpand: Boolean = false,
-    val maxRoutine: Routine = Routine(),
-    val exerciseList: List<Routine> = emptyList()
+    val exerciseList: List<Routine> = emptyList(),
+    val currentRoutine: Routine = Routine()
 ) {
     val dateString: String
         get() = Date(dateMilliSeconds).format()

@@ -13,8 +13,13 @@ import javax.inject.Inject
 @HiltViewModel
 internal class AddLessonViewModel @Inject constructor(
     private val lessonRepository: LessonRepository
-) : BaseViewModel<AddLessonUiState>() {
-    override fun createInitialState(): AddLessonUiState = AddLessonUiState()
+) : BaseViewModel<AddLessonState>() {
+    override fun createInitialState(): AddLessonState = AddLessonState()
+    
+    
+    fun setMemberId(memberId: Int) = currentState {
+        setState { copy(id = memberId) }
+    }
     
     fun addRoutine(routine: Routine) = currentState {
         val routineList = routineList.toMutableList()
@@ -71,14 +76,74 @@ internal class AddLessonViewModel @Inject constructor(
     }
     
     fun setLessonName(index: Int, name: String) = currentState {
-        Log.d(Constants.TAG_DEBUG, "setLessonName: [$index] ${name}")
         val list = exerciseList.toMutableList()
-        val routine = Routine(
-            name = name,
-            index = index
+        val routine = currentRoutine.copy(
+            index = index,
+            name = name
+        )
+        setState {
+            copy(currentRoutine = routine)
+        }
+        list[index] = routine
+        setState {
+            copy(exerciseList = list)
+        }
+    }
+    
+    fun setLessonDate() = currentState {
+        val list = exerciseList.toMutableList()
+        val routine = currentRoutine.copy(
+            today = dateString
+        )
+        setState {
+            copy(currentRoutine = routine)
+        }
+        list[currentRoutine.index] = routine
+        setState {
+            copy(exerciseList = list)
+        }
+    }
+    
+    
+    fun setLessonWeight(index: Int, weight: Int) = currentState {
+        val list = exerciseList.toMutableList()
+        val routine = currentRoutine.copy(
+            weight = weight,
+        )
+        
+        list[index] = routine
+        setState {
+            copy(currentRoutine = routine)
+        }
+        setState {
+            copy(exerciseList = list)
+        }
+    }
+    
+    fun setLessonCount(index: Int, count: Int) = currentState {
+        val list = exerciseList.toMutableList()
+        val routine = currentRoutine.copy(
+            count = count
         )
         list[index] = routine
         
+        setState {
+            copy(currentRoutine = routine)
+        }
+        setState {
+            copy(exerciseList = list)
+        }
+    }
+    
+    fun setLessonSet(index: Int, set: Int) = currentState {
+        val list = exerciseList.toMutableList()
+        val routine = currentRoutine.copy(
+            set = set
+        )
+        list[index] = routine
+        setState {
+            copy(currentRoutine = routine)
+        }
         setState {
             copy(exerciseList = list)
         }
@@ -86,8 +151,11 @@ internal class AddLessonViewModel @Inject constructor(
     
     fun addAllLessons() = currentState {
         viewModelScope.launch {
-            exerciseList.forEach {
-                lessonRepository.addLesson(it)
+            exerciseList.forEach { routine ->
+                routine.id = id
+                routine.today = dateString
+                lessonRepository.addLesson(routine)
+                Log.d(Constants.TAG_DEBUG, "addAllLessons: ${routine.name}")
             }
         }
     }

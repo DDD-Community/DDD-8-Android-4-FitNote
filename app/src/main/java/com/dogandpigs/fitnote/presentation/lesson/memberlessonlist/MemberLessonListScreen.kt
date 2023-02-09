@@ -1,5 +1,6 @@
 package com.dogandpigs.fitnote.presentation.lesson.memberlessonlist
 
+import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -42,6 +43,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.ExperimentalLifecycleComposeApi
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.dogandpigs.fitnote.R
+import com.dogandpigs.fitnote.core.Constants
 import com.dogandpigs.fitnote.presentation.base.FigmaPreview
 import com.dogandpigs.fitnote.presentation.ui.component.DefaultTwoButton
 import com.dogandpigs.fitnote.presentation.ui.component.FitNoteScaffold
@@ -271,7 +273,7 @@ private fun LessonItem(
         HeightSpacer(height = 16.dp)
         Row {
             Text(
-                text = "2022년 12월 25일",
+                text = lesson.dateString,
                 fontSize = 16.sp,
             )
         }
@@ -293,6 +295,7 @@ private fun ExerciseRow(
         modifier = Modifier.horizontalScroll(rememberScrollState())
     ) {
         for (exercise in exercises) {
+            Log.d(Constants.TAG_DEBUG, "ExerciseRow: ${exercise}")
             ExerciseItem(exercise)
             WidthSpacer(width = 16.dp)
         }
