@@ -26,7 +26,7 @@ internal class MemberLessonListViewModel @Inject constructor(
         getCompletedLessonList()
     }
     
-    fun getIntendedLessonList() = currentState {
+    private fun getIntendedLessonList() = currentState {
         viewModelScope.launch {
             lessonRepository.getIntendedLessons(memberId)?.run {
                 val lessonList = mutableListOf<MemberLessonListUiState.Tab.Lesson>()
@@ -49,7 +49,7 @@ internal class MemberLessonListViewModel @Inject constructor(
         }
     }
     
-    fun getCompletedLessonList() = currentState {
+    private fun getCompletedLessonList() = currentState {
         viewModelScope.launch {
             lessonRepository.getCompletedLessons(memberId)?.run {
                 val lessonList = mutableListOf<MemberLessonListUiState.Tab.Lesson>()

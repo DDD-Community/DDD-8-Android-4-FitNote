@@ -153,9 +153,8 @@ internal class AddLessonViewModel @Inject constructor(
         viewModelScope.launch {
             exerciseList.forEach { routine ->
                 routine.id = id
-                routine.today = dateString
+                routine.today = dateStringYYYYMMDD
                 lessonRepository.addLesson(routine)
-                Log.d(Constants.TAG_DEBUG, "addAllLessons: ${routine.name}")
             }
         }
     }
