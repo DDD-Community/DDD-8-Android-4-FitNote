@@ -71,7 +71,6 @@ internal fun MemberLessonListScreen(
         viewModel.initialize(
             memberId = memberId,
         )
-        viewModel.getIntendedLessonList()
     }
 
     MemberLessonList(
@@ -295,7 +294,6 @@ private fun ExerciseRow(
         modifier = Modifier.horizontalScroll(rememberScrollState())
     ) {
         for (exercise in exercises) {
-            Log.d(Constants.TAG_DEBUG, "ExerciseRow: ${exercise}")
             ExerciseItem(exercise)
             WidthSpacer(width = 16.dp)
         }

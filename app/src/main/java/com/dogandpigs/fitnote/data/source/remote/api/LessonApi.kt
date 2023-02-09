@@ -14,4 +14,7 @@ interface LessonApi {
     
     @POST("/hypeboy/ing/")
     suspend fun getIntendedLessonList(@Body request: JsonObject): Response<ResBase<LessonResponse>>
+    
+    @POST("/hypeboy/end/")
+    suspend fun getCompletedLessonList(@Body request: JsonObject): Response<ResBase<LessonResponse>>
 }

@@ -26,4 +26,16 @@ class LessonRepository @Inject constructor(
             return body()?.data
         }
     }
+    
+    suspend fun getCompletedLessons(id: Int): LessonResponse? {
+        val json = JsonObject().apply {
+            addProperty("id", id)
+        }
+        lessonApi.getCompletedLessonList(json).run {
+            if (!isSuccessful || body() == null || body()?.data == null) {
+                return null
+            }
+            return body()?.data
+        }
+    }
 }
