@@ -1,6 +1,7 @@
 package com.dogandpigs.fitnote.presentation.lesson.memberlesson
 
 import androidx.lifecycle.ViewModel
+import com.dogandpigs.fitnote.presentation.lesson.Exercise
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import javax.inject.Inject
@@ -13,7 +14,7 @@ internal class MemberLessonViewModel @Inject constructor(
         MutableStateFlow(previewUiState)
 
     fun toggleExerciseIsDone(index: Int) {
-        val exerciseList = mutableListOf<MemberLessonUiState.Exercise>()
+        val exerciseList = mutableListOf<Exercise>()
         exerciseList.addAll(uiState.value.exercises)
         exerciseList[index] = exerciseList[index].toggle()
 
@@ -26,10 +27,10 @@ internal class MemberLessonViewModel @Inject constructor(
         exerciseIndex: Int,
         exerciseSetIndex: Int,
     ) {
-        val exerciseList = mutableListOf<MemberLessonUiState.Exercise>()
+        val exerciseList = mutableListOf<Exercise>()
         exerciseList.addAll(uiState.value.exercises)
 
-        val exerciseSetList = mutableListOf<MemberLessonUiState.Exercise.ExerciseSet>()
+        val exerciseSetList = mutableListOf<Exercise.ExerciseSet>()
         exerciseSetList.addAll(exerciseList[exerciseIndex].sets)
 
         exerciseSetList[exerciseSetIndex] = exerciseSetList[exerciseSetIndex].toggle()
@@ -39,7 +40,7 @@ internal class MemberLessonViewModel @Inject constructor(
 
         val allTrue = exerciseList[exerciseIndex].sets.map { it.isDone }.contains(false).not()
         exerciseList[exerciseIndex] = exerciseList[exerciseIndex].copy(
-            isDone = allTrue
+            isFold = allTrue
         )
 
         uiState.value = uiState.value.copy(
@@ -52,10 +53,10 @@ internal class MemberLessonViewModel @Inject constructor(
         exerciseIndex: Int,
         exerciseSetIndex: Int,
     ) {
-        val exerciseList = mutableListOf<MemberLessonUiState.Exercise>()
+        val exerciseList = mutableListOf<Exercise>()
         exerciseList.addAll(uiState.value.exercises)
 
-        val exerciseSetList = mutableListOf<MemberLessonUiState.Exercise.ExerciseSet>()
+        val exerciseSetList = mutableListOf<Exercise.ExerciseSet>()
         exerciseSetList.addAll(exerciseList[exerciseIndex].sets)
 
         exerciseSetList[exerciseSetIndex] = exerciseSetList[exerciseSetIndex].copy(
@@ -79,10 +80,10 @@ internal class MemberLessonViewModel @Inject constructor(
         exerciseIndex: Int,
         exerciseSetIndex: Int,
     ) {
-        val exerciseList = mutableListOf<MemberLessonUiState.Exercise>()
+        val exerciseList = mutableListOf<Exercise>()
         exerciseList.addAll(uiState.value.exercises)
 
-        val exerciseSetList = mutableListOf<MemberLessonUiState.Exercise.ExerciseSet>()
+        val exerciseSetList = mutableListOf<Exercise.ExerciseSet>()
         exerciseSetList.addAll(exerciseList[exerciseIndex].sets)
 
         exerciseSetList[exerciseSetIndex] = exerciseSetList[exerciseSetIndex].copy(
