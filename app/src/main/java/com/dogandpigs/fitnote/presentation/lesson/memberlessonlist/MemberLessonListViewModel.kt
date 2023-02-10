@@ -1,9 +1,6 @@
 package com.dogandpigs.fitnote.presentation.lesson.memberlessonlist
 
-import android.util.Log
-import androidx.compose.ui.unit.Constraints
 import androidx.lifecycle.viewModelScope
-import com.dogandpigs.fitnote.core.Constants
 import com.dogandpigs.fitnote.data.repository.LessonRepository
 import com.dogandpigs.fitnote.data.repository.MemberRepository
 import com.dogandpigs.fitnote.presentation.base.BaseViewModel
@@ -17,15 +14,36 @@ internal class MemberLessonListViewModel @Inject constructor(
     private val lessonRepository: LessonRepository
 ) : BaseViewModel<MemberLessonListUiState>() {
     override fun createInitialState(): MemberLessonListUiState = MemberLessonListUiState()
-    
+
     fun initialize(memberId: Int) = currentState {
         setState {
             copy(memberId = memberId)
         }
+        getMemberName()
         getIntendedLessonList()
         getCompletedLessonList()
     }
-    
+
+    private fun getMemberName() = currentState {
+        viewModelScope.launch {
+            kotlin.runCatching {
+                memberRepository.getMemberList()
+            }.onSuccess {
+                val member = it?.memberList?.first { member ->
+                    member.id == memberId
+                }
+
+                member?.also {
+                    setState {
+                        copy(
+                            userName = it.userName ?: "",
+                        )
+                    }
+                } ?: return@onSuccess // TODO member is NULL
+            }
+        }
+    }
+
     private fun getIntendedLessonList() = currentState {
         viewModelScope.launch {
             lessonRepository.getIntendedLessons(memberId)?.run {
@@ -48,7 +66,7 @@ internal class MemberLessonListViewModel @Inject constructor(
             }
         }
     }
-    
+
     private fun getCompletedLessonList() = currentState {
         viewModelScope.launch {
             lessonRepository.getCompletedLessons(memberId)?.run {
@@ -71,7 +89,7 @@ internal class MemberLessonListViewModel @Inject constructor(
             }
         }
     }
-    
+
     fun getMemberInfo() = currentState {
         viewModelScope.launch {
             memberRepository.getMemberInfo()
