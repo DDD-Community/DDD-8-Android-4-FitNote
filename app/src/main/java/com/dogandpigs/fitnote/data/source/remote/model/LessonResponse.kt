@@ -26,7 +26,7 @@ data class LessonResponse (
         val trainerGroup: Int = 0,
         
         @SerializedName("user_height")
-        val userHeight: Int = 0,
+        val userHeight: Double = 0.0,
         
         @SerializedName("user_status")
         val userStatus: Int = 0,
