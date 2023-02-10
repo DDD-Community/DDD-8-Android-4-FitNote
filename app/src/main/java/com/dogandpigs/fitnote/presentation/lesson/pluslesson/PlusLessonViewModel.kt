@@ -1,6 +1,5 @@
 package com.dogandpigs.fitnote.presentation.lesson.pluslesson
 
-import android.util.Log
 import androidx.lifecycle.viewModelScope
 import com.dogandpigs.fitnote.data.repository.LessonRepository
 import com.dogandpigs.fitnote.presentation.base.BaseViewModel
@@ -22,33 +21,35 @@ internal class PlusLessonViewModel @Inject constructor(
                 id = memberId
             )
         }
-
-        // TODO Develop 후 삭제
-        viewModelScope.launch {
-            state.collect {
-                Log.d("aa12", "it : $it")
-            }
-        }
     }
 
     fun plusLesson() = currentState {
         viewModelScope.launch {
-            exercises.forEach { exerciseList ->
-                exerciseList.sets.forEachIndexed { index, exerciseSet ->
-                    val routine = Routine(
-                        id = id,
-                        index = index,
-                        name = exerciseList.name,
-                        set = exerciseSet.setIndex,
-                        weight = exerciseSet.weight.toInt(),
-                        count = exerciseSet.count,
-                        today = dateStringYYYYMMDD,
+            kotlin.runCatching {
+                exercises.forEach { exerciseList ->
+                    exerciseList.sets.forEachIndexed { index, exerciseSet ->
+                        val routine = Routine(
+                            id = id,
+                            index = index,
+                            name = exerciseList.name,
+                            set = exerciseSet.setIndex,
+                            weight = exerciseSet.weight.toInt(),
+                            count = exerciseSet.count,
+                            today = dateStringYYYYMMDD,
+                        )
+                        lessonRepository.addLesson(routine)
+                    }
+                }
+            }.onSuccess {
+                setState {
+                    copy(
+                        isSuccess = true,
                     )
-                    lessonRepository.addLesson(routine)
                 }
             }
         }
     }
+
     fun setDateMilliSeconds(dateMilliSeconds: Long) = currentState {
         setState {
             copy(

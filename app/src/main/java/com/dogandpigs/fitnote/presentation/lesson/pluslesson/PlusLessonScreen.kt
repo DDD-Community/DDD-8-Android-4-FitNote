@@ -43,7 +43,7 @@ internal fun PlusLessonScreen(
     viewModel: PlusLessonViewModel = hiltViewModel(),
     popBackStack: () -> Unit,
     navigateToLoadLesson: () -> Unit,
-    navigateToAddExercise: () -> Unit,
+    navigateToMemberLessonList: () -> Unit,
 ) {
     val state by viewModel.state.collectAsStateWithLifecycle()
 
@@ -51,6 +51,14 @@ internal fun PlusLessonScreen(
         viewModel.initialize(
             memberId = memberId,
         )
+    }
+
+    LaunchedEffect(state.isSuccess) {
+        if (state.isSuccess) {
+            popBackStack()
+            // TODO 토스트 안내 제공
+//            navigateToMemberLessonList()
+        }
     }
 
     PlusLesson(
@@ -240,7 +248,6 @@ private fun showDatePicker(
         picker.show(fm, picker.toString())
         picker.addOnPositiveButtonClickListener {
             onClick(it)
-//            viewModel.setLessonDate()
         }
     }
 }
@@ -250,6 +257,7 @@ private fun ExerciseSetMainRow(
     set: String,
     weight: String,
     count: String,
+    // TODO 차후 개발
     onClickSet: () -> Unit = {},
 ) {
     Row(
@@ -384,11 +392,11 @@ private fun PreviewPlusLesson() {
     FitNoteTheme {
         PlusLesson(
             state = mockUiState,
-            changeExerciseName = { i: Int, s: String -> },
+            changeExerciseName = { _: Int, _: String -> },
             addExerciseSet = {},
-            removeExerciseSet = { i: Int, i1: Int -> },
-            onChangeWeight = { s: String, i: Int, i1: Int -> },
-            onChangeCount = { s: String, i: Int, i1: Int -> },
+            removeExerciseSet = { _: Int, _: Int -> },
+            onChangeWeight = { _: String, _: Int, _: Int -> },
+            onChangeCount = { _: String, _: Int, _: Int -> },
             plusLesson = {},
             onClickClose = {},
             onClickLoadLesson = {},

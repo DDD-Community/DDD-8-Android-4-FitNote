@@ -11,6 +11,7 @@ internal data class PlusLessonUiState(
     val exercises: List<Exercise> = listOf(
         Exercise()
     ),
+    val isSuccess: Boolean = false,
 ) {
     val dateString: String
         get() = Date(dateMilliSeconds).format()
