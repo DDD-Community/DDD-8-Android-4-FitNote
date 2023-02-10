@@ -1,6 +1,5 @@
 package com.dogandpigs.fitnote.presentation.lesson.memberlesson
 
-import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -32,6 +31,7 @@ import com.dogandpigs.fitnote.R
 import com.dogandpigs.fitnote.presentation.base.FigmaPreview
 import com.dogandpigs.fitnote.presentation.lesson.Exercise
 import com.dogandpigs.fitnote.presentation.lesson.ExerciseColumn
+import com.dogandpigs.fitnote.presentation.ui.component.DefaultBottomLargePositiveButton
 import com.dogandpigs.fitnote.presentation.ui.component.FitNoteScaffold
 import com.dogandpigs.fitnote.presentation.ui.component.HeightSpacer
 import com.dogandpigs.fitnote.presentation.ui.component.WidthSpacer
@@ -136,6 +136,15 @@ private fun MemberLessonList(
                     },
                 )
             }
+        }
+
+        DefaultBottomLargePositiveButton(
+            positiveText = "수업 완료",
+            onClickPositive = {
+                              // TODO 버튼 동작 구현
+            },
+        ) {
+            HeightSpacer(height = LocalFitNoteSpacing.current.spacing5)
         }
     }
 }
