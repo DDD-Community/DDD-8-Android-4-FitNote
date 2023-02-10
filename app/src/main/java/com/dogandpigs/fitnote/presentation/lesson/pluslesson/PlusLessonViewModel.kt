@@ -1,8 +1,11 @@
 package com.dogandpigs.fitnote.presentation.lesson.pluslesson
 
+import android.util.Log
+import androidx.lifecycle.viewModelScope
 import com.dogandpigs.fitnote.presentation.base.BaseViewModel
 import com.dogandpigs.fitnote.presentation.lesson.Exercise
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
@@ -17,12 +20,32 @@ internal class PlusLessonViewModel @Inject constructor(
                 id = memberId
             )
         }
+
+        // TODO Develop 후 삭제
+        viewModelScope.launch {
+            state.collect {
+                Log.d("aa12", "it : $it")
+            }
+        }
     }
 
     fun setDateMilliSeconds(dateMilliSeconds: Long) = currentState {
         setState {
             copy(
                 dateMilliSeconds = dateMilliSeconds
+            )
+        }
+    }
+
+    fun addExercise() = currentState {
+        val exerciseList = mutableListOf<Exercise>()
+        exerciseList.addAll(state.value.exercises)
+
+        exerciseList.add(Exercise())
+
+        setState {
+            copy(
+                exercises = exerciseList.toList(),
             )
         }
     }

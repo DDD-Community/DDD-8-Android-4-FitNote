@@ -31,7 +31,6 @@ import com.dogandpigs.fitnote.presentation.lesson.Exercise
 import com.dogandpigs.fitnote.presentation.lesson.ExerciseColumn
 import com.dogandpigs.fitnote.presentation.lesson.ExerciseSetItemNumberTextField
 import com.dogandpigs.fitnote.presentation.lesson.ExerciseSetItemTextField
-import com.dogandpigs.fitnote.presentation.lesson.memberlesson.ExerciseSetItemText
 import com.dogandpigs.fitnote.presentation.ui.component.*
 import com.dogandpigs.fitnote.presentation.ui.theme.*
 import com.dogandpigs.fitnote.presentation.util.format
@@ -59,7 +58,7 @@ internal fun PlusLessonScreen(
         changeExerciseName = viewModel::changeExerciseName,
         onClickClose = popBackStack,
         onClickLoadLesson = navigateToLoadLesson,
-        onClickAddExercise = navigateToAddExercise,
+        onClickAddExercise = viewModel::addExercise,
         onClickDateLabel = viewModel::setDateMilliSeconds,
     )
 }
@@ -138,6 +137,7 @@ private fun PlusLesson(
                                     exercise.mainCount
                                 ),
                             )
+
                             HeightSpacer(height = LocalFitNoteSpacing.current.spacing4)
                         },
                         foldText = "세트별 편집",
@@ -157,13 +157,12 @@ private fun PlusLesson(
                         onChangeWeight = { s: String, i: Int -> },
                         onChangeCount = { s: String, i: Int -> },
                     )
+                    HeightSpacer(height = LocalFitNoteSpacing.current.spacing5)
                 }
 
                 HeightSpacer(height = 18.dp)
                 AddExerciseButton(
-                    onClickAddExercise = {
-
-                    }
+                    onClickAddExercise = onClickAddExercise,
                 )
                 HeightSpacer(height = LocalFitNoteSpacing.current.spacing9)
             }
@@ -320,53 +319,6 @@ private fun PlusSetButton(
         shape = RoundedCornerShape(5.dp)
     ) {
         Text(text = stringResource(id = R.string.btn_add_set))
-    }
-}
-
-@Composable
-private fun ExerciseSetItem(
-    exerciseSet: Exercise.ExerciseSet,
-    onChangeWeight: (String) -> Unit,
-    onChangeCount: (String) -> Unit,
-) {
-    Row(
-        modifier = Modifier
-            .fillMaxWidth()
-            .wrapContentHeight(),
-        horizontalArrangement = Arrangement.Center,
-        verticalAlignment = Alignment.CenterVertically,
-    ) {
-        ExerciseSetItemText(
-            text = stringResource(id = R.string.some_set, exerciseSet.setIndex)
-        )
-        WidthSpacer(width = LocalFitNoteSpacing.current.spacing4)
-
-        val modifier = Modifier
-            .weight(1F)
-            .clip(RoundedCornerShape(5.dp))
-            .background(GrayScaleLightGray1)
-            .padding(
-                start = LocalFitNoteSpacing.current.spacing4,
-                top = 6.dp,
-                bottom = 6.dp,
-            )
-
-        ExerciseSetItemNumberTextField(
-            modifier = modifier,
-            text = exerciseSet.weight.format(),
-            suffix = "kg",
-        ) {
-            onChangeWeight(it)
-        }
-        WidthSpacer(width = LocalFitNoteSpacing.current.spacing4)
-
-        ExerciseSetItemNumberTextField(
-            modifier = modifier,
-            text = exerciseSet.count.format(),
-            suffix = "회",
-        ) {
-            onChangeCount(it)
-        }
     }
 }
 
