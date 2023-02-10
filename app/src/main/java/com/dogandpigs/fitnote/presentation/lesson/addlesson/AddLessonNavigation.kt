@@ -4,13 +4,14 @@ import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavType
 import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
+import com.dogandpigs.fitnote.presentation.lesson.pluslesson.PlusLessonScreen
 import com.dogandpigs.fitnote.presentation.navigation.ARGUMENT_MEMBER_ID
 
 fun NavGraphBuilder.addAddLessonScreen(
     route: String,
     popBackStack: () -> Unit,
     navigateToLoadLesson: () -> Unit,
-    navigateToAddExercise: () -> Unit,
+    navigateToMemberLessonList: () -> Unit,
 ) {
     val argument = ARGUMENT_MEMBER_ID
 
@@ -26,11 +27,11 @@ fun NavGraphBuilder.addAddLessonScreen(
     ) {
         val memberId = it.arguments?.getInt(argument, 0) ?: 0
 
-        AddLessonScreen(
+        PlusLessonScreen(
             memberId = memberId,
             popBackStack = popBackStack,
             navigateToLoadLesson = navigateToLoadLesson,
-            navigateToAddExercise = navigateToAddExercise,
+            navigateToMemberLessonList = navigateToMemberLessonList,
         )
     }
 }
