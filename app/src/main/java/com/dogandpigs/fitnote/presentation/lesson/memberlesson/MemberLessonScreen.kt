@@ -17,6 +17,7 @@ import androidx.compose.material3.Checkbox
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -52,10 +53,14 @@ internal fun MemberLessonScreen(
     navigateToAddLesson: () -> Unit,
     navigateToSetting: () -> Unit,
 ) {
-    val uiState by viewModel.uiState.collectAsStateWithLifecycle()
+    val uiState by viewModel.state.collectAsStateWithLifecycle()
 
-    Log.d("aa12", "memberId : $memberId")
-    Log.d("aa12", "lessonId : $lessonId")
+    LaunchedEffect(Unit) {
+        viewModel.initialize(
+            memberId = memberId,
+            lessonId = lessonId,
+        )
+    }
 
     MemberLessonList(
         uiState = uiState,
