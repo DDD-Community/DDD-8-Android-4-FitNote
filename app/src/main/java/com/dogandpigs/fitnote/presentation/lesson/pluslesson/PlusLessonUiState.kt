@@ -9,18 +9,7 @@ internal data class PlusLessonUiState(
     val id: Int = 0,
     val dateMilliSeconds: Long = System.currentTimeMillis(),
     val exercises: List<Exercise> = listOf(
-        Exercise(
-            name = "운동명",
-            sets = listOf(
-                Exercise.ExerciseSet(
-                    setIndex = 0,
-                    weight = 0.0,
-                    count = 0,
-                    isDone = false,
-                )
-            ),
-            isFold = false,
-        )
+        Exercise()
     ),
 ) {
     val dateString: String

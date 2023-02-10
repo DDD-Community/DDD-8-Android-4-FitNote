@@ -1,9 +1,9 @@
 package com.dogandpigs.fitnote.presentation.lesson
 
 internal data class Exercise(
-    val name: String,
-    val sets: List<ExerciseSet>,
-    val isFold: Boolean,
+    val name: String = "운동명",
+    val sets: List<ExerciseSet> = listOf(ExerciseSet()),
+    val isFold: Boolean = true,
 ) {
     val numberOfSets: Int
         get() = sets.size
@@ -28,10 +28,10 @@ internal data class Exercise(
     )
 
     data class ExerciseSet(
-        val setIndex: Int,
-        val weight: Double,
-        val count: Int,
-        val isDone: Boolean,
+        val setIndex: Int = 0,
+        val weight: Double = 0.0,
+        val count: Int = 0,
+        val isDone: Boolean = false,
     ) {
         fun toggle(): ExerciseSet = copy(
             isDone = !isDone
