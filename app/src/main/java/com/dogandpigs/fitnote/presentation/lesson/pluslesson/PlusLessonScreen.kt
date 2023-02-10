@@ -57,6 +57,7 @@ internal fun PlusLessonScreen(
         state = state,
         changeExerciseName = viewModel::changeExerciseName,
         addExerciseSet = viewModel::addExerciseSet,
+        removeExerciseSet = viewModel::removeExerciseSet,
         onClickClose = popBackStack,
         onClickLoadLesson = navigateToLoadLesson,
         onClickAddExercise = viewModel::addExercise,
@@ -72,6 +73,10 @@ private fun PlusLesson(
         name: String,
     ) -> Unit,
     addExerciseSet: (index: Int) -> Unit,
+    removeExerciseSet: (
+        exerciseIndex: Int,
+        exerciseSetIndex: Int,
+    ) -> Unit,
     onClickClose: () -> Unit,
     onClickLoadLesson: () -> Unit,
     onClickAddExercise: () -> Unit,
@@ -143,10 +148,12 @@ private fun PlusLesson(
                             HeightSpacer(height = LocalFitNoteSpacing.current.spacing4)
                         },
                         foldText = "세트별 편집",
-                        ItemButton = { i: Int, exerciseSet: Exercise.ExerciseSet ->
-                            IconButton(onClick = {
-//                                viewModel.removeRoutine(routine.set)
-                            }) {
+                        ItemButton = { exerciseSetIndex: Int, _: Exercise.ExerciseSet ->
+                            IconButton(
+                                onClick = {
+                                    removeExerciseSet(index, exerciseSetIndex)
+                                }
+                            ) {
                                 Icon(
                                     painter = painterResource(id = R.drawable.trash),
                                     contentDescription = "Back"
@@ -376,6 +383,7 @@ private fun PreviewPlusLesson() {
         PlusLesson(
             state = mockUiState,
             changeExerciseName = { index: Int, name: String -> },
+            removeExerciseSet = { i: Int, i1: Int -> },
             addExerciseSet = {},
             onClickClose = {},
             onClickLoadLesson = {},

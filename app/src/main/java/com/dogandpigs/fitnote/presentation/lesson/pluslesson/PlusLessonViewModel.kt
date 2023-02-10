@@ -93,6 +93,29 @@ internal class PlusLessonViewModel @Inject constructor(
             )
         }
     }
+
+    fun removeExerciseSet(
+        exerciseIndex: Int,
+        exerciseSetIndex: Int,
+    ) = currentState {
+        val exerciseList = mutableListOf<Exercise>()
+        exerciseList.addAll(state.value.exercises)
+
+        val exerciseSetList = mutableListOf<Exercise.ExerciseSet>()
+        exerciseSetList.addAll(exerciseList[exerciseIndex].sets)
+
+        exerciseSetList.removeAt(exerciseSetIndex)
+
+        exerciseList[exerciseIndex] = exerciseList[exerciseIndex].copy(
+            sets = exerciseSetList.toList()
+        )
+
+        setState {
+            copy(
+                exercises = exerciseList.toList(),
+            )
+        }
+    }
 //
 //    fun toggleExerciseSetIsDone(
 //        exerciseIndex: Int,
