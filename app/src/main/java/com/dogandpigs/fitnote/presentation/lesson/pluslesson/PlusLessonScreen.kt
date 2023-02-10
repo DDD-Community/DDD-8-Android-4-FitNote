@@ -60,6 +60,7 @@ internal fun PlusLessonScreen(
         removeExerciseSet = viewModel::removeExerciseSet,
         onChangeWeight = viewModel::changeWeight,
         onChangeCount = viewModel::changeCount,
+        plusLesson = viewModel::plusLesson,
         onClickClose = popBackStack,
         onClickLoadLesson = navigateToLoadLesson,
         onClickAddExercise = viewModel::addExercise,
@@ -81,6 +82,7 @@ private fun PlusLesson(
     ) -> Unit,
     onChangeWeight: (String, Int, Int) -> Unit,
     onChangeCount: (String, Int, Int) -> Unit,
+    plusLesson: () -> Unit,
     onClickClose: () -> Unit,
     onClickLoadLesson: () -> Unit,
     onClickAddExercise: () -> Unit,
@@ -184,9 +186,7 @@ private fun PlusLesson(
 
             DefaultBottomLargePositiveButton(
                 positiveText = stringResource(id = R.string.btn_save),
-                onClickPositive = {
-                    //navigateToMemberAdd
-                },
+                onClickPositive = plusLesson,
             ) {
                 HeightSpacer(height = LocalFitNoteSpacing.current.spacing5)
             }
@@ -384,11 +384,12 @@ private fun PreviewPlusLesson() {
     FitNoteTheme {
         PlusLesson(
             state = mockUiState,
-            changeExerciseName = { index: Int, name: String -> },
+            changeExerciseName = { i: Int, s: String -> },
+            addExerciseSet = {},
             removeExerciseSet = { i: Int, i1: Int -> },
             onChangeWeight = { s: String, i: Int, i1: Int -> },
             onChangeCount = { s: String, i: Int, i1: Int -> },
-            addExerciseSet = {},
+            plusLesson = {},
             onClickClose = {},
             onClickLoadLesson = {},
             onClickAddExercise = {},

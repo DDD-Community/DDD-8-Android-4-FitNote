@@ -2,15 +2,17 @@ package com.dogandpigs.fitnote.presentation.lesson.pluslesson
 
 import android.util.Log
 import androidx.lifecycle.viewModelScope
+import com.dogandpigs.fitnote.data.repository.LessonRepository
 import com.dogandpigs.fitnote.presentation.base.BaseViewModel
 import com.dogandpigs.fitnote.presentation.lesson.Exercise
+import com.dogandpigs.fitnote.presentation.lesson.addlesson.Routine
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
 internal class PlusLessonViewModel @Inject constructor(
-
+    private val lessonRepository: LessonRepository
 ) : BaseViewModel<PlusLessonUiState>() {
     override fun createInitialState(): PlusLessonUiState = PlusLessonUiState()
 
@@ -29,6 +31,24 @@ internal class PlusLessonViewModel @Inject constructor(
         }
     }
 
+    fun plusLesson() = currentState {
+        viewModelScope.launch {
+            exercises.forEach { exerciseList ->
+                exerciseList.sets.forEachIndexed { index, exerciseSet ->
+                    val routine = Routine(
+                        id = id,
+                        index = index,
+                        name = exerciseList.name,
+                        set = exerciseSet.setIndex,
+                        weight = exerciseSet.weight.toInt(),
+                        count = exerciseSet.count,
+                        today = dateStringYYYYMMDD,
+                    )
+                    lessonRepository.addLesson(routine)
+                }
+            }
+        }
+    }
     fun setDateMilliSeconds(dateMilliSeconds: Long) = currentState {
         setState {
             copy(
