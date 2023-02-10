@@ -24,6 +24,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.ExperimentalLifecycleComposeApi
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.dogandpigs.fitnote.R
+import com.dogandpigs.fitnote.data.source.remote.model.LessonResponse
 import com.dogandpigs.fitnote.presentation.base.FigmaPreview
 import com.dogandpigs.fitnote.presentation.lesson.addlesson.ExpandableCard
 import com.dogandpigs.fitnote.presentation.lesson.addlesson.Routine
@@ -37,16 +38,17 @@ internal fun LoadLessonScreen(
     popBackStack: () -> Unit
 ) {
     val state by viewModel.state.collectAsStateWithLifecycle()
+    viewModel.initialize()
     LoadLesson(state, popBackStack)
 }
 
 @Composable
 internal fun LoadLesson(
-    uiState: LoadLessonUiState,
+    lessonState: LoadLessonState,
     popBackStack: () -> Unit
 ) {
     val paddingValues = PaddingValues(16.dp)
-
+    
     FitNoteScaffold(
         topBarTitle = stringResource(id = R.string.load_lesson),
         onClickTopBarNavigationIcon = { popBackStack() },
@@ -58,8 +60,8 @@ internal fun LoadLesson(
                 .background(Color.White),
         ) {
             Column(modifier = Modifier.padding(paddingValues)) {
-                RowTagList(count = 5, 5.dp, PaddingValues(12.dp, 6.dp))
-                RoutineList()
+                RowTagList(lessonState, 5.dp, PaddingValues(12.dp, 6.dp))
+                RoutineList(lessonState)
                 CompleteButton(
                     text = stringResource(id = R.string.load_lesson),
                     onClick = {}
@@ -71,7 +73,7 @@ internal fun LoadLesson(
 
 @Composable
 private fun RowTagList(
-    count: Int,
+    lessonState: LoadLessonState,
     borderRadius: Dp,
     paddingValue: PaddingValues
 ) {
@@ -79,8 +81,25 @@ private fun RowTagList(
     Row(
         Modifier.horizontalScroll(scrollState)
     ) {
-        repeat(count) {
-            Tag("[${it + 1}]번째 회원", borderRadius, paddingValue)
+        lessonState.memberList.forEach { member ->
+            Tag(member.userName ?: "", borderRadius, paddingValue)
+            WidthSpacer(width = 10.dp)
+        }
+    }
+}
+
+@Composable
+private fun RowExerciseList(
+    exerciseList: List<String>,
+    borderRadius: Dp,
+    paddingValue: PaddingValues
+) {
+    val scrollState = rememberScrollState()
+    Row(
+        Modifier.horizontalScroll(scrollState)
+    ) {
+        exerciseList.forEach { name ->
+            Tag(name ?: "", borderRadius, paddingValue)
             WidthSpacer(width = 10.dp)
         }
     }
@@ -118,7 +137,7 @@ private fun Tag(
 }
 
 @Composable
-private fun RoutineList() {
+private fun RoutineList(lessonsState: LoadLessonState) {
     val scrollState = rememberScrollState()
     Column(
         modifier = Modifier
@@ -126,15 +145,15 @@ private fun RoutineList() {
             .background(color = Color.White)
             .verticalScroll(scrollState), horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        for (i in 0..10) {
-            ExerciseList()
+        lessonsState.exerciseList.forEach {
+            ExerciseList(it)
             HeightSpacer(height = 8.dp)
         }
     }
 }
 
 @Composable
-private fun ExerciseList() {
+private fun ExerciseList(description: LessonResponse.Description) {
     val selectedValue = remember { mutableStateOf("") }
     val label = "Item"
     val list = mutableListOf<Routine>().apply {
@@ -154,7 +173,7 @@ private fun ExerciseList() {
             verticalAlignment = Alignment.CenterVertically
         ) {
             Text(
-                text = "##월 ##일 운동",
+                text = description.lessonsDate,
                 color = GrayScaleMidGray3,
                 style = LocalFitNoteTypography.current.buttonMedium
             )
@@ -164,7 +183,7 @@ private fun ExerciseList() {
                 onClick = { selectedValue.value = label }
             )
         }
-        RowTagList(count = 5, 50.dp, PaddingValues(10.dp, 6.dp))
+        RowExerciseList(description.lessonsName, 50.dp, PaddingValues(10.dp, 6.dp))
         ExpandableCard(
             header = stringResource(id = R.string.view_detail),
             color = Color.LightGray,
@@ -205,14 +224,12 @@ fun Exercise(exercise: Exercise) {
     }
 }
 
-private val mockUiState = LoadLessonUiState(
-    title = "mock AddLesson title"
-)
+private val mockUiState = LoadLessonState()
 
 @FigmaPreview
 @Composable
 internal fun PreviewLoadLesson() {
     FitNoteTheme {
-        LoadLesson(uiState = mockUiState, popBackStack = {})
+        LoadLesson(lessonState = mockUiState, popBackStack = {})
     }
 }
