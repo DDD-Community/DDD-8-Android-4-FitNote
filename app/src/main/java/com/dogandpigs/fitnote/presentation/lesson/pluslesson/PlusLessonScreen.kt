@@ -56,6 +56,7 @@ internal fun PlusLessonScreen(
     PlusLesson(
         state = state,
         changeExerciseName = viewModel::changeExerciseName,
+        addExerciseSet = viewModel::addExerciseSet,
         onClickClose = popBackStack,
         onClickLoadLesson = navigateToLoadLesson,
         onClickAddExercise = viewModel::addExercise,
@@ -70,6 +71,7 @@ private fun PlusLesson(
         index: Int,
         name: String,
     ) -> Unit,
+    addExerciseSet: (index: Int) -> Unit,
     onClickClose: () -> Unit,
     onClickLoadLesson: () -> Unit,
     onClickAddExercise: () -> Unit,
@@ -152,7 +154,11 @@ private fun PlusLesson(
                             }
                         },
                         BottomButton = {
-                            PlusSetButton(onClick = {})
+                            PlusSetButton(
+                                onClick = {
+                                    addExerciseSet(index)
+                                }
+                            )
                         },
                         onChangeWeight = { s: String, i: Int -> },
                         onChangeCount = { s: String, i: Int -> },
@@ -370,6 +376,7 @@ private fun PreviewPlusLesson() {
         PlusLesson(
             state = mockUiState,
             changeExerciseName = { index: Int, name: String -> },
+            addExerciseSet = {},
             onClickClose = {},
             onClickLoadLesson = {},
             onClickAddExercise = {},

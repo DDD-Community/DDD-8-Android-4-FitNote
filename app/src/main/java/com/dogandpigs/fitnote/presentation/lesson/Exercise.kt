@@ -28,7 +28,7 @@ internal data class Exercise(
     )
 
     data class ExerciseSet(
-        val setIndex: Int = 0,
+        val setIndex: Int = 1,
         val weight: Double = 0.0,
         val count: Int = 0,
         val isDone: Boolean = false,
