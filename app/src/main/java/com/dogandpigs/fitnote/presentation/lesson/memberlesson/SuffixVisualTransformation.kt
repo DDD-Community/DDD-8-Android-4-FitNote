@@ -9,26 +9,20 @@ internal class SuffixVisualTransformation(
     private val suffix: String
 ) : VisualTransformation {
     override fun filter(text: AnnotatedString): TransformedText {
-        val offsetMapping = object : OffsetMapping {
+        val result = text + AnnotatedString(suffix)
+
+        val textWithSuffixMapping = object : OffsetMapping {
             override fun originalToTransformed(offset: Int): Int {
                 return offset
             }
 
             override fun transformedToOriginal(offset: Int): Int {
-                return if (text.equals(0)) {
-                    0
-                } else {
-                    when (offset) {
-                        0, 1, 2 -> offset
-                        else -> text.length
-                    }
-                }
+                if (text.isEmpty()) return 0
+                if (offset >= text.length) return text.length
+                return offset
             }
         }
 
-        return TransformedText(
-            text = AnnotatedString("$text $suffix"),
-            offsetMapping = offsetMapping,
-        )
+        return TransformedText(result, textWithSuffixMapping)
     }
 }

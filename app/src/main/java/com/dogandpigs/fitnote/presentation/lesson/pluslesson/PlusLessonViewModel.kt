@@ -39,7 +39,7 @@ internal class PlusLessonViewModel @Inject constructor(
 
     fun addExercise() = currentState {
         val exerciseList = mutableListOf<Exercise>()
-        exerciseList.addAll(state.value.exercises)
+        exerciseList.addAll(exercises)
 
         exerciseList.add(Exercise())
 
@@ -55,7 +55,7 @@ internal class PlusLessonViewModel @Inject constructor(
         name: String,
     ) = currentState {
         val exerciseList = mutableListOf<Exercise>()
-        exerciseList.addAll(state.value.exercises)
+        exerciseList.addAll(exercises)
 
         exerciseList[index] = exerciseList[index].copy(
             name = name
@@ -72,7 +72,7 @@ internal class PlusLessonViewModel @Inject constructor(
         index: Int,
     ) = currentState {
         val exerciseList = mutableListOf<Exercise>()
-        exerciseList.addAll(state.value.exercises)
+        exerciseList.addAll(exercises)
 
         val exerciseSetList = mutableListOf<Exercise.ExerciseSet>()
         exerciseSetList.addAll(exerciseList[index].sets)
@@ -99,7 +99,7 @@ internal class PlusLessonViewModel @Inject constructor(
         exerciseSetIndex: Int,
     ) = currentState {
         val exerciseList = mutableListOf<Exercise>()
-        exerciseList.addAll(state.value.exercises)
+        exerciseList.addAll(exercises)
 
         val exerciseSetList = mutableListOf<Exercise.ExerciseSet>()
         exerciseSetList.addAll(exerciseList[exerciseIndex].sets)
@@ -116,83 +116,63 @@ internal class PlusLessonViewModel @Inject constructor(
             )
         }
     }
-//
-//    fun toggleExerciseSetIsDone(
-//        exerciseIndex: Int,
-//        exerciseSetIndex: Int,
-//    ) {
-//        val exerciseList = mutableListOf<MemberLessonUiState.Exercise>()
-//        exerciseList.addAll(uiState.value.exercises)
-//
-//        val exerciseSetList = mutableListOf<MemberLessonUiState.Exercise.ExerciseSet>()
-//        exerciseSetList.addAll(exerciseList[exerciseIndex].sets)
-//
-//        exerciseSetList[exerciseSetIndex] = exerciseSetList[exerciseSetIndex].toggle()
-//        exerciseList[exerciseIndex] = exerciseList[exerciseIndex].copy(
-//            sets = exerciseSetList.toList()
-//        )
-//
-//        val allTrue = exerciseList[exerciseIndex].sets.map { it.isDone }.contains(false).not()
-//        exerciseList[exerciseIndex] = exerciseList[exerciseIndex].copy(
-//            isDone = allTrue
-//        )
-//
-//        uiState.value = uiState.value.copy(
-//            exercises = exerciseList.toList(),
-//        )
-//    }
-//
-//    fun changeWeight(
-//        value: String,
-//        exerciseIndex: Int,
-//        exerciseSetIndex: Int,
-//    ) {
-//        val exerciseList = mutableListOf<MemberLessonUiState.Exercise>()
-//        exerciseList.addAll(uiState.value.exercises)
-//
-//        val exerciseSetList = mutableListOf<MemberLessonUiState.Exercise.ExerciseSet>()
-//        exerciseSetList.addAll(exerciseList[exerciseIndex].sets)
-//
-//        exerciseSetList[exerciseSetIndex] = exerciseSetList[exerciseSetIndex].copy(
-//            weight = if (value.isEmpty()) {
-//                0.0
-//            } else {
-//                value.toDouble()
-//            }
-//        )
-//
-//        exerciseList[exerciseIndex] = exerciseList[exerciseIndex].copy(
-//            sets = exerciseSetList.toList()
-//        )
-//        uiState.value = uiState.value.copy(
-//            exercises = exerciseList.toList(),
-//        )
-//    }
-//
-//    fun changeCount(
-//        value: String,
-//        exerciseIndex: Int,
-//        exerciseSetIndex: Int,
-//    ) {
-//        val exerciseList = mutableListOf<MemberLessonUiState.Exercise>()
-//        exerciseList.addAll(uiState.value.exercises)
-//
-//        val exerciseSetList = mutableListOf<MemberLessonUiState.Exercise.ExerciseSet>()
-//        exerciseSetList.addAll(exerciseList[exerciseIndex].sets)
-//
-//        exerciseSetList[exerciseSetIndex] = exerciseSetList[exerciseSetIndex].copy(
-//            count = if (value.isEmpty()) {
-//                0
-//            } else {
-//                value.toInt()
-//            }
-//        )
-//
-//        exerciseList[exerciseIndex] = exerciseList[exerciseIndex].copy(
-//            sets = exerciseSetList.toList()
-//        )
-//        uiState.value = uiState.value.copy(
-//            exercises = exerciseList.toList(),
-//        )
-//    }
+
+    fun changeWeight(
+        value: String,
+        exerciseIndex: Int,
+        exerciseSetIndex: Int,
+    ) = currentState {
+        val exerciseList = mutableListOf<Exercise>()
+        exerciseList.addAll(exercises)
+
+        val exerciseSetList = mutableListOf<Exercise.ExerciseSet>()
+        exerciseSetList.addAll(exerciseList[exerciseIndex].sets)
+
+        exerciseSetList[exerciseSetIndex] = exerciseSetList[exerciseSetIndex].copy(
+            weight = if (value.isEmpty()) {
+                0.0
+            } else {
+                value.toDouble()
+            }
+        )
+
+        exerciseList[exerciseIndex] = exerciseList[exerciseIndex].copy(
+            sets = exerciseSetList.toList()
+        )
+        setState {
+            copy(
+                exercises = exerciseList.toList(),
+            )
+        }
+    }
+
+    fun changeCount(
+        value: String,
+        exerciseIndex: Int,
+        exerciseSetIndex: Int,
+    ) = currentState {
+        val exerciseList = mutableListOf<Exercise>()
+        exerciseList.addAll(exercises)
+
+        val exerciseSetList = mutableListOf<Exercise.ExerciseSet>()
+        exerciseSetList.addAll(exerciseList[exerciseIndex].sets)
+
+        exerciseSetList[exerciseSetIndex] = exerciseSetList[exerciseSetIndex].copy(
+            count = if (value.isEmpty()) {
+                0
+            } else {
+                value.toInt()
+            }
+        )
+
+        exerciseList[exerciseIndex] = exerciseList[exerciseIndex].copy(
+            sets = exerciseSetList.toList()
+        )
+
+        setState {
+            copy(
+                exercises = exerciseList.toList(),
+            )
+        }
+    }
 }

@@ -58,6 +58,8 @@ internal fun PlusLessonScreen(
         changeExerciseName = viewModel::changeExerciseName,
         addExerciseSet = viewModel::addExerciseSet,
         removeExerciseSet = viewModel::removeExerciseSet,
+        onChangeWeight = viewModel::changeWeight,
+        onChangeCount = viewModel::changeCount,
         onClickClose = popBackStack,
         onClickLoadLesson = navigateToLoadLesson,
         onClickAddExercise = viewModel::addExercise,
@@ -77,6 +79,8 @@ private fun PlusLesson(
         exerciseIndex: Int,
         exerciseSetIndex: Int,
     ) -> Unit,
+    onChangeWeight: (String, Int, Int) -> Unit,
+    onChangeCount: (String, Int, Int) -> Unit,
     onClickClose: () -> Unit,
     onClickLoadLesson: () -> Unit,
     onClickAddExercise: () -> Unit,
@@ -161,8 +165,12 @@ private fun PlusLesson(
                                 }
                             )
                         },
-                        onChangeWeight = { s: String, i: Int -> },
-                        onChangeCount = { s: String, i: Int -> },
+                        onChangeWeight = { newValue: String, exerciseSetIndex: Int ->
+                            onChangeWeight(newValue, index, exerciseSetIndex)
+                        },
+                        onChangeCount = { newValue: String, exerciseSetIndex: Int ->
+                            onChangeCount(newValue, index, exerciseSetIndex)
+                        },
                     )
                     HeightSpacer(height = LocalFitNoteSpacing.current.spacing5)
                 }
@@ -277,7 +285,7 @@ private fun ExerciseSetMainRow(
 
         ExerciseSetItemNumberTextField(
             modifier = modifier,
-            text = weight.format(),
+            text = count,
             enabled = false,
             suffix = "회",
         ) {}
@@ -378,6 +386,8 @@ private fun PreviewPlusLesson() {
             state = mockUiState,
             changeExerciseName = { index: Int, name: String -> },
             removeExerciseSet = { i: Int, i1: Int -> },
+            onChangeWeight = { s: String, i: Int, i1: Int -> },
+            onChangeCount = { s: String, i: Int, i1: Int -> },
             addExerciseSet = {},
             onClickClose = {},
             onClickLoadLesson = {},
