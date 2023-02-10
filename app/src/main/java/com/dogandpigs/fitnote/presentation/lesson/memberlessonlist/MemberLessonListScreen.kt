@@ -1,6 +1,5 @@
 package com.dogandpigs.fitnote.presentation.lesson.memberlessonlist
 
-import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -43,7 +42,6 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.ExperimentalLifecycleComposeApi
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.dogandpigs.fitnote.R
-import com.dogandpigs.fitnote.core.Constants
 import com.dogandpigs.fitnote.presentation.base.FigmaPreview
 import com.dogandpigs.fitnote.presentation.ui.component.DefaultTwoButton
 import com.dogandpigs.fitnote.presentation.ui.component.FitNoteScaffold
@@ -64,6 +62,7 @@ internal fun MemberLessonListScreen(
     memberId: Int,
     popBackStack: () -> Unit,
     navigateToAddLesson: (Int) -> Unit,
+    navigateToMemberLesson: (memberId: Int, lessonId: Int) -> Unit,
 ) {
     val uiState by viewModel.state.collectAsStateWithLifecycle()
 
@@ -77,6 +76,9 @@ internal fun MemberLessonListScreen(
         uiState = uiState,
         popBackStack = popBackStack,
         onClickAddLesson = navigateToAddLesson,
+        onClickStartLesson = { lessonId ->
+            navigateToMemberLesson(memberId, lessonId)
+        },
     )
 }
 
@@ -85,6 +87,7 @@ private fun MemberLessonList(
     uiState: MemberLessonListUiState,
     popBackStack: () -> Unit,
     onClickAddLesson: (Int) -> Unit,
+    onClickStartLesson: (Int) -> Unit,
 ) {
     var selectedTabType by remember { mutableStateOf(MemberLessonListUiState.Tab.TabType.SCHEDULED) }
 
@@ -108,7 +111,9 @@ private fun MemberLessonList(
                     completedLessonTab = uiState.completedLessonTab,
                     onClickLessonTab = { tabType ->
                         selectedTabType = tabType
-                    }
+                    },
+                    onClickLessonEdit = {},
+                    onClickLessonStart = onClickStartLesson,
                 )
             }
 
@@ -128,6 +133,8 @@ private fun LessonTabList(
     scheduledLessonTab: MemberLessonListUiState.Tab,
     completedLessonTab: MemberLessonListUiState.Tab,
     onClickLessonTab: (MemberLessonListUiState.Tab.TabType) -> Unit,
+    onClickLessonEdit: () -> Unit,
+    onClickLessonStart: (Int) -> Unit,
 ) {
     val tabHeight = 42.dp
 
@@ -192,7 +199,11 @@ private fun LessonTabList(
                     .verticalScroll(rememberScrollState()),
                 horizontalAlignment = Alignment.CenterHorizontally,
             ) {
-                LessonList(selectedTab.lessons)
+                LessonList(
+                    lessons = selectedTab.lessons,
+                    onClickLessonEdit = onClickLessonEdit,
+                    onClickLessonStart = onClickLessonStart,
+                )
             }
         }
     }
@@ -248,17 +259,25 @@ private fun LessonTab(
 
 @Composable
 private fun LessonList(
-    lessons: List<MemberLessonListUiState.Tab.Lesson>
+    lessons: List<MemberLessonListUiState.Tab.Lesson>,
+    onClickLessonEdit: () -> Unit,
+    onClickLessonStart: (Int) -> Unit,
 ) {
     for (lesson in lessons) {
         HeightSpacer(height = 24.dp)
-        LessonItem(lesson)
+        LessonItem(
+            lesson = lesson,
+            onClickLessonEdit = onClickLessonEdit,
+            onClickLessonStart = onClickLessonStart,
+        )
     }
 }
 
 @Composable
 private fun LessonItem(
-    lesson: MemberLessonListUiState.Tab.Lesson
+    lesson: MemberLessonListUiState.Tab.Lesson,
+    onClickLessonEdit: () -> Unit,
+    onClickLessonStart: (Int) -> Unit,
 ) {
     Column(
         modifier = Modifier
@@ -281,7 +300,13 @@ private fun LessonItem(
         HeightSpacer(height = 16.dp)
         Divider(color = GrayScaleLightGray1)
         HeightSpacer(height = 16.dp)
-        LessonItemButtons()
+        LessonItemButtons(
+            onClickLessonEdit = onClickLessonEdit,
+            onClickLessonStart = {
+                // TODO lesson ID
+                onClickLessonStart(1)
+            },
+        )
         HeightSpacer(height = 13.dp)
     }
 }
@@ -321,13 +346,16 @@ private fun ExerciseItem(
 }
 
 @Composable
-private fun LessonItemButtons() {
+private fun LessonItemButtons(
+    onClickLessonEdit: () -> Unit,
+    onClickLessonStart: () -> Unit,
+) {
     Row {
         DefaultTwoButton(
             positiveText = "수업 시작",
-            onClickPositive = {},
+            onClickPositive = onClickLessonStart,
             negativeText = "편집",
-            onClickNegative = {},
+            onClickNegative = onClickLessonEdit,
             spaceBetweenButtons = 9.dp,
         )
     }
@@ -420,6 +448,7 @@ private fun PreviewLesson() {
             uiState = previewUiState,
             popBackStack = {},
             onClickAddLesson = {},
+            onClickStartLesson = {},
         )
     }
 }

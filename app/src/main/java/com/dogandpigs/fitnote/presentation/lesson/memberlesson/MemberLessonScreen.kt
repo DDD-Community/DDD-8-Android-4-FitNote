@@ -1,5 +1,6 @@
 package com.dogandpigs.fitnote.presentation.lesson.memberlesson
 
+import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -45,11 +46,16 @@ import com.dogandpigs.fitnote.presentation.util.format
 @Composable
 internal fun MemberLessonScreen(
     viewModel: MemberLessonViewModel = hiltViewModel(),
+    memberId: Int,
+    lessonId: Int,
     popBackStack: () -> Unit,
     navigateToAddLesson: () -> Unit,
     navigateToSetting: () -> Unit,
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
+
+    Log.d("aa12", "memberId : $memberId")
+    Log.d("aa12", "lessonId : $lessonId")
 
     MemberLessonList(
         uiState = uiState,
