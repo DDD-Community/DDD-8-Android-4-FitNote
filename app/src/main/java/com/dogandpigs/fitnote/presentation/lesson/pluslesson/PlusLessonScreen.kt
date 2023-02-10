@@ -134,15 +134,9 @@ private fun PlusLesson(
                             HeightSpacer(height = LocalFitNoteSpacing.current.spacing4)
 
                             ExerciseSetMainRow(
-                                set = stringResource(id = R.string.some_set, exercise.numberOfSets),
-                                weight = stringResource(
-                                    id = R.string.some_weight,
-                                    exercise.mainWeight.format()
-                                ),
-                                count = stringResource(
-                                    id = R.string.some_count,
-                                    exercise.mainCount
-                                ),
+                                set = exercise.numberOfSets.toString(),
+                                weight = exercise.mainWeight.format(),
+                                count = exercise.mainCount.toString(),
                             )
 
                             HeightSpacer(height = LocalFitNoteSpacing.current.spacing4)
@@ -267,7 +261,7 @@ private fun ExerciseSetMainRow(
 
         ExerciseSetItemNumberTextField(
             modifier = modifier,
-            text = set.format(),
+            text = set,
             enabled = false,
             suffix = "세트",
         ) {}
