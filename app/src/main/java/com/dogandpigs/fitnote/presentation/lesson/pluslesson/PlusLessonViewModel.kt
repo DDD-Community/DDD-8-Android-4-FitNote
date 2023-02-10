@@ -1,6 +1,7 @@
 package com.dogandpigs.fitnote.presentation.lesson.pluslesson
 
 import com.dogandpigs.fitnote.presentation.base.BaseViewModel
+import com.dogandpigs.fitnote.presentation.lesson.Exercise
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 
@@ -26,15 +27,23 @@ internal class PlusLessonViewModel @Inject constructor(
         }
     }
 
-//    fun toggleExerciseIsDone(index: Int) {
-//        val exerciseList = mutableListOf<MemberLessonUiState.Exercise>()
-//        exerciseList.addAll(uiState.value.exercises)
-//        exerciseList[index] = exerciseList[index].toggle()
-//
-//        uiState.value = uiState.value.copy(
-//            exercises = exerciseList.toList(),
-//        )
-//    }
+    fun changeExerciseName(
+        index: Int,
+        name: String,
+    ) = currentState {
+        val exerciseList = mutableListOf<Exercise>()
+        exerciseList.addAll(state.value.exercises)
+
+        exerciseList[index] = exerciseList[index].copy(
+            name = name
+        )
+
+        setState {
+            copy(
+                exercises = exerciseList.toList(),
+            )
+        }
+    }
 //
 //    fun toggleExerciseSetIsDone(
 //        exerciseIndex: Int,

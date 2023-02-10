@@ -25,11 +25,11 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.ExperimentalLifecycleComposeApi
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import androidx.navigation.compose.rememberNavController
 import com.dogandpigs.fitnote.R
 import com.dogandpigs.fitnote.presentation.base.FigmaPreview
 import com.dogandpigs.fitnote.presentation.lesson.Exercise
 import com.dogandpigs.fitnote.presentation.lesson.ExerciseColumn
+import com.dogandpigs.fitnote.presentation.lesson.ExerciseSetItemNumberTextField
 import com.dogandpigs.fitnote.presentation.lesson.ExerciseSetItemTextField
 import com.dogandpigs.fitnote.presentation.lesson.memberlesson.ExerciseSetItemText
 import com.dogandpigs.fitnote.presentation.ui.component.*
@@ -56,6 +56,7 @@ internal fun PlusLessonScreen(
 
     PlusLesson(
         state = state,
+        changeExerciseName = viewModel::changeExerciseName,
         onClickClose = popBackStack,
         onClickLoadLesson = navigateToLoadLesson,
         onClickAddExercise = navigateToAddExercise,
@@ -66,13 +67,15 @@ internal fun PlusLessonScreen(
 @Composable
 private fun PlusLesson(
     state: PlusLessonUiState,
+    changeExerciseName: (
+        index: Int,
+        name: String,
+    ) -> Unit,
     onClickClose: () -> Unit,
     onClickLoadLesson: () -> Unit,
     onClickAddExercise: () -> Unit,
     onClickDateLabel: (Long) -> Unit,
 ) {
-    val navController = rememberNavController()
-
     FitNoteScaffold(
         topBarTitle = stringResource(id = R.string.add_lesson),
         onClickTopBarNavigationIcon = onClickClose,
@@ -112,13 +115,15 @@ private fun PlusLesson(
 
                 HeightSpacer(height = LocalFitNoteSpacing.current.spacing5)
 
-                for (exercise in state.exercises) {
+                state.exercises.forEachIndexed { index, exercise ->
                     ExerciseColumn(
                         exercise = exercise,
                         Title = {
                             ExerciseName(
                                 name = exercise.name,
-                                onClickName = {},
+                                onClickName = { newValue ->
+                                    changeExerciseName(index, newValue)
+                                },
                             )
                             HeightSpacer(height = LocalFitNoteSpacing.current.spacing4)
 
@@ -248,28 +253,28 @@ private fun ExerciseSetMainRow(
                 bottom = 6.dp,
             )
 
-        ExerciseSetItemTextField(
+        ExerciseSetItemNumberTextField(
             modifier = modifier,
             text = set.format(),
             enabled = false,
             suffix = "세트",
-        )
+        ) {}
         WidthSpacer(width = LocalFitNoteSpacing.current.spacing4)
 
-        ExerciseSetItemTextField(
+        ExerciseSetItemNumberTextField(
             modifier = modifier,
             text = weight.format(),
             enabled = false,
             suffix = "kg",
-        )
+        ) {}
         WidthSpacer(width = LocalFitNoteSpacing.current.spacing4)
 
-        ExerciseSetItemTextField(
+        ExerciseSetItemNumberTextField(
             modifier = modifier,
             text = weight.format(),
             enabled = false,
             suffix = "회",
-        )
+        ) {}
     }
 }
 
@@ -291,7 +296,6 @@ private fun ExerciseName(
     ExerciseSetItemTextField(
         modifier = modifier,
         text = name,
-        keyboardOptions = null,
     ) {
         onClickName(it)
     }
@@ -299,7 +303,7 @@ private fun ExerciseName(
 
 @Composable
 private fun PlusSetButton(
-    onClick : () -> Unit,
+    onClick: () -> Unit,
 ) {
     Button(
         colors = ButtonDefaults.outlinedButtonColors(
@@ -347,7 +351,7 @@ private fun ExerciseSetItem(
                 bottom = 6.dp,
             )
 
-        ExerciseSetItemTextField(
+        ExerciseSetItemNumberTextField(
             modifier = modifier,
             text = exerciseSet.weight.format(),
             suffix = "kg",
@@ -356,7 +360,7 @@ private fun ExerciseSetItem(
         }
         WidthSpacer(width = LocalFitNoteSpacing.current.spacing4)
 
-        ExerciseSetItemTextField(
+        ExerciseSetItemNumberTextField(
             modifier = modifier,
             text = exerciseSet.count.format(),
             suffix = "회",
@@ -413,6 +417,7 @@ private fun PreviewPlusLesson() {
     FitNoteTheme {
         PlusLesson(
             state = mockUiState,
+            changeExerciseName = { index: Int, name: String -> },
             onClickClose = {},
             onClickLoadLesson = {},
             onClickAddExercise = {},

@@ -105,13 +105,12 @@ internal fun ExerciseSetItemTextField(
     text: String,
     suffix: String? = null,
     enabled: Boolean = true,
-    keyboardOptions: KeyboardOptions? = KeyboardOptions(keyboardType = KeyboardType.Number),
-    onValueChange: ((String) -> Unit)? = null,
+    onValueChange: (String) -> Unit,
 ) {
     BasicTextField(
         value = text,
         onValueChange = { textValue ->
-            onValueChange?.invoke(textValue.format(text))
+            onValueChange(textValue)
         },
         modifier = modifier,
         enabled = enabled,
@@ -123,7 +122,34 @@ internal fun ExerciseSetItemTextField(
         } else {
             VisualTransformation.None
         },
-        keyboardOptions = keyboardOptions ?: KeyboardOptions.Default,
+        maxLines = 1,
+    )
+}
+
+@Composable
+internal fun ExerciseSetItemNumberTextField(
+    modifier: Modifier,
+    text: String,
+    suffix: String? = null,
+    enabled: Boolean = true,
+    onValueChange: (String) -> Unit,
+) {
+    BasicTextField(
+        value = text,
+        onValueChange = { textValue ->
+            onValueChange(textValue.format(text))
+        },
+        modifier = modifier,
+        enabled = enabled,
+        textStyle = LocalFitNoteTypography.current.buttonMedium.copy(
+            color = GrayScaleMidGray3,
+        ),
+        visualTransformation = if (suffix != null) {
+            SuffixVisualTransformation(suffix)
+        } else {
+            VisualTransformation.None
+        },
+        keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
         maxLines = 1,
     )
 }
@@ -227,7 +253,7 @@ private fun ExerciseSetItem(
                 bottom = 6.dp,
             )
 
-        ExerciseSetItemTextField(
+        ExerciseSetItemNumberTextField(
             modifier = modifier,
             text = exerciseSet.weight.format(),
             suffix = "kg",
@@ -236,7 +262,7 @@ private fun ExerciseSetItem(
         }
         WidthSpacer(width = LocalFitNoteSpacing.current.spacing4)
 
-        ExerciseSetItemTextField(
+        ExerciseSetItemNumberTextField(
             modifier = modifier,
             text = exerciseSet.count.format(),
             suffix = "회",
