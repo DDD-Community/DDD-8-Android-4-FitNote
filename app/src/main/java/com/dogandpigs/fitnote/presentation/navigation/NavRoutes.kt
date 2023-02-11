@@ -22,4 +22,4 @@ internal const val ROUTE_HOME = ROUTE_MEMBER_LIST
 internal const val ARGUMENT_EMAIL = "email"
 internal const val ARGUMENT_REGISTRATION = "registration"
 internal const val ARGUMENT_MEMBER_ID = "member_id"
-internal const val ARGUMENT_LESSON_ID = "lesson_id"
+internal const val ARGUMENT_LESSON_DATE = "lesson_date"

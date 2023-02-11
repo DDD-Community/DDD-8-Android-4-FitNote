@@ -48,7 +48,7 @@ import com.dogandpigs.fitnote.presentation.util.format
 internal fun MemberLessonScreen(
     viewModel: MemberLessonViewModel = hiltViewModel(),
     memberId: Int,
-    lessonId: Int,
+    lessonDate: Int,
     popBackStack: () -> Unit,
     navigateToAddLesson: () -> Unit,
     navigateToSetting: () -> Unit,
@@ -58,7 +58,7 @@ internal fun MemberLessonScreen(
     LaunchedEffect(Unit) {
         viewModel.initialize(
             memberId = memberId,
-            lessonId = lessonId,
+            lessonDate = lessonDate,
         )
     }
 

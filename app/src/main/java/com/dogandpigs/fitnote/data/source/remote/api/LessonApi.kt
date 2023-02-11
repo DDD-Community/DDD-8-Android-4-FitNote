@@ -1,5 +1,6 @@
 package com.dogandpigs.fitnote.data.source.remote.api
 
+import com.dogandpigs.fitnote.data.source.remote.model.LessonDetailResponse
 import com.dogandpigs.fitnote.data.source.remote.model.LessonResponse
 import com.dogandpigs.fitnote.data.source.remote.model.ResBase
 import com.dogandpigs.fitnote.presentation.lesson.addlesson.Routine
@@ -17,4 +18,7 @@ interface LessonApi {
     
     @POST("/hypeboy/end/")
     suspend fun getCompletedLessonList(@Body request: JsonObject): Response<ResBase<LessonResponse>>
+
+    @POST("/hypeboy/info/")
+    suspend fun getLessonDetail(@Body request: JsonObject): Response<ResBase<LessonDetailResponse>>
 }

@@ -1,5 +1,6 @@
 package com.dogandpigs.fitnote.presentation.lesson.memberlessonlist
 
+import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -76,8 +77,8 @@ internal fun MemberLessonListScreen(
         uiState = uiState,
         popBackStack = popBackStack,
         onClickAddLesson = navigateToAddLesson,
-        onClickStartLesson = { lessonId ->
-            navigateToMemberLesson(memberId, lessonId)
+        onClickStartLesson = { lessonDate ->
+            navigateToMemberLesson(memberId, lessonDate)
         },
     )
 }
@@ -303,8 +304,7 @@ private fun LessonItem(
         LessonItemButtons(
             onClickLessonEdit = onClickLessonEdit,
             onClickLessonStart = {
-                // TODO lesson ID
-                onClickLessonStart(1)
+                onClickLessonStart(lesson.dateString.toInt())
             },
         )
         HeightSpacer(height = 13.dp)
