@@ -11,6 +11,7 @@ fun NavGraphBuilder.addMemberLessonListScreen(
     popBackStack: () -> Unit,
     navigateToAddLesson: (Int) -> Unit,
     navigateToMemberLesson: (Int, Int) -> Unit,
+    navigateToShare: (Int, Int) -> Unit,
 ) {
     val argument = ARGUMENT_MEMBER_ID
 
@@ -26,6 +27,7 @@ fun NavGraphBuilder.addMemberLessonListScreen(
             popBackStack = popBackStack,
             navigateToAddLesson = navigateToAddLesson,
             navigateToMemberLesson = navigateToMemberLesson,
+            navigateToShare = navigateToShare,
         )
     }
 }

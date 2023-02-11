@@ -17,6 +17,7 @@ import com.dogandpigs.fitnote.presentation.member.memberedit.addMemberEdit
 import com.dogandpigs.fitnote.presentation.member.memberlist.addMemberList
 import com.dogandpigs.fitnote.presentation.member.memberlist.addMemberListWithRegistration
 import com.dogandpigs.fitnote.presentation.setting.addSettingScreen
+import com.dogandpigs.fitnote.presentation.share.addShare
 import com.dogandpigs.fitnote.presentation.splash.addSplash
 
 @Composable
@@ -73,6 +74,9 @@ internal fun NavigationGraph(navController: NavHostController) {
         )
         addMember(navController)
         addLesson(navController)
+        addShare(
+            route = "$ROUTE_SHARE/{$ARGUMENT_MEMBER_ID}/{$ARGUMENT_LESSON_DATE}",
+        )
     }
 }
 
@@ -134,7 +138,10 @@ private fun NavGraphBuilder.addLesson(
         },
         navigateToMemberLesson = { memberId, lessonDate ->
             navController.navigate("$ROUTE_MEMBER_LESSON/$memberId/$lessonDate")
-        }
+        },
+        navigateToShare = { memberId, lessonDate ->
+            navController.navigate("$ROUTE_SHARE/$memberId/$lessonDate")
+        },
     )
     addAddLessonScreen(
         route = "$ROUTE_ADD_LESSON/{$ARGUMENT_MEMBER_ID}",
