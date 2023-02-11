@@ -8,6 +8,7 @@ import com.google.gson.JsonObject
 import retrofit2.Response
 import retrofit2.http.Body
 import retrofit2.http.POST
+import retrofit2.http.PUT
 
 interface LessonApi {
     @POST("/hypeboy/add/")
@@ -21,4 +22,7 @@ interface LessonApi {
 
     @POST("/hypeboy/info/")
     suspend fun getLessonDetail(@Body request: JsonObject): Response<ResBase<LessonDetailResponse>>
+
+    @PUT("/hypeboy/complet/")
+    suspend fun putLessonComplete(@Body request: JsonObject): Response<ResBase<LessonDetailResponse>>
 }

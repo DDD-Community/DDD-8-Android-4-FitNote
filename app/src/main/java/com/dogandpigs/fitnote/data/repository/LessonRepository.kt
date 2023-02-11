@@ -1,6 +1,5 @@
 package com.dogandpigs.fitnote.data.repository
 
-import android.util.Log
 import com.dogandpigs.fitnote.data.source.remote.api.LessonApi
 import com.dogandpigs.fitnote.data.source.remote.model.LessonDetailResponse
 import com.dogandpigs.fitnote.data.source.remote.model.LessonResponse
@@ -45,10 +44,6 @@ class LessonRepository @Inject constructor(
         id: Int,
         today: Int,
     ): LessonDetailResponse? {
-
-        Log.d("aa12", "getLessonDetail id : $id")
-        Log.d("aa12", "getLessonDetail today : $today")
-
         val json = JsonObject().apply {
             addProperty("id", id)
             addProperty("today", today)
@@ -60,5 +55,19 @@ class LessonRepository @Inject constructor(
             }
             return body()?.data
         }
+    }
+
+    suspend fun putLessonComplete(
+        id: Int,
+        lessonId: Int,
+        today: Int,
+    ) {
+        val json = JsonObject().apply {
+            addProperty("id", id)
+            addProperty("lesson_id", lessonId)
+            addProperty("today", today)
+        }
+
+        lessonApi.putLessonComplete(json)
     }
 }
