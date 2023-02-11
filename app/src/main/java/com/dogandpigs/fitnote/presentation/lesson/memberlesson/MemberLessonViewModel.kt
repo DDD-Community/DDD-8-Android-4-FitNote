@@ -40,7 +40,8 @@ internal class MemberLessonViewModel @Inject constructor(
             }.onSuccess {
                 setState {
                     copy(
-                        exercises = it.toPresentation()
+                        userName = it?.memberInfo?.userName ?: "",
+                        exercises = it.toPresentation(),
                     )
                 }
 //                Log.d("aa12", "it : $it")
