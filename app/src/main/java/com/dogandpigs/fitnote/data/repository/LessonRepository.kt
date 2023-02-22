@@ -2,7 +2,7 @@ package com.dogandpigs.fitnote.data.repository
 
 import com.dogandpigs.fitnote.data.source.remote.api.LessonApi
 import com.dogandpigs.fitnote.data.source.remote.model.LessonDetailResponse
-import com.dogandpigs.fitnote.data.source.remote.model.LessonResponse
+import com.dogandpigs.fitnote.data.source.remote.response.LessonResponse
 import com.dogandpigs.fitnote.presentation.lesson.addlesson.Routine
 import com.google.gson.JsonObject
 import javax.inject.Inject

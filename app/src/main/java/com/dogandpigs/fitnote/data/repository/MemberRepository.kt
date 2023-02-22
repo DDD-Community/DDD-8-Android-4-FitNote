@@ -1,8 +1,8 @@
 package com.dogandpigs.fitnote.data.repository
 
 import com.dogandpigs.fitnote.data.source.remote.api.MemberApi
-import com.dogandpigs.fitnote.data.source.remote.model.LessonResponse
 import com.dogandpigs.fitnote.data.source.remote.request.MemberRequest
+import com.dogandpigs.fitnote.data.source.remote.response.LessonResponse
 import com.dogandpigs.fitnote.data.source.remote.response.ListResponse
 import javax.inject.Inject
 
