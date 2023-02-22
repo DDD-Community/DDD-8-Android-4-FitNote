@@ -60,11 +60,11 @@ import com.dogandpigs.fitnote.presentation.ui.theme.GrayScaleMidGray3
 @Composable
 internal fun MemberLessonListScreen(
     viewModel: MemberLessonListViewModel = hiltViewModel(),
-    memberId: Int,
+    memberId: Long,
     popBackStack: () -> Unit,
-    navigateToAddLesson: (Int) -> Unit,
-    navigateToMemberLesson: (memberId: Int, lessonDate: Int) -> Unit,
-    navigateToShare: (memberId: Int, lessonDate: Int) -> Unit,
+    navigateToAddLesson: (Long) -> Unit,
+    navigateToMemberLesson: (memberId: Long, lessonDate: Int) -> Unit,
+    navigateToShare: (memberId: Long, lessonDate: Int) -> Unit,
 ) {
     val uiState by viewModel.state.collectAsStateWithLifecycle()
 
@@ -91,7 +91,7 @@ internal fun MemberLessonListScreen(
 private fun MemberLessonList(
     uiState: MemberLessonListUiState,
     popBackStack: () -> Unit,
-    onClickAddLesson: (Int) -> Unit,
+    onClickAddLesson: (Long) -> Unit,
     onClickStartLesson: (Int) -> Unit,
     onClickShare: (lessonId: Int) -> Unit,
 ) {
@@ -391,7 +391,7 @@ private fun LessonItemButtons(
 @Composable
 private fun AddLessonButton(
     uiState: MemberLessonListUiState,
-    onClickAddLesson: (Int) -> Unit,
+    onClickAddLesson: (Long) -> Unit,
 ) {
     val paddingValues = PaddingValues(
         horizontal = 16.dp,

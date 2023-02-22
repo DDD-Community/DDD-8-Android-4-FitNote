@@ -60,9 +60,9 @@ import com.dogandpigs.fitnote.presentation.ui.theme.LocalFitNoteTypography
 internal fun MemberListScreen(
     viewModel: MemberListViewModel = hiltViewModel(),
     registration: Boolean = false,
-    navigateToMemberDetail: (Int) -> Unit,
+    navigateToMemberDetail: (Long) -> Unit,
     navigateToMemberAdd: () -> Unit,
-    navigateToMemberLessonList: (Int) -> Unit,
+    navigateToMemberLessonList: (Long) -> Unit,
     navigateToSetting: () -> Unit,
 ) {
     val uiState by viewModel.state.collectAsStateWithLifecycle()
@@ -184,8 +184,8 @@ private fun MemberListHeader(
 @Composable
 private fun MemberList(
     userList: List<MemberUiModel>,
-    onClickMemberDetail: (Int) -> Unit,
-    onClickMemberLessonList: (Int) -> Unit,
+    onClickMemberDetail: (Long) -> Unit,
+    onClickMemberLessonList: (Long) -> Unit,
 ) {
     Column(
         modifier = Modifier
@@ -213,8 +213,8 @@ private fun MemberList(
 @Composable
 private fun MemberListItem(
     item: MemberUiModel,
-    onClickText: (Int) -> Unit,
-    onClickButton: (Int) -> Unit,
+    onClickText: (Long) -> Unit,
+    onClickButton: (Long) -> Unit,
 ) {
     Row(
         modifier = Modifier
@@ -256,7 +256,7 @@ private val previewUiState =
     MemberListUiState(
         myName = "김코치",
         profileImgUrl = "",
-        userList = (0..30).map {
+        userList = (0L..30L).map {
             MemberUiModel(id = it, userName = "이름 $it")
         }
     )

@@ -16,7 +16,7 @@ internal class MemberDetailViewModel @Inject constructor(
 ) : BaseViewModel<MemberDetailUiState>() {
     override fun createInitialState(): MemberDetailUiState = MemberDetailUiState()
 
-    fun initialize(memberId: Int) {
+    fun initialize(memberId: Long) {
         viewModelScope.launch {
             kotlin.runCatching {
                 memberRepository.getMemberList()
@@ -28,8 +28,8 @@ internal class MemberDetailViewModel @Inject constructor(
                 member?.also {
                     setState {
                         copy(
-                            name = it.userName ?: "",
-                            date = it.createDate?.formatDate() ?: "",
+                            name = it.userName,
+                            date = it.createDate.formatDate() ?: "",
                             gender = formatGender(it.userGender),
                             height = "${trimTrailingZero(it.userHeight?.toString())}cm",
                             weight = "${trimTrailingZero(it.userWeight?.toString())}kg",

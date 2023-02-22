@@ -15,7 +15,7 @@ internal class MemberLessonListViewModel @Inject constructor(
 ) : BaseViewModel<MemberLessonListUiState>() {
     override fun createInitialState(): MemberLessonListUiState = MemberLessonListUiState()
 
-    fun initialize(memberId: Int) = currentState {
+    fun initialize(memberId: Long) = currentState {
         setState {
             copy(memberId = memberId)
         }
@@ -36,7 +36,7 @@ internal class MemberLessonListViewModel @Inject constructor(
                 member?.also {
                     setState {
                         copy(
-                            userName = it.userName ?: "",
+                            userName = it.userName,
                         )
                     }
                 } ?: return@onSuccess // TODO member is NULL

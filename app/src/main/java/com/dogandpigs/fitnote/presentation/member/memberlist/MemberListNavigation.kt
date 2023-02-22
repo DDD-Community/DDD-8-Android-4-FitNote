@@ -8,9 +8,9 @@ import com.dogandpigs.fitnote.presentation.navigation.ARGUMENT_REGISTRATION
 
 fun NavGraphBuilder.addMemberList(
     route: String,
-    navigateToMemberDetail: (Int) -> Unit,
+    navigateToMemberDetail: (Long) -> Unit,
     navigateToMemberAdd: () -> Unit,
-    navigateToMemberLessonList: (Int) -> Unit,
+    navigateToMemberLessonList: (Long) -> Unit,
     navigateToSetting: () -> Unit
 ) {
     composable(route = route) {
@@ -25,9 +25,9 @@ fun NavGraphBuilder.addMemberList(
 
 internal fun NavGraphBuilder.addMemberListWithRegistration(
     route: String,
-    navigateToMemberDetail: (Int) -> Unit,
+    navigateToMemberDetail: (Long) -> Unit,
     navigateToMemberAdd: () -> Unit,
-    navigateToMemberLessonList: (Int) -> Unit,
+    navigateToMemberLessonList: (Long) -> Unit,
     navigateToSetting: () -> Unit,
 ) {
     val argument = ARGUMENT_REGISTRATION
