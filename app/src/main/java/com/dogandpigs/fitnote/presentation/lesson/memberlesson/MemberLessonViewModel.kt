@@ -1,13 +1,11 @@
 package com.dogandpigs.fitnote.presentation.lesson.memberlesson
 
-import android.util.Log
 import androidx.lifecycle.viewModelScope
 import com.dogandpigs.fitnote.data.repository.LessonRepository
 import com.dogandpigs.fitnote.data.source.remote.model.LessonDetailResponse
 import com.dogandpigs.fitnote.presentation.base.BaseViewModel
 import com.dogandpigs.fitnote.presentation.lesson.Exercise
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -103,26 +101,21 @@ internal class MemberLessonViewModel @Inject constructor(
         } ?: emptyList()
 
     fun complete() = currentState {
-        viewModelScope.launch {
-            kotlin.runCatching {
-                tempList.toList().forEach { temp ->
-                    Log.d("aa12", "temp : $temp")
-
-                    // TODO 전체 완료로 만들기
+        runCatching {
+            tempList.toList().forEach { temp ->
+                viewModelScope.launch {
                     lessonRepository.putLessonComplete(
                         id = temp.memberId,
                         lessonId = temp.lessonId,
                         today = temp.today,
                     )
-                    delay(1_00L)
                 }
-            }.onSuccess {
-                Log.d("aa12", "onSuccess : ")
-                setState {
-                    copy(
-                        isNext = true,
-                    )
-                }
+            }
+        }.onSuccess {
+            setState {
+                copy(
+                    isNext = true,
+                )
             }
         }
     }

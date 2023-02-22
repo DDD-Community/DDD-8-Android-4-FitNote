@@ -24,5 +24,5 @@ interface LessonApi {
     suspend fun getLessonDetail(@Body request: JsonObject): Response<ResBase<LessonDetailResponse>>
 
     @PUT("/hypeboy/complet/")
-    suspend fun putLessonComplete(@Body request: JsonObject): Response<ResBase<LessonDetailResponse>>
+    suspend fun putLessonComplete(@Body request: JsonObject): Response<ResBase<Int>>
 }
