@@ -6,7 +6,3 @@ package com.dogandpigs.fitnote.core
 object Constants {
     const val TAG_DEBUG = "tag_debug"
 }
-
-object ResponseCode {
-    const val SUCCESS = 0
-}
