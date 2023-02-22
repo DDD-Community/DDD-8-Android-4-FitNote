@@ -147,7 +147,7 @@ private fun NavGraphBuilder.addLesson(
         route = "$ROUTE_ADD_LESSON/{$ARGUMENT_MEMBER_ID}",
         popBackStack = { navController.popBackStack() },
         navigateToLoadLesson = { navController.navigate(ROUTE_LOAD_LESSON) },
-        navigateToAddExercise = {},
+        navigateToMemberLessonList = {},
     )
     addMemberLesson(
         route = "$ROUTE_MEMBER_LESSON/{$ARGUMENT_MEMBER_ID}/{$ARGUMENT_LESSON_DATE}",
