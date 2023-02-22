@@ -24,7 +24,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.ExperimentalLifecycleComposeApi
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.dogandpigs.fitnote.R
-import com.dogandpigs.fitnote.data.source.remote.model.LessonResponse
+import com.dogandpigs.fitnote.data.source.remote.model.LessonInfo
 import com.dogandpigs.fitnote.presentation.base.FigmaPreview
 import com.dogandpigs.fitnote.presentation.lesson.addlesson.ExpandableCard
 import com.dogandpigs.fitnote.presentation.lesson.addlesson.Routine
@@ -82,7 +82,7 @@ private fun RowTagList(
         Modifier.horizontalScroll(scrollState)
     ) {
         lessonState.memberList.forEach { member ->
-            Tag(member.userName ?: "", borderRadius, paddingValue)
+            Tag(member.userName, borderRadius, paddingValue)
             WidthSpacer(width = 10.dp)
         }
     }
@@ -99,7 +99,7 @@ private fun RowExerciseList(
         Modifier.horizontalScroll(scrollState)
     ) {
         exerciseList.forEach { name ->
-            Tag(name ?: "", borderRadius, paddingValue)
+            Tag(name, borderRadius, paddingValue)
             WidthSpacer(width = 10.dp)
         }
     }
@@ -153,7 +153,7 @@ private fun RoutineList(lessonsState: LoadLessonState) {
 }
 
 @Composable
-private fun ExerciseList(description: LessonResponse.Description) {
+private fun ExerciseList(description: LessonInfo) {
     val selectedValue = remember { mutableStateOf("") }
     val label = "Item"
     val list = mutableListOf<Routine>().apply {
