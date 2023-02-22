@@ -4,7 +4,7 @@ import com.google.gson.annotations.SerializedName
 
 data class LessonInfo(
     @SerializedName("lessons_date")
-    val lessonsDate: String,
+    val lessonsDate: Int,
 
     @SerializedName("lessons_name")
     val lessonsName: List<String>,

@@ -173,7 +173,7 @@ private fun ExerciseList(description: LessonInfo) {
             verticalAlignment = Alignment.CenterVertically
         ) {
             Text(
-                text = description.lessonsDate,
+                text = description.lessonsDate.toString(),
                 color = GrayScaleMidGray3,
                 style = LocalFitNoteTypography.current.buttonMedium
             )
