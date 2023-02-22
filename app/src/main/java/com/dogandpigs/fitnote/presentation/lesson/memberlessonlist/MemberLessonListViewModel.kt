@@ -46,22 +46,26 @@ internal class MemberLessonListViewModel @Inject constructor(
 
     private fun getIntendedLessonList() = currentState {
         viewModelScope.launch {
-            lessonRepository.getIntendedLessons(memberId)?.run {
-                val lessonList = mutableListOf<MemberLessonListUiState.Tab.Lesson>()
-                lessonInfo.forEach { lesson ->
-                    lessonList.add(
-                        MemberLessonListUiState.Tab.Lesson(
-                            dateString = lesson.lessonsDate,
-                            exercises = lesson.lessonsName
+            runCatching {
+                lessonRepository.getIntendedLessons(memberId)
+            }.onSuccess {
+                it?.run {
+                    val lessonList = mutableListOf<MemberLessonListUiState.Tab.Lesson>()
+                    lessonInfo.forEach { lesson ->
+                        lessonList.add(
+                            MemberLessonListUiState.Tab.Lesson(
+                                dateString = lesson.lessonsDate.toString(),
+                                exercises = lesson.lessonsName
+                            )
                         )
+                    }
+                    val scheduledTab = MemberLessonListUiState.Tab(
+                        tabType = MemberLessonListUiState.Tab.TabType.SCHEDULED,
+                        lessons = lessonList,
                     )
-                }
-                val scheduledTab = MemberLessonListUiState.Tab(
-                    tabType = MemberLessonListUiState.Tab.TabType.SCHEDULED,
-                    lessons = lessonList,
-                )
-                setState {
-                    copy(scheduledLessonTab = scheduledTab)
+                    setState {
+                        copy(scheduledLessonTab = scheduledTab)
+                    }
                 }
             }
         }
@@ -69,22 +73,26 @@ internal class MemberLessonListViewModel @Inject constructor(
 
     private fun getCompletedLessonList() = currentState {
         viewModelScope.launch {
-            lessonRepository.getCompletedLessons(memberId)?.run {
-                val lessonList = mutableListOf<MemberLessonListUiState.Tab.Lesson>()
-                lessonInfo.forEach { lesson ->
-                    lessonList.add(
-                        MemberLessonListUiState.Tab.Lesson(
-                            dateString = lesson.lessonsDate,
-                            exercises = lesson.lessonsName
+            runCatching {
+                lessonRepository.getCompletedLessons(memberId)
+            }.onSuccess {
+                it?.run {
+                    val lessonList = mutableListOf<MemberLessonListUiState.Tab.Lesson>()
+                    lessonInfo.forEach { lesson ->
+                        lessonList.add(
+                            MemberLessonListUiState.Tab.Lesson(
+                                dateString = lesson.lessonsDate.toString(),
+                                exercises = lesson.lessonsName
+                            )
                         )
+                    }
+                    val scheduledTab = MemberLessonListUiState.Tab(
+                        tabType = MemberLessonListUiState.Tab.TabType.COMPLETED,
+                        lessons = lessonList,
                     )
-                }
-                val scheduledTab = MemberLessonListUiState.Tab(
-                    tabType = MemberLessonListUiState.Tab.TabType.COMPLETED,
-                    lessons = lessonList,
-                )
-                setState {
-                    copy(completedLessonTab = scheduledTab)
+                    setState {
+                        copy(completedLessonTab = scheduledTab)
+                    }
                 }
             }
         }
