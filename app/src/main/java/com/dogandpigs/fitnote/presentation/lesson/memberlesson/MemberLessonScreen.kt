@@ -65,6 +65,12 @@ internal fun MemberLessonScreen(
         )
     }
 
+    LaunchedEffect(uiState.isNext) {
+        if (uiState.isNext) {
+            popBackStack()
+        }
+    }
+
     MemberLessonList(
         uiState = uiState,
         popBackStack = popBackStack,
@@ -74,6 +80,7 @@ internal fun MemberLessonScreen(
         onClickSetCheckbox = viewModel::toggleExerciseSetIsDone,
         onChangeWeight = viewModel::changeWeight,
         onChangeCount = viewModel::changeCount,
+        onClickComplete = viewModel::complete,
     )
 }
 
@@ -87,6 +94,7 @@ private fun MemberLessonList(
     onClickSetCheckbox: (Int, Int) -> Unit,
     onChangeWeight: (String, Int, Int) -> Unit,
     onChangeCount: (String, Int, Int) -> Unit,
+    onClickComplete: () -> Unit,
 ) {
     FitNoteScaffold(
         topBarTitle = "${
@@ -100,7 +108,8 @@ private fun MemberLessonList(
         val scrollState = rememberScrollState()
 
         Column(
-            modifier = Modifier.padding(it)
+            modifier = Modifier
+                .padding(it)
                 .background(color = Color.White)
                 .verticalScroll(scrollState),
         ) {
@@ -151,9 +160,7 @@ private fun MemberLessonList(
 
         DefaultBottomLargePositiveButton(
             positiveText = "수업 완료",
-            onClickPositive = {
-                              // TODO 버튼 동작 구현
-            },
+            onClickPositive = onClickComplete,
         ) {
             HeightSpacer(height = LocalFitNoteSpacing.current.spacing5)
         }
@@ -300,6 +307,7 @@ private fun PreviewLesson() {
             onClickSetCheckbox = { _: Int, _: Int -> },
             onChangeWeight = { _: String, _: Int, _: Int -> },
             onChangeCount = { _: String, _: Int, _: Int -> },
+            onClickComplete = {},
         )
     }
 }

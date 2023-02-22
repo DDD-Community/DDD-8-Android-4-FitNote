@@ -5,4 +5,5 @@ import com.dogandpigs.fitnote.presentation.lesson.Exercise
 internal data class MemberLessonUiState(
     val userName: String = "",
     val exercises: List<Exercise> = emptyList(),
+    val isNext: Boolean = false,
 )

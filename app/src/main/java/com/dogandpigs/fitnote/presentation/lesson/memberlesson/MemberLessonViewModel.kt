@@ -7,6 +7,7 @@ import com.dogandpigs.fitnote.data.source.remote.model.LessonDetailResponse
 import com.dogandpigs.fitnote.presentation.base.BaseViewModel
 import com.dogandpigs.fitnote.presentation.lesson.Exercise
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -15,6 +16,14 @@ internal class MemberLessonViewModel @Inject constructor(
     private val lessonRepository: LessonRepository,
 ) : BaseViewModel<MemberLessonUiState>() {
     override fun createInitialState(): MemberLessonUiState = MemberLessonUiState()
+
+    private val tempList = mutableListOf<Temp>()
+
+    data class Temp(
+        val memberId: Int,
+        val lessonId: Int,
+        val today: Int,
+    )
 
     fun initialize(
         memberId: Int,
@@ -30,7 +39,6 @@ internal class MemberLessonViewModel @Inject constructor(
         memberId: Int,
         lessonDate: Int,
     ) = currentState {
-        Log.d("aa12", "getLessonDetail")
         viewModelScope.launch {
             kotlin.runCatching {
                 lessonRepository.getLessonDetail(
@@ -41,17 +49,20 @@ internal class MemberLessonViewModel @Inject constructor(
                 setState {
                     copy(
                         userName = it?.memberInfo?.userName ?: "",
-                        exercises = it.toPresentation(),
+                        exercises = it.toPresentation(
+                            id = memberId,
+                            today = lessonDate,
+                        ),
                     )
                 }
-//                Log.d("aa12", "it : $it")
-//                it.toPresentation()
-//                Log.d("aa12", "it : $it")
             }
         }
     }
 
-    private fun LessonDetailResponse?.toPresentation(): List<Exercise> =
+    private fun LessonDetailResponse?.toPresentation(
+        id: Int,
+        today: Int,
+    ): List<Exercise> =
         this?.run {
             this.lessonInfo.flatten().groupBy {
                 it.name
@@ -73,6 +84,13 @@ internal class MemberLessonViewModel @Inject constructor(
                                             isDone = false,
                                         )
                                     )
+                                    tempList.add(
+                                        Temp(
+                                            memberId = id,
+                                            today = today,
+                                            lessonId = lessonDescription.lessonId,
+                                        )
+                                    )
                                 }
                                 list
                             },
@@ -83,6 +101,31 @@ internal class MemberLessonViewModel @Inject constructor(
                 exerciseList
             }
         } ?: emptyList()
+
+    fun complete() = currentState {
+        viewModelScope.launch {
+            kotlin.runCatching {
+                tempList.toList().forEach { temp ->
+                    Log.d("aa12", "temp : $temp")
+
+                    // TODO 전체 완료로 만들기
+                    lessonRepository.putLessonComplete(
+                        id = temp.memberId,
+                        lessonId = temp.lessonId,
+                        today = temp.today,
+                    )
+                    delay(1_00L)
+                }
+            }.onSuccess {
+                Log.d("aa12", "onSuccess : ")
+                setState {
+                    copy(
+                        isNext = true,
+                    )
+                }
+            }
+        }
+    }
 
     fun toggleExerciseIsDone(index: Int) = currentState {
         val exerciseList = mutableListOf<Exercise>()
