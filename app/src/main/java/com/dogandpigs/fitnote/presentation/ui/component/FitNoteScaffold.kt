@@ -1,5 +1,6 @@
 package com.dogandpigs.fitnote.presentation.ui.component
 
+import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.RowScope
 import androidx.compose.material.icons.Icons
@@ -26,6 +27,7 @@ internal fun FitNoteScaffold(
     onClickTopBarNavigationIcon: () -> Unit,
     topBarNavigationIconImageVector: ImageVector = Icons.Filled.ArrowBack,
     topBarActions: @Composable RowScope.() -> Unit = {},
+    onClickBackButton: () -> Unit = {},
     content: @Composable (PaddingValues) -> Unit,
 ) {
     Scaffold(
@@ -53,6 +55,10 @@ internal fun FitNoteScaffold(
             )
         }
     ) {
+        BackHandler {
+            onClickBackButton()
+        }
+
         content(it)
     }
 }

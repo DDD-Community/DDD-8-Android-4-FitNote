@@ -50,7 +50,7 @@ import java.util.Date
 @Composable
 internal fun MemberAddScreen(
     viewModel: MemberAddViewModel = hiltViewModel(),
-    popBackStack: () -> Unit,
+    navigateToHome: () -> Unit,
     navigateToMemberListWithRegistration: (Boolean) -> Unit,
 ) {
     val uiState by viewModel.state.collectAsStateWithLifecycle()
@@ -60,10 +60,11 @@ internal fun MemberAddScreen(
             navigateToMemberListWithRegistration(true)
         }
     }
+
     MemberAdd(
         uiState = uiState,
         viewModel = viewModel,
-        popBackStack = popBackStack,
+        onClickBackButton = navigateToHome,
         onClickAddButton = {
             viewModel.addMember()
         }
@@ -74,12 +75,13 @@ internal fun MemberAddScreen(
 private fun MemberAdd(
     uiState: MemberAddUiState,
     viewModel: MemberAddViewModel,
-    popBackStack: () -> Unit,
+    onClickBackButton: () -> Unit,
     onClickAddButton: () -> Unit,
 ) {
     FitNoteScaffold(
         topBarTitle = stringResource(id = R.string.member_registration),
-        onClickTopBarNavigationIcon = popBackStack,
+        onClickTopBarNavigationIcon = onClickBackButton,
+        onClickBackButton = onClickBackButton,
     ) {
         Box(modifier = Modifier.padding(it)) {
             Column(
@@ -318,7 +320,7 @@ private fun PreviewMemberAdd() {
             uiState = previewUiState,
             viewModel = hiltViewModel(),
             onClickAddButton = {},
-            popBackStack = {},
+            onClickBackButton = {},
         )
     }
 }

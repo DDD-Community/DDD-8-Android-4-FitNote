@@ -95,7 +95,7 @@ private fun NavGraphBuilder.addMember(
     )
     addMemberAdd(
         route = ROUTE_MEMBER_ADD,
-        popBackStack = { navController.popBackStack() },
+        navigateToHome = { navController.navigateToHome() },
         navigateToMemberListWithRegistration = {
             navController.navigate(
                 route = "${MemberListNavRoute.route}/$it"
