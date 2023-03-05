@@ -155,8 +155,10 @@ private fun MemberInfoList(
         DefaultTextField(
             value = height,
             onValueChange = {
-                height = it
-                viewModel.setHeight(it.toInt())
+                height = it.ifEmpty {
+                    "0"
+                }
+                viewModel.setHeight(height.toInt())
             },
             labelText = stringResource(id = R.string.height),
             placeholderText = stringResource(id = R.string.default_height),
@@ -168,7 +170,9 @@ private fun MemberInfoList(
         DefaultTextField(
             value = weight,
             onValueChange = {
-                weight = it
+                weight = it.ifEmpty {
+                    "0"
+                }
                 viewModel.setWeight(it.toInt())
             },
             labelText = stringResource(id = R.string.weight),
