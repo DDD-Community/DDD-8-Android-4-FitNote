@@ -44,7 +44,6 @@ internal fun SettingScreen(
     viewModel: SettingViewModel = hiltViewModel(),
     popBackStack: () -> Unit,
     navigateToSplash: () -> Unit,
-    onClickWithdrawal: () -> Unit = {},
 ) {
     val uiState by viewModel.state.collectAsStateWithLifecycle()
 
@@ -58,11 +57,17 @@ internal fun SettingScreen(
         }
     }
 
+    LaunchedEffect(uiState.withdrawal) {
+        if (uiState.withdrawal) {
+            navigateToSplash()
+        }
+    }
+
     Setting(
         uiState = uiState,
         popBackStack = popBackStack,
         onClickLogout = viewModel::logout,
-        onClickWithdrawal = onClickWithdrawal,
+        onClickWithdrawal = viewModel::withdrawal,
     )
 }
 
@@ -153,7 +158,10 @@ private fun Setting(
             )
             WithdrawalDialog(
                 visible = visibleWithdrawalDialog.value,
-                onClickPositive = onClickWithdrawal,
+                onClickPositive = {
+                    visibleWithdrawalDialog.value = false
+                    onClickWithdrawal()
+                },
                 onClickNegative = {
                     visibleWithdrawalDialog.value = false
                 },
