@@ -2,6 +2,7 @@ package com.dogandpigs.fitnote.presentation.setting
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -14,6 +15,8 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
@@ -24,6 +27,7 @@ import androidx.lifecycle.compose.ExperimentalLifecycleComposeApi
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.dogandpigs.fitnote.R
 import com.dogandpigs.fitnote.presentation.base.ComponentPreview
+import com.dogandpigs.fitnote.presentation.ui.component.DefaultRedDialog
 import com.dogandpigs.fitnote.presentation.ui.component.DefaultText
 import com.dogandpigs.fitnote.presentation.ui.component.FitNoteScaffold
 import com.dogandpigs.fitnote.presentation.ui.component.HeightSpacer
@@ -63,6 +67,9 @@ private fun Setting(
     onClickLogout: () -> Unit,
     onClickWithdrawal: () -> Unit,
 ) {
+    val visibleLogoutDialog = remember { mutableStateOf(false) }
+    val visibleWithdrawalDialog = remember { mutableStateOf(false) }
+
     FitNoteScaffold(
         topBarTitle = stringResource(id = R.string.setting),
         onClickTopBarNavigationIcon = popBackStack,
@@ -108,18 +115,40 @@ private fun Setting(
                 ) {
                     HeightSpacer(height = LocalFitNoteSpacing.current.spacing4)
                     DefaultText(
+                        modifier = Modifier.clickable {
+                            visibleLogoutDialog.value = true
+                        },
                         text = stringResource(id = R.string.logout),
                         color = GrayScaleMidGray2,
                         style = LocalFitNoteTypography.current.textDefault,
                     )
                     HeightSpacer(height = LocalFitNoteSpacing.current.spacing4)
                     DefaultText(
+                        modifier = Modifier.clickable {
+                            visibleWithdrawalDialog.value = true
+                        },
                         text = stringResource(id = R.string.withdraw),
                         color = GrayScaleMidGray2,
                         style = LocalFitNoteTypography.current.textDefault,
                     )
                 }
             }
+
+            // TODO 다이얼로그 버튼 크기 조절
+            LogoutDialog(
+                visible = visibleLogoutDialog.value,
+                onClickPositive = onClickLogout,
+                onClickNegative = {
+                    visibleLogoutDialog.value = false
+                },
+            )
+            WithdrawalDialog(
+                visible = visibleWithdrawalDialog.value,
+                onClickPositive = onClickWithdrawal,
+                onClickNegative = {
+                    visibleWithdrawalDialog.value = false
+                },
+            )
         }
     }
 }
@@ -148,6 +177,42 @@ private fun TextRow(
             style = LocalFitNoteTypography.current.textDefault,
         )
     }
+}
+
+@Composable
+private fun LogoutDialog(
+    visible: Boolean,
+    onClickPositive: () -> Unit,
+    onClickNegative: () -> Unit,
+) {
+    DefaultRedDialog(
+        visible = visible,
+        onDismissRequest = onClickNegative,
+        positiveText = stringResource(id = R.string.confirm),
+        onClickPositive = onClickPositive,
+        negativeText = stringResource(id = R.string.cancel),
+        onClickNegative = onClickNegative,
+        title = stringResource(id = R.string.info),
+        message = stringResource(id = R.string.logout_message),
+    )
+}
+
+@Composable
+private fun WithdrawalDialog(
+    visible: Boolean,
+    onClickPositive: () -> Unit,
+    onClickNegative: () -> Unit,
+) {
+    DefaultRedDialog(
+        visible = visible,
+        onDismissRequest = onClickNegative,
+        positiveText = stringResource(id = R.string.withdraw),
+        onClickPositive = onClickPositive,
+        negativeText = stringResource(id = R.string.cancel),
+        onClickNegative = onClickNegative,
+        title = stringResource(id = R.string.info),
+        message = stringResource(id = R.string.withdraw_message),
+    )
 }
 
 private val previewUiState = SettingUiState(

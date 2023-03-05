@@ -18,6 +18,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.compose.ui.window.Dialog
 import com.dogandpigs.fitnote.presentation.base.FigmaPreview
 import com.dogandpigs.fitnote.presentation.ui.theme.Alert
 import com.dogandpigs.fitnote.presentation.ui.theme.GrayScaleDarkGray2
@@ -25,21 +26,31 @@ import com.dogandpigs.fitnote.presentation.ui.theme.GrayScaleWhite
 
 @Composable
 internal fun DefaultPositiveDialog(
+    visible: Boolean,
+    onDismissRequest: () -> Unit,
     positiveText: String? = null,
     onClickPositive: (() -> Unit)? = null,
     title: String,
     message: String,
 ) {
-    DefaultDialog(
-        positiveText = positiveText,
-        onClickPositive = onClickPositive,
-        title = title,
-        message = message,
-    )
+    if (visible) {
+        Dialog(
+            onDismissRequest = onDismissRequest
+        ) {
+            DefaultDialog(
+                positiveText = positiveText,
+                onClickPositive = onClickPositive,
+                title = title,
+                message = message,
+            )
+        }
+    }
 }
 
 @Composable
 internal fun DefaultBlueDialog(
+    visible: Boolean,
+    onDismissRequest: () -> Unit,
     positiveText: String? = null,
     onClickPositive: (() -> Unit)? = null,
     negativeText: String? = null,
@@ -47,18 +58,26 @@ internal fun DefaultBlueDialog(
     title: String,
     message: String,
 ) {
-    DefaultDialog(
-        positiveText = positiveText,
-        onClickPositive = onClickPositive,
-        negativeText = negativeText,
-        onClickNegative = onClickNegative,
-        title = title,
-        message = message,
-    )
+    if (visible) {
+        Dialog(
+            onDismissRequest = onDismissRequest
+        ) {
+            DefaultDialog(
+                positiveText = positiveText,
+                onClickPositive = onClickPositive,
+                negativeText = negativeText,
+                onClickNegative = onClickNegative,
+                title = title,
+                message = message,
+            )
+        }
+    }
 }
 
 @Composable
 internal fun DefaultRedDialog(
+    visible: Boolean,
+    onDismissRequest: () -> Unit,
     positiveText: String? = null,
     onClickPositive: (() -> Unit)? = null,
     negativeText: String? = null,
@@ -66,15 +85,21 @@ internal fun DefaultRedDialog(
     title: String,
     message: String,
 ) {
-    DefaultDialog(
-        positiveText = positiveText,
-        onClickPositive = onClickPositive,
-        negativeText = negativeText,
-        onClickNegative = onClickNegative,
-        title = title,
-        message = message,
-        positiveButtonColor = Alert,
-    )
+    if (visible) {
+        Dialog(
+            onDismissRequest = onDismissRequest
+        ) {
+            DefaultDialog(
+                positiveText = positiveText,
+                onClickPositive = onClickPositive,
+                negativeText = negativeText,
+                onClickNegative = onClickNegative,
+                title = title,
+                message = message,
+                positiveButtonColor = Alert,
+            )
+        }
+    }
 }
 
 @Composable
@@ -149,6 +174,8 @@ private const val previewMessage: String = "인증번호가 일치하지 않습�
 @Composable
 private fun PreviewDefaultPositiveDialog() {
     DefaultPositiveDialog(
+        visible = true,
+        onDismissRequest = {},
         positiveText = previewPositiveText,
         onClickPositive = {},
         title = previewTitle,
@@ -160,6 +187,8 @@ private fun PreviewDefaultPositiveDialog() {
 @Composable
 private fun PreviewDefaultBlueDialog() {
     DefaultBlueDialog(
+        visible = true,
+        onDismissRequest = {},
         positiveText = previewPositiveText,
         onClickPositive = {},
         negativeText = previewNegativeText,
@@ -173,6 +202,8 @@ private fun PreviewDefaultBlueDialog() {
 @Composable
 private fun PreviewDefaultRedDialog() {
     DefaultRedDialog(
+        visible = true,
+        onDismissRequest = {},
         positiveText = previewPositiveText,
         onClickPositive = {},
         negativeText = previewNegativeText,
