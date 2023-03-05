@@ -39,9 +39,9 @@
     <string name="height">키</string>
     <string name="weight">몸무게</string>
 
-    <string name="default_name">나초보</string>
-    <string name="default_height">100</string>
-    <string name="default_weight">0</string>
+    <string name="default_name">이름을 입력해주세요</string>
+    <string name="default_height">160</string>
+    <string name="default_weight">50</string>
 
     <string name="placeholder_email">example@example.com</string>
     <string name="placeholder_password">8-16자의 영문/숫자 조합으로 공백없이 입력해주세요</string>
