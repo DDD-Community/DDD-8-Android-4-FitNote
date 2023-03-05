@@ -6,10 +6,12 @@ import androidx.navigation.compose.composable
 fun NavGraphBuilder.addSettingScreen(
     route: String,
     popBackStack: () -> Unit,
+    navigateToSplash: () -> Unit,
 ) {
     composable(route = route) {
         SettingScreen(
             popBackStack = popBackStack,
+            navigateToSplash = navigateToSplash,
         )
     }
 }

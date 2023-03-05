@@ -43,7 +43,7 @@ import com.dogandpigs.fitnote.presentation.ui.theme.LocalFitNoteTypography
 internal fun SettingScreen(
     viewModel: SettingViewModel = hiltViewModel(),
     popBackStack: () -> Unit,
-    onClickLogout: () -> Unit = {},
+    navigateToSplash: () -> Unit,
     onClickWithdrawal: () -> Unit = {},
 ) {
     val uiState by viewModel.state.collectAsStateWithLifecycle()
@@ -52,10 +52,16 @@ internal fun SettingScreen(
         viewModel.initialize()
     }
 
+    LaunchedEffect(uiState.logout) {
+        if (uiState.logout) {
+            navigateToSplash()
+        }
+    }
+
     Setting(
         uiState = uiState,
         popBackStack = popBackStack,
-        onClickLogout = onClickLogout,
+        onClickLogout = viewModel::logout,
         onClickWithdrawal = onClickWithdrawal,
     )
 }
@@ -137,7 +143,10 @@ private fun Setting(
             // TODO 다이얼로그 버튼 크기 조절
             LogoutDialog(
                 visible = visibleLogoutDialog.value,
-                onClickPositive = onClickLogout,
+                onClickPositive = {
+                    visibleLogoutDialog.value = false
+                    onClickLogout()
+                },
                 onClickNegative = {
                     visibleLogoutDialog.value = false
                 },

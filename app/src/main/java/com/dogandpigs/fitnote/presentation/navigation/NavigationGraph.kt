@@ -71,6 +71,13 @@ internal fun NavigationGraph(navController: NavHostController) {
         addSettingScreen(
             route = ROUTE_SETTING,
             popBackStack = { navController.popBackStack() },
+            navigateToSplash = {
+                navController.navigate(ROUTE_SPLASH) {
+                    popUpTo(navController.graph.id) {
+                        inclusive = true
+                    }
+                }
+            },
         )
         addMember(navController)
         addLesson(navController)

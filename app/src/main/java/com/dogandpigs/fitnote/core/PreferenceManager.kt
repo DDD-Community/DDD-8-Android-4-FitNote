@@ -13,6 +13,10 @@ class PreferenceManager(application: FNApplication) {
         pref.edit().putString(key, str).apply()
     }
 
+    fun clear() {
+        pref.edit().clear().apply()
+    }
+
     companion object {
         private const val PREF_NAME = "shared_pref"
         const val KEY_ACCESS_TOKEN = "key_access_token"

@@ -1,6 +1,7 @@
 package com.dogandpigs.fitnote.presentation.setting
 
 import androidx.lifecycle.viewModelScope
+import com.dogandpigs.fitnote.core.TokenManager
 import com.dogandpigs.fitnote.data.repository.MemberRepository
 import com.dogandpigs.fitnote.presentation.base.BaseViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -9,7 +10,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 internal class SettingViewModel @Inject constructor(
-    private val memberRepository: MemberRepository
+    private val memberRepository: MemberRepository,
 ) : BaseViewModel<SettingUiState>() {
     override fun createInitialState(): SettingUiState = SettingUiState()
 
@@ -32,6 +33,15 @@ internal class SettingViewModel @Inject constructor(
                     )
                 }
             }
+        }
+    }
+
+    fun logout() {
+        TokenManager.clearAccessToken()
+        setState {
+            copy(
+                logout = true,
+            )
         }
     }
 }

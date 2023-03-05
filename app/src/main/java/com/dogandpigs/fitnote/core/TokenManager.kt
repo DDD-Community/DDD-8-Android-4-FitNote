@@ -11,4 +11,8 @@ object TokenManager {
     fun setAccessToken(token: String) {
         FNApplication.pref.setString(PreferenceManager.KEY_ACCESS_TOKEN, token)
     }
+
+    fun clearAccessToken() {
+        FNApplication.pref.clear()
+    }
 }
