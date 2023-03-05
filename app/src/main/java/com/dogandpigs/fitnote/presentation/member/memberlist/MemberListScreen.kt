@@ -1,5 +1,6 @@
 package com.dogandpigs.fitnote.presentation.member.memberlist
 
+import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -27,6 +28,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
@@ -67,6 +69,7 @@ internal fun MemberListScreen(
 ) {
     val uiState by viewModel.state.collectAsStateWithLifecycle()
 
+    val visibleToast = remember { mutableStateOf(registration) }
     var isShowDebugMenu by rememberSaveable { mutableStateOf(false) }
 
     // FIXME registration true일 경우 MemberListScreen -> 다른 화면 -> Back 시 토스트가 계속 보여지는 이슈
@@ -123,12 +126,13 @@ internal fun MemberListScreen(
                 HeightSpacer(height = LocalFitNoteSpacing.current.spacing5)
             }
 
-            if (registration) {
-                DefaultToast(
-                    text = "회원 등록이 완료되었습니다!",
-                    timeMillis = 3_000L,
-                )
-            }
+            DefaultToast(
+                visible = visibleToast.value,
+                text = "회원 등록이 완료되었습니다!",
+                timeMillis = 3_000L,
+                onFinish = { visibleToast.value = false },
+            )
+
             if (isShowDebugMenu && BuildConfig.DEBUG) {
                 DebugMenu(
                     "회원 상세 정보" to { navigateToMemberDetail(0) },

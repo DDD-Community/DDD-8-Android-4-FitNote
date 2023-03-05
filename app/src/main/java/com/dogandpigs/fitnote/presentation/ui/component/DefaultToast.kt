@@ -12,10 +12,8 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -31,6 +29,7 @@ import kotlinx.coroutines.delay
 
 @Composable
 internal fun DefaultToast(
+    visible: Boolean,
     text: String,
     textColor: Color = GrayScaleWhite,
     paddingValues: PaddingValues = PaddingValues(
@@ -39,15 +38,14 @@ internal fun DefaultToast(
     ),
     backgroundColor: Color = GrayScaleDarkGray1,
     timeMillis: Long,
+    onFinish: () -> Unit,
 ) {
-    var isShowToast by remember { mutableStateOf(true) }
-
     LaunchedEffect(Unit) {
         delay(timeMillis)
-        isShowToast = !isShowToast
+        onFinish()
     }
 
-    if (isShowToast) {
+    if (visible) {
         Column(
             modifier = Modifier
                 .fillMaxSize()
@@ -74,8 +72,12 @@ internal fun DefaultToast(
 @ComponentPreview
 @Composable
 private fun PreviewDefaultToast() {
+    val visible = remember { mutableStateOf(false) }
+
     DefaultToast(
+        visible = visible.value,
         text = "회원 등록이 완료되었습니다!",
         timeMillis = 5_000L,
+        onFinish = { visible.value = false },
     )
 }
