@@ -28,7 +28,6 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.lifecycle.compose.ExperimentalLifecycleComposeApi
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.dogandpigs.fitnote.R
 import com.dogandpigs.fitnote.presentation.base.FigmaPreview
@@ -46,7 +45,6 @@ import com.dogandpigs.fitnote.presentation.ui.theme.LocalFitNoteSpacing
 import com.dogandpigs.fitnote.presentation.ui.theme.LocalFitNoteTypography
 import com.dogandpigs.fitnote.presentation.util.format
 
-@OptIn(ExperimentalLifecycleComposeApi::class)
 @Composable
 internal fun MemberLessonScreen(
     viewModel: MemberLessonViewModel = hiltViewModel(),

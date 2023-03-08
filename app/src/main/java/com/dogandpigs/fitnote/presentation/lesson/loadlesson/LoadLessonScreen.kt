@@ -2,13 +2,23 @@ package com.dogandpigs.fitnote.presentation.lesson.loadlesson
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.horizontalScroll
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.defaultMinSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Close
-import androidx.compose.material3.*
+import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.OutlinedButton
+import androidx.compose.material3.RadioButton
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -21,17 +31,25 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.lifecycle.compose.ExperimentalLifecycleComposeApi
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.dogandpigs.fitnote.R
 import com.dogandpigs.fitnote.data.source.remote.model.LessonInfo
 import com.dogandpigs.fitnote.presentation.base.FigmaPreview
 import com.dogandpigs.fitnote.presentation.lesson.addlesson.ExpandableCard
 import com.dogandpigs.fitnote.presentation.lesson.addlesson.Routine
-import com.dogandpigs.fitnote.presentation.ui.component.*
-import com.dogandpigs.fitnote.presentation.ui.theme.*
+import com.dogandpigs.fitnote.presentation.ui.component.CompleteButton
+import com.dogandpigs.fitnote.presentation.ui.component.FitNoteScaffold
+import com.dogandpigs.fitnote.presentation.ui.component.HeightSpacer
+import com.dogandpigs.fitnote.presentation.ui.component.WidthSpacer
+import com.dogandpigs.fitnote.presentation.ui.component.defaultBorder
+import com.dogandpigs.fitnote.presentation.ui.theme.BrandPrimary
+import com.dogandpigs.fitnote.presentation.ui.theme.FitNoteTheme
+import com.dogandpigs.fitnote.presentation.ui.theme.GrayScaleDarkGray2
+import com.dogandpigs.fitnote.presentation.ui.theme.GrayScaleLightGray1
+import com.dogandpigs.fitnote.presentation.ui.theme.GrayScaleMidGray3
+import com.dogandpigs.fitnote.presentation.ui.theme.LocalFitNoteTypography
+import com.dogandpigs.fitnote.presentation.ui.theme.SubPrimary
 
-@OptIn(ExperimentalLifecycleComposeApi::class)
 @Composable
 internal fun LoadLessonScreen(
     viewModel: LoadLessonViewModel = hiltViewModel(),
@@ -48,7 +66,7 @@ internal fun LoadLesson(
     popBackStack: () -> Unit
 ) {
     val paddingValues = PaddingValues(16.dp)
-    
+
     FitNoteScaffold(
         topBarTitle = stringResource(id = R.string.load_lesson),
         onClickTopBarNavigationIcon = { popBackStack() },

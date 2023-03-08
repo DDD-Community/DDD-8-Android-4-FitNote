@@ -39,7 +39,6 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.lifecycle.compose.ExperimentalLifecycleComposeApi
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.dogandpigs.fitnote.R
 import com.dogandpigs.fitnote.presentation.base.FigmaPreview
@@ -56,7 +55,6 @@ import com.dogandpigs.fitnote.presentation.ui.theme.GrayScaleLightGray2
 import com.dogandpigs.fitnote.presentation.ui.theme.GrayScaleMidGray2
 import com.dogandpigs.fitnote.presentation.ui.theme.GrayScaleMidGray3
 
-@OptIn(ExperimentalLifecycleComposeApi::class)
 @Composable
 internal fun MemberLessonListScreen(
     viewModel: MemberLessonListViewModel = hiltViewModel(),

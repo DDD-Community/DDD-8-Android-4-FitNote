@@ -1,6 +1,5 @@
 package com.dogandpigs.fitnote.presentation.member.memberlist
 
-import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -38,7 +37,6 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.lifecycle.compose.ExperimentalLifecycleComposeApi
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.dogandpigs.fitnote.BuildConfig
 import com.dogandpigs.fitnote.R
@@ -57,7 +55,6 @@ import com.dogandpigs.fitnote.presentation.ui.theme.GrayScaleMidGray3
 import com.dogandpigs.fitnote.presentation.ui.theme.LocalFitNoteSpacing
 import com.dogandpigs.fitnote.presentation.ui.theme.LocalFitNoteTypography
 
-@OptIn(ExperimentalLifecycleComposeApi::class)
 @Composable
 internal fun MemberListScreen(
     viewModel: MemberListViewModel = hiltViewModel(),
