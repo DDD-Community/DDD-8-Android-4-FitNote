@@ -3,7 +3,7 @@ package com.dogandpigs.fitnote.presentation.member
 internal data class MemberUiState(
     val name: String = "",
     val profileImgUrl: String = "",
-    val createDate: String = "",
+    val dateMillis: Long = System.currentTimeMillis(),
     val height: String = "160",
     val weight: String = "50",
     val gender: Gender = Gender.MALE,

@@ -29,7 +29,8 @@ internal class MemberEditViewModel @Inject constructor(
                 setState {
                     copy(
                         name = member.userName,
-                        createDate = member.createDate.formatDate() ?: "",
+                        dateMillis = member.createDate.formatDate()?.time
+                            ?: System.currentTimeMillis(),
                         height = "${trimTrailingZero(member.userHeight?.toString())}",
                         weight = "${trimTrailingZero(member.userWeight?.toString())}",
                         gender = getGender(member.userGender),
@@ -100,5 +101,10 @@ internal class MemberEditViewModel @Inject constructor(
 
     fun setGender(gender: MemberUiState.Gender) = setState {
         copy(gender = gender)
+    }
+
+    fun setDateMillis(dateMillis: Long?) = setState {
+        checkNotNull(dateMillis)
+        copy(dateMillis = dateMillis)
     }
 }

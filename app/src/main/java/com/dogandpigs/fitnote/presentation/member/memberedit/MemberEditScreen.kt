@@ -9,24 +9,25 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.lifecycle.compose.ExperimentalLifecycleComposeApi
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.dogandpigs.fitnote.R
 import com.dogandpigs.fitnote.presentation.base.ComponentPreview
 import com.dogandpigs.fitnote.presentation.member.MemberUiState
 import com.dogandpigs.fitnote.presentation.member.component.MemberButton
 import com.dogandpigs.fitnote.presentation.member.component.MemberInfoList
+import com.dogandpigs.fitnote.presentation.ui.component.DefaultDatePickerDialog
 import com.dogandpigs.fitnote.presentation.ui.component.FitNoteScaffold
 import com.dogandpigs.fitnote.presentation.ui.component.HeightSpacer
 import com.dogandpigs.fitnote.presentation.ui.theme.FitNoteTheme
 import com.dogandpigs.fitnote.presentation.ui.theme.LocalFitNoteSpacing
 
-@OptIn(ExperimentalLifecycleComposeApi::class)
 @Composable
 internal fun MemberEditScreen(
     viewModel: MemberEditViewModel = hiltViewModel(),
@@ -64,6 +65,7 @@ internal fun MemberEditScreen(
         onClickGender = viewModel::setGender,
         onChangeHeight = viewModel::setHeight,
         onChangeWeight = viewModel::setWeight,
+        onChangeDate = viewModel::setDateMillis,
     )
 }
 
@@ -76,7 +78,10 @@ private fun MemberEdit(
     onClickGender: (MemberUiState.Gender) -> Unit,
     onChangeHeight: (String) -> Unit,
     onChangeWeight: (String) -> Unit,
+    onChangeDate: (Long?) -> Unit,
 ) {
+    val datePickerVisible = remember { mutableStateOf(false) }
+
     FitNoteScaffold(
         topBarTitle = stringResource(id = R.string.information_modification),
         onClickTopBarNavigationIcon = onClickBackButton,
@@ -95,6 +100,7 @@ private fun MemberEdit(
                     onChangeGender = onClickGender,
                     onChangeHeight = onChangeHeight,
                     onChangeWeight = onChangeWeight,
+                    onClickDate = { datePickerVisible.value = true },
                 )
             }
 
@@ -102,13 +108,19 @@ private fun MemberEdit(
                 text = stringResource(id = R.string.modification_completion),
                 onClick = onClickAddButton,
             )
+
+            DefaultDatePickerDialog(
+                visible = datePickerVisible.value,
+                onDismissRequest = { datePickerVisible.value = false },
+                onClickConfirmButton = onChangeDate,
+                dateMilliSeconds = uiState.dateMillis,
+            )
         }
     }
 }
 
 private val previewUiState = MemberUiState(
     name = "",
-    createDate = "2022년 11월 18일",
     gender = MemberUiState.Gender.MALE,
     height = "165.0",
     weight = "52.0",
@@ -126,6 +138,7 @@ private fun PreviewMemberEdit() {
             onClickGender = {},
             onChangeHeight = {},
             onChangeWeight = {},
+            onChangeDate = {},
         )
     }
 }

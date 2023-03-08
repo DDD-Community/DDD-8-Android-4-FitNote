@@ -26,7 +26,10 @@ internal fun DefaultDatePickerDialog(
     SnackbarHost(hostState = snackState, Modifier)
 
     if (visible) {
-        val datePickerState = rememberDatePickerState(initialSelectedDateMillis = dateMilliSeconds)
+        // TODO 시간 보정
+        val datePickerState = rememberDatePickerState(
+            initialSelectedDateMillis = dateMilliSeconds,
+        )
         DatePickerDialog(
             onDismissRequest = onDismissRequest,
             confirmButton = {

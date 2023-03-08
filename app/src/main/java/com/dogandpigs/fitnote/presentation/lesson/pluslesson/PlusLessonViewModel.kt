@@ -50,12 +50,11 @@ internal class PlusLessonViewModel @Inject constructor(
         }
     }
 
-    fun setDateMilliSeconds(dateMilliSeconds: Long) = currentState {
-        setState {
-            copy(
-                dateMilliSeconds = dateMilliSeconds
-            )
-        }
+    fun setDateMilliSeconds(dateMilliSeconds: Long?) = setState {
+        checkNotNull(dateMilliSeconds)
+        copy(
+            dateMilliSeconds = dateMilliSeconds
+        )
     }
 
     fun addExercise() = currentState {

@@ -1,5 +1,6 @@
 package com.dogandpigs.fitnote.presentation.member.memberadd
 
+import android.annotation.SuppressLint
 import android.widget.Toast
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
@@ -12,19 +13,18 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.lifecycle.compose.ExperimentalLifecycleComposeApi
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.dogandpigs.fitnote.R
 import com.dogandpigs.fitnote.presentation.base.ComponentPreview
 import com.dogandpigs.fitnote.presentation.member.MemberUiState
 import com.dogandpigs.fitnote.presentation.member.component.MemberButton
 import com.dogandpigs.fitnote.presentation.member.component.MemberInfoList
+import com.dogandpigs.fitnote.presentation.ui.component.DefaultDatePickerDialog
 import com.dogandpigs.fitnote.presentation.ui.component.FitNoteScaffold
 import com.dogandpigs.fitnote.presentation.ui.component.HeightSpacer
 import com.dogandpigs.fitnote.presentation.ui.theme.FitNoteTheme
 import com.dogandpigs.fitnote.presentation.ui.theme.LocalFitNoteSpacing
 
-@OptIn(ExperimentalLifecycleComposeApi::class)
 @Composable
 internal fun MemberAddScreen(
     viewModel: MemberAddViewModel = hiltViewModel(),
@@ -54,9 +54,11 @@ internal fun MemberAddScreen(
         onClickGender = viewModel::setGender,
         onChangeHeight = viewModel::setHeight,
         onChangeWeight = viewModel::setWeight,
+        onChangeDate = viewModel::setDateMillis,
     )
 }
 
+@SuppressLint("UnrememberedMutableState")
 @Composable
 private fun MemberAdd(
     uiState: MemberUiState,
@@ -66,7 +68,10 @@ private fun MemberAdd(
     onClickGender: (MemberUiState.Gender) -> Unit,
     onChangeHeight: (String) -> Unit,
     onChangeWeight: (String) -> Unit,
+    onChangeDate: (Long?) -> Unit,
 ) {
+    val datePickerVisible = remember { mutableStateOf(false) }
+
     FitNoteScaffold(
         topBarTitle = stringResource(id = R.string.member_registration),
         onClickTopBarNavigationIcon = onClickBackButton,
@@ -86,12 +91,20 @@ private fun MemberAdd(
                     onChangeGender = onClickGender,
                     onChangeHeight = onChangeHeight,
                     onChangeWeight = onChangeWeight,
+                    onClickDate = { datePickerVisible.value = true },
                 )
             }
 
             MemberButton(
                 text = stringResource(id = R.string.registration),
                 onClick = onClickAddButton,
+            )
+
+            DefaultDatePickerDialog(
+                visible = datePickerVisible.value,
+                onDismissRequest = { datePickerVisible.value = false },
+                onClickConfirmButton = onChangeDate,
+                dateMilliSeconds = uiState.dateMillis,
             )
         }
     }
@@ -111,6 +124,7 @@ private fun PreviewMemberAdd() {
             onClickGender = {},
             onChangeHeight = {},
             onChangeWeight = {},
+            onChangeDate = {},
         )
     }
 }

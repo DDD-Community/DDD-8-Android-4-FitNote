@@ -1,15 +1,34 @@
 package com.dogandpigs.fitnote.presentation.lesson.pluslesson
 
-import androidx.appcompat.app.AppCompatActivity
-import androidx.compose.foundation.*
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.Canvas
+import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.ClickableText
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Close
-import androidx.compose.material3.*
-import androidx.compose.runtime.*
+import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -17,13 +36,11 @@ import androidx.compose.ui.geometry.CornerRadius
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.PathEffect
 import androidx.compose.ui.graphics.drawscope.Stroke
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.lifecycle.compose.ExperimentalLifecycleComposeApi
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.dogandpigs.fitnote.R
 import com.dogandpigs.fitnote.presentation.base.FigmaPreview
@@ -31,12 +48,23 @@ import com.dogandpigs.fitnote.presentation.lesson.Exercise
 import com.dogandpigs.fitnote.presentation.lesson.component.ExerciseColumn
 import com.dogandpigs.fitnote.presentation.lesson.component.ExerciseSetItemNumberTextField
 import com.dogandpigs.fitnote.presentation.lesson.component.ExerciseSetItemTextField
-import com.dogandpigs.fitnote.presentation.ui.component.*
-import com.dogandpigs.fitnote.presentation.ui.theme.*
+import com.dogandpigs.fitnote.presentation.ui.component.DefaultBottomLargePositiveButton
+import com.dogandpigs.fitnote.presentation.ui.component.DefaultDatePickerDialog
+import com.dogandpigs.fitnote.presentation.ui.component.DefaultText
+import com.dogandpigs.fitnote.presentation.ui.component.FitNoteScaffold
+import com.dogandpigs.fitnote.presentation.ui.component.HeightSpacer
+import com.dogandpigs.fitnote.presentation.ui.component.WidthSpacer
+import com.dogandpigs.fitnote.presentation.ui.component.defaultBorder
+import com.dogandpigs.fitnote.presentation.ui.theme.BrandPrimary
+import com.dogandpigs.fitnote.presentation.ui.theme.FitNoteTheme
+import com.dogandpigs.fitnote.presentation.ui.theme.GrayScaleDarkGray1
+import com.dogandpigs.fitnote.presentation.ui.theme.GrayScaleLightGray1
+import com.dogandpigs.fitnote.presentation.ui.theme.GrayScaleMidGray3
+import com.dogandpigs.fitnote.presentation.ui.theme.LocalFitNoteSpacing
+import com.dogandpigs.fitnote.presentation.ui.theme.LocalFitNoteTypography
+import com.dogandpigs.fitnote.presentation.ui.theme.SubPrimary
 import com.dogandpigs.fitnote.presentation.util.format
-import com.google.android.material.datepicker.MaterialDatePicker
 
-@OptIn(ExperimentalLifecycleComposeApi::class)
 @Composable
 internal fun PlusLessonScreen(
     memberId: Int,
@@ -45,7 +73,7 @@ internal fun PlusLessonScreen(
     navigateToLoadLesson: () -> Unit,
     navigateToMemberLessonList: () -> Unit,
 ) {
-    val state by viewModel.state.collectAsStateWithLifecycle()
+    val uiState by viewModel.state.collectAsStateWithLifecycle()
 
     LaunchedEffect(Unit) {
         viewModel.initialize(
@@ -53,8 +81,8 @@ internal fun PlusLessonScreen(
         )
     }
 
-    LaunchedEffect(state.isSuccess) {
-        if (state.isSuccess) {
+    LaunchedEffect(uiState.isSuccess) {
+        if (uiState.isSuccess) {
             popBackStack()
             // TODO 토스트 안내 제공
 //            navigateToMemberLessonList()
@@ -62,7 +90,7 @@ internal fun PlusLessonScreen(
     }
 
     PlusLesson(
-        state = state,
+        uiState = uiState,
         changeExerciseName = viewModel::changeExerciseName,
         addExerciseSet = viewModel::addExerciseSet,
         removeExerciseSet = viewModel::removeExerciseSet,
@@ -72,13 +100,13 @@ internal fun PlusLessonScreen(
         onClickClose = popBackStack,
         onClickLoadLesson = navigateToLoadLesson,
         onClickAddExercise = viewModel::addExercise,
-        onClickDateLabel = viewModel::setDateMilliSeconds,
+        onChangeDate = viewModel::setDateMilliSeconds,
     )
 }
 
 @Composable
 private fun PlusLesson(
-    state: PlusLessonUiState,
+    uiState: PlusLessonUiState,
     changeExerciseName: (
         index: Int,
         name: String,
@@ -94,8 +122,10 @@ private fun PlusLesson(
     onClickClose: () -> Unit,
     onClickLoadLesson: () -> Unit,
     onClickAddExercise: () -> Unit,
-    onClickDateLabel: (Long) -> Unit,
+    onChangeDate: (Long?) -> Unit,
 ) {
+    val datePickerVisible = remember { mutableStateOf(false) }
+
     FitNoteScaffold(
         topBarTitle = stringResource(id = R.string.add_lesson),
         onClickTopBarNavigationIcon = onClickClose,
@@ -128,14 +158,13 @@ private fun PlusLesson(
                 HeightSpacer(height = LocalFitNoteSpacing.current.spacing4)
 
                 DateLabel(
-                    dateMilliSeconds = state.dateMilliSeconds,
-                    dateString = state.dateString,
-                    onClick = onClickDateLabel,
+                    dateString = uiState.dateString,
+                    onClick = { datePickerVisible.value = true },
                 )
 
                 HeightSpacer(height = LocalFitNoteSpacing.current.spacing5)
 
-                state.exercises.forEachIndexed { index, exercise ->
+                uiState.exercises.forEachIndexed { index, exercise ->
                     ExerciseColumn(
                         exercise = exercise,
                         Title = {
@@ -198,18 +227,22 @@ private fun PlusLesson(
             ) {
                 HeightSpacer(height = LocalFitNoteSpacing.current.spacing5)
             }
+
+            DefaultDatePickerDialog(
+                visible = datePickerVisible.value,
+                onDismissRequest = { datePickerVisible.value = false },
+                onClickConfirmButton = onChangeDate,
+                dateMilliSeconds = uiState.dateMilliSeconds,
+            )
         }
     }
 }
 
 @Composable
 private fun DateLabel(
-    dateMilliSeconds: Long,
     dateString: String,
-    onClick: (Long) -> Unit,
+    onClick: () -> Unit,
 ) {
-    val context = LocalContext.current
-
     Row(
         modifier = Modifier
             .height(58.dp)
@@ -227,28 +260,9 @@ private fun DateLabel(
         ClickableText(text = AnnotatedString(dateString),
             style = LocalFitNoteTypography.current.textDefault,
             onClick = {
-                showDatePicker(
-                    activity = context as AppCompatActivity,
-                    dateMilliSeconds = dateMilliSeconds,
-                    onClick = onClick,
-                )
+                onClick()
             }
         )
-    }
-}
-
-private fun showDatePicker(
-    activity: AppCompatActivity,
-    dateMilliSeconds: Long,
-    onClick: (Long) -> Unit,
-) {
-    val fm = activity.supportFragmentManager
-    val picker = MaterialDatePicker.Builder.datePicker().setSelection(dateMilliSeconds).build()
-    fm.let {
-        picker.show(fm, picker.toString())
-        picker.addOnPositiveButtonClickListener {
-            onClick(it)
-        }
     }
 }
 
@@ -391,7 +405,7 @@ private val mockUiState = PlusLessonUiState()
 private fun PreviewPlusLesson() {
     FitNoteTheme {
         PlusLesson(
-            state = mockUiState,
+            uiState = mockUiState,
             changeExerciseName = { _: Int, _: String -> },
             addExerciseSet = {},
             removeExerciseSet = { _: Int, _: Int -> },
@@ -401,7 +415,7 @@ private fun PreviewPlusLesson() {
             onClickClose = {},
             onClickLoadLesson = {},
             onClickAddExercise = {},
-            onClickDateLabel = {},
+            onChangeDate = {},
         )
     }
 }

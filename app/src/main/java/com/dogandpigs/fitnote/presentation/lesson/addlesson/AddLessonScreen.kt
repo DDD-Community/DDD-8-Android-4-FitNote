@@ -1,40 +1,67 @@
 package com.dogandpigs.fitnote.presentation.lesson.addlesson
 
-import androidx.appcompat.app.AppCompatActivity
-import androidx.compose.foundation.*
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.Canvas
+import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.wrapContentHeight
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.foundation.text.ClickableText
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Close
-import androidx.compose.material3.*
-import androidx.compose.runtime.*
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.CornerRadius
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.PathEffect
 import androidx.compose.ui.graphics.drawscope.Stroke
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.lifecycle.compose.ExperimentalLifecycleComposeApi
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.compose.rememberNavController
 import com.dogandpigs.fitnote.R
 import com.dogandpigs.fitnote.presentation.base.FigmaPreview
 import com.dogandpigs.fitnote.presentation.lesson.memberlesson.SuffixVisualTransformation
-import com.dogandpigs.fitnote.presentation.ui.component.*
-import com.dogandpigs.fitnote.presentation.ui.theme.*
-import com.google.android.material.datepicker.MaterialDatePicker
+import com.dogandpigs.fitnote.presentation.ui.component.CompleteButton
+import com.dogandpigs.fitnote.presentation.ui.component.DefaultText
+import com.dogandpigs.fitnote.presentation.ui.component.FitNoteScaffold
+import com.dogandpigs.fitnote.presentation.ui.component.HeightSpacer
+import com.dogandpigs.fitnote.presentation.ui.component.WidthSpacer
+import com.dogandpigs.fitnote.presentation.ui.component.defaultBorder
+import com.dogandpigs.fitnote.presentation.ui.theme.BrandPrimary
+import com.dogandpigs.fitnote.presentation.ui.theme.FitNoteTheme
+import com.dogandpigs.fitnote.presentation.ui.theme.GrayScaleDarkGray1
+import com.dogandpigs.fitnote.presentation.ui.theme.GrayScaleLightGray1
+import com.dogandpigs.fitnote.presentation.ui.theme.GrayScaleMidGray3
+import com.dogandpigs.fitnote.presentation.ui.theme.LocalFitNoteSpacing
+import com.dogandpigs.fitnote.presentation.ui.theme.LocalFitNoteTypography
 
-@OptIn(ExperimentalLifecycleComposeApi::class)
 @Composable
 internal fun AddLessonScreen(
     memberId: Int,
@@ -63,7 +90,7 @@ private fun AddLesson(
     onClickAddExercise: () -> Unit = {},
 ) {
     val navController = rememberNavController()
-    
+
     FitNoteScaffold(topBarTitle = stringResource(id = R.string.add_lesson),
         onClickTopBarNavigationIcon = onClickClose,
         topBarNavigationIconImageVector = Icons.Filled.Close,
@@ -89,11 +116,10 @@ private fun AddLesson(
                     .background(color = Color.White)
                     .verticalScroll(scrollState), horizontalAlignment = Alignment.CenterHorizontally
             ) {
-                DateLabel(
-                    viewModel,
-                    state.dateMilliSeconds,
-                    state.dateString
-                )
+//                DateLabel(
+//                    dateString = uiState.dateString,
+//                    onClickShowCalendar = onClickShowCalendar,
+//                )
                 AddLessonCard(
                     state,
                     viewModel,
@@ -105,6 +131,13 @@ private fun AddLesson(
             CompleteButton(stringResource(id = R.string.btn_save), onClick = {
                 viewModel.addAllLessons()
             })
+
+//            if (uiState.isShowCalendar) {
+//                DefaultCalendarView(
+//                    dateMilliSeconds = uiState.dateMilliSeconds,
+//                    onChangeCalendar = onChangeCalendar,
+//                )
+//            }
         }
     }
 }
@@ -135,12 +168,9 @@ private fun AddLessonCard(
 
 @Composable
 private fun DateLabel(
-    viewModel: AddLessonViewModel,
-    dateMilliSeconds: Long,
     dateString: String,
+    onClickShowCalendar: () -> Unit,
 ) {
-    val context = LocalContext.current
-    
     Row(
         modifier = Modifier
             .height(58.dp)
@@ -158,30 +188,9 @@ private fun DateLabel(
         ClickableText(text = AnnotatedString(dateString),
             style = LocalFitNoteTypography.current.textDefault,
             onClick = {
-                showDatePicker(
-                    viewModel,
-                    dateMilliSeconds,
-                    context as AppCompatActivity
-                )
+                onClickShowCalendar()
             }
         )
-    }
-}
-
-private fun showDatePicker(
-    viewModel: AddLessonViewModel, dateMilliSeconds: Long, activity: AppCompatActivity
-) {
-    val fm = activity.supportFragmentManager
-    val picker = MaterialDatePicker.Builder.datePicker().setSelection(dateMilliSeconds).build()
-    fm.let {
-        picker.show(fm, picker.toString())
-        picker.addOnPositiveButtonClickListener {
-            viewModel.setState {
-                copy(dateMilliSeconds = it)
-            }
-            
-            viewModel.setLessonDate()
-        }
     }
 }
 
@@ -224,14 +233,14 @@ private fun InputLesson(
             }
         }
         HeightSpacer(height = LocalFitNoteSpacing.current.spacing4)
-        
+
         Routine(
             index = exercise.index,
             Routine(set = 0, weight = 0, count = 0),
             viewModel = viewModel,
             btnRoutineCloseVisibility = false,
         )
-        
+
         Spacer(modifier = Modifier.height(20.dp))
         ExpandableCard(header = stringResource(id = R.string.edit_per_set),
             color = Color.LightGray,

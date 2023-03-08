@@ -41,7 +41,10 @@ internal fun formatGender(gender: Int?): String = when (gender) {
     else -> "오류"
 }
 
-internal fun String.formatDate(): String? =
+internal fun String.formatDate(): Date? =
+    SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss", Locale.KOREA).parse(this)
+
+internal fun String.formatDateString(): String? =
     SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss", Locale.KOREA).parse(this)?.format()
 
 internal fun trimTrailingZero(value: String?): String? {

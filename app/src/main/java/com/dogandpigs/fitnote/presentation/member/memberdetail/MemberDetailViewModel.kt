@@ -4,7 +4,7 @@ import android.util.Log
 import androidx.lifecycle.viewModelScope
 import com.dogandpigs.fitnote.data.repository.MemberRepository
 import com.dogandpigs.fitnote.presentation.base.BaseViewModel
-import com.dogandpigs.fitnote.presentation.util.formatDate
+import com.dogandpigs.fitnote.presentation.util.formatDateString
 import com.dogandpigs.fitnote.presentation.util.formatGender
 import com.dogandpigs.fitnote.presentation.util.trimTrailingZero
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -28,7 +28,7 @@ internal class MemberDetailViewModel @Inject constructor(
                 setState {
                     copy(
                         name = member.userName,
-                        date = member.createDate.formatDate() ?: "",
+                        date = member.createDate.formatDateString() ?: "",
                         gender = formatGender(member.userGender),
                         height = "${trimTrailingZero(member.userHeight?.toString())}cm",
                         weight = "${trimTrailingZero(member.userWeight?.toString())}kg",

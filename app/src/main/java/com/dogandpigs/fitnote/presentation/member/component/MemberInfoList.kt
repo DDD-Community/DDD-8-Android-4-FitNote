@@ -1,6 +1,5 @@
 package com.dogandpigs.fitnote.presentation.member.component
 
-import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
@@ -12,12 +11,7 @@ import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.input.KeyboardType
@@ -37,7 +31,6 @@ import com.dogandpigs.fitnote.presentation.ui.theme.LocalFitNoteSpacing
 import com.dogandpigs.fitnote.presentation.ui.theme.LocalFitNoteTypography
 import com.dogandpigs.fitnote.presentation.ui.theme.SubPrimary
 import com.dogandpigs.fitnote.presentation.util.format
-import com.google.android.material.datepicker.MaterialDatePicker
 import java.util.Date
 
 
@@ -48,11 +41,8 @@ internal fun MemberInfoList(
     onChangeGender: (MemberUiState.Gender) -> Unit,
     onChangeHeight: (String) -> Unit,
     onChangeWeight: (String) -> Unit,
+    onClickDate: () -> Unit,
 ) {
-    val context = LocalContext.current
-
-    var dateMilliSeconds by remember { mutableStateOf(System.currentTimeMillis()) }
-
     Column {
         DefaultTextField(
             value = uiState.name,
@@ -64,9 +54,8 @@ internal fun MemberInfoList(
             text = stringResource(id = R.string.registration_date),
         ) {
             DateComponent(
-                activity = context as AppCompatActivity,
-                dateMilliSeconds = dateMilliSeconds,
-                changeDateMilliSeconds = { dateMilliSeconds = it },
+                dateMilliSeconds = uiState.dateMillis,
+                onShowDatePickerDialog = onClickDate,
             )
         }
 
@@ -122,36 +111,16 @@ private fun MemberInfoItem(
 
 @Composable
 private fun DateComponent(
-    activity: AppCompatActivity,
     dateMilliSeconds: Long,
-    changeDateMilliSeconds: (Long) -> Unit,
+    onShowDatePickerDialog: () -> Unit,
 ) {
     ClickableText(
         text = AnnotatedString(Date(dateMilliSeconds).format()),
         style = LocalFitNoteTypography.current.textDefault,
         onClick = {
-            showDatePicker(
-                activity = activity,
-                dateMilliSeconds = dateMilliSeconds,
-                changeDateMilliSeconds = changeDateMilliSeconds,
-            )
+            onShowDatePickerDialog()
         }
     )
-}
-
-private fun showDatePicker(
-    activity: AppCompatActivity,
-    dateMilliSeconds: Long,
-    changeDateMilliSeconds: (Long) -> Unit,
-) {
-    val fm = activity.supportFragmentManager
-    val picker = MaterialDatePicker.Builder.datePicker().setSelection(dateMilliSeconds).build()
-    fm.let {
-        picker.show(fm, picker.toString())
-        picker.addOnPositiveButtonClickListener {
-            changeDateMilliSeconds(it)
-        }
-    }
 }
 
 @Composable

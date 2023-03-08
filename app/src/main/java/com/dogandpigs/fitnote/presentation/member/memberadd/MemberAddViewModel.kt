@@ -63,4 +63,9 @@ internal class MemberAddViewModel @Inject constructor(
     fun setGender(gender: MemberUiState.Gender) = setState {
         copy(gender = gender)
     }
+
+    fun setDateMillis(dateMillis: Long?) = setState {
+        checkNotNull(dateMillis)
+        copy(dateMillis = dateMillis)
+    }
 }
