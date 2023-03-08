@@ -27,7 +27,7 @@ internal fun FitNoteScaffold(
     onClickTopBarNavigationIcon: () -> Unit,
     topBarNavigationIconImageVector: ImageVector = Icons.Filled.ArrowBack,
     topBarActions: @Composable RowScope.() -> Unit = {},
-    onClickBackButton: () -> Unit = {},
+    onBackButton: (() -> Unit)? = null,
     content: @Composable (PaddingValues) -> Unit,
 ) {
     Scaffold(
@@ -55,8 +55,10 @@ internal fun FitNoteScaffold(
             )
         }
     ) {
-        BackHandler {
-            onClickBackButton()
+        if (onBackButton != null) {
+            BackHandler {
+                onBackButton()
+            }
         }
 
         content(it)
