@@ -5,6 +5,7 @@ import com.dogandpigs.fitnote.data.source.remote.api.MemberApi
 import com.dogandpigs.fitnote.data.source.remote.request.MemberRequest
 import com.dogandpigs.fitnote.data.source.remote.response.LessonResponse
 import com.dogandpigs.fitnote.data.source.remote.response.ListResponse
+import com.dogandpigs.fitnote.data.util.handleResponse
 import javax.inject.Inject
 
 class MemberRepository @Inject constructor(
@@ -19,13 +20,8 @@ class MemberRepository @Inject constructor(
         }
     }
 
-    suspend fun addMember(memberRequest: MemberRequest): Boolean {
-        memberApi.addMember(memberRequest).run {
-            if (!isSuccessful || body() == null || body()?.data == null) {
-                return false
-            }
-            return true
-        }
+    suspend fun addMember(memberRequest: MemberRequest) {
+        handleResponse(memberApi.addMember(memberRequest))
     }
 
     suspend fun getMemberInfo(): LessonResponse? {
