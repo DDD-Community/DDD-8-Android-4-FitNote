@@ -27,6 +27,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.VisualTransformation
@@ -37,6 +38,7 @@ import com.dogandpigs.fitnote.presentation.lesson.memberlesson.SuffixVisualTrans
 import com.dogandpigs.fitnote.presentation.ui.component.HeightSpacer
 import com.dogandpigs.fitnote.presentation.ui.component.WidthSpacer
 import com.dogandpigs.fitnote.presentation.ui.component.defaultBorder
+import com.dogandpigs.fitnote.presentation.ui.theme.BrandPrimary
 import com.dogandpigs.fitnote.presentation.ui.theme.GrayScaleLightGray1
 import com.dogandpigs.fitnote.presentation.ui.theme.GrayScaleMidGray2
 import com.dogandpigs.fitnote.presentation.ui.theme.GrayScaleMidGray3
@@ -123,6 +125,7 @@ internal fun ExerciseSetItemTextField(
             VisualTransformation.None
         },
         maxLines = 1,
+        cursorBrush = SolidColor(BrandPrimary),
     )
 }
 
