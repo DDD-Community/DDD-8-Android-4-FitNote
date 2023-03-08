@@ -73,7 +73,7 @@ internal class MemberEditViewModel @Inject constructor(
                     memberRepository.editMember(member)
                 }.onSuccess {
                     setState {
-                        copy(isAddSuccess = true)
+                        copy(isNext = true)
                     }
                 }.onFailure {
                     setState {

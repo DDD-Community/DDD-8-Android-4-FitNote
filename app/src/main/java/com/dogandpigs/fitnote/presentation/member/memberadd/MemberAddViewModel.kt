@@ -35,7 +35,7 @@ internal class MemberAddViewModel @Inject constructor(
                     memberRepository.addMember(member)
                 }.onSuccess {
                     setState {
-                        copy(isAddSuccess = true)
+                        copy(isNext = true)
                     }
                 }.onFailure {
                     setState {

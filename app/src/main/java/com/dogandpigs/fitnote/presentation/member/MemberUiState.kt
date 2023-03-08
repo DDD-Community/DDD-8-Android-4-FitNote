@@ -7,7 +7,7 @@ internal data class MemberUiState(
     val height: String = "160",
     val weight: String = "50",
     val gender: Gender = Gender.MALE,
-    val isAddSuccess: Boolean = false,
+    val isNext: Boolean = false,
     val toast: String = "",
 ) {
     enum class Gender(

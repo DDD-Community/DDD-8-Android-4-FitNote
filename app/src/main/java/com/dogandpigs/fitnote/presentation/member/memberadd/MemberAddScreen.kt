@@ -34,8 +34,8 @@ internal fun MemberAddScreen(
     val context = LocalContext.current
     val uiState by viewModel.state.collectAsStateWithLifecycle()
 
-    LaunchedEffect(uiState.isAddSuccess) {
-        if (uiState.isAddSuccess) {
+    LaunchedEffect(uiState.isNext) {
+        if (uiState.isNext) {
             navigateToMemberListWithRegistration(true)
         }
     }
