@@ -1,5 +1,6 @@
 package com.dogandpigs.fitnote.presentation.member.memberedit
 
+import android.widget.Toast
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -10,6 +11,7 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.ExperimentalLifecycleComposeApi
@@ -32,18 +34,26 @@ internal fun MemberEditScreen(
     popBackStack: () -> Unit,
     navigateToMemberDetail: (Long) -> Unit,
 ) {
+    val context = LocalContext.current
     val uiState by viewModel.state.collectAsStateWithLifecycle()
-
-    LaunchedEffect(uiState.isNext) {
-        if (uiState.isNext) {
-            navigateToMemberDetail(memberId)
-        }
-    }
 
     LaunchedEffect(Unit) {
         viewModel.initialize(
             memberId = memberId,
         )
+    }
+
+    LaunchedEffect(uiState.isNext) {
+        if (uiState.isNext) {
+            Toast.makeText(context, "수정이 완료되었습니다.", Toast.LENGTH_SHORT).show()
+            navigateToMemberDetail(memberId)
+        }
+    }
+
+    LaunchedEffect(uiState.toast) {
+        if (uiState.toast.isNotBlank()) {
+            Toast.makeText(context, uiState.toast, Toast.LENGTH_SHORT).show()
+        }
     }
 
     MemberEdit(
