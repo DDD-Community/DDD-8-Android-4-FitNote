@@ -1,4 +1,4 @@
-package com.dogandpigs.fitnote.presentation.lesson
+package com.dogandpigs.fitnote.presentation.lesson.component
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -33,6 +33,7 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.dp
 import com.dogandpigs.fitnote.R
+import com.dogandpigs.fitnote.presentation.lesson.Exercise
 import com.dogandpigs.fitnote.presentation.lesson.memberlesson.ExerciseSetItemText
 import com.dogandpigs.fitnote.presentation.lesson.memberlesson.SuffixVisualTransformation
 import com.dogandpigs.fitnote.presentation.ui.component.HeightSpacer

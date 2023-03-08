@@ -28,9 +28,9 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.dogandpigs.fitnote.R
 import com.dogandpigs.fitnote.presentation.base.FigmaPreview
 import com.dogandpigs.fitnote.presentation.lesson.Exercise
-import com.dogandpigs.fitnote.presentation.lesson.ExerciseColumn
-import com.dogandpigs.fitnote.presentation.lesson.ExerciseSetItemNumberTextField
-import com.dogandpigs.fitnote.presentation.lesson.ExerciseSetItemTextField
+import com.dogandpigs.fitnote.presentation.lesson.component.ExerciseColumn
+import com.dogandpigs.fitnote.presentation.lesson.component.ExerciseSetItemNumberTextField
+import com.dogandpigs.fitnote.presentation.lesson.component.ExerciseSetItemTextField
 import com.dogandpigs.fitnote.presentation.ui.component.*
 import com.dogandpigs.fitnote.presentation.ui.theme.*
 import com.dogandpigs.fitnote.presentation.util.format

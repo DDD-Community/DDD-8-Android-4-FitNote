@@ -33,7 +33,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.dogandpigs.fitnote.R
 import com.dogandpigs.fitnote.presentation.base.FigmaPreview
 import com.dogandpigs.fitnote.presentation.lesson.Exercise
-import com.dogandpigs.fitnote.presentation.lesson.ExerciseColumn
+import com.dogandpigs.fitnote.presentation.lesson.component.ExerciseColumn
 import com.dogandpigs.fitnote.presentation.ui.component.DefaultBottomLargePositiveButton
 import com.dogandpigs.fitnote.presentation.ui.component.FitNoteScaffold
 import com.dogandpigs.fitnote.presentation.ui.component.HeightSpacer
