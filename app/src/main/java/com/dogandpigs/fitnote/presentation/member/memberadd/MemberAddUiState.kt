@@ -3,10 +3,11 @@ package com.dogandpigs.fitnote.presentation.member.memberadd
 internal data class MemberAddUiState(
     val name: String = "",
     val profileImgUrl: String = "",
-    val height: Int = 0,
-    val weight: Int = 0,
+    val height: String = "160",
+    val weight: String = "50",
     val gender: Gender = Gender.MALE,
-    val isAddSuccess: Boolean = false
+    val isAddSuccess: Boolean = false,
+    val toast: String = "",
 ) {
     enum class Gender(
         val value: Int,

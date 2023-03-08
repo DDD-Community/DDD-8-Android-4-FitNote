@@ -1,5 +1,6 @@
 package com.dogandpigs.fitnote.presentation.member.memberadd
 
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
@@ -53,6 +54,7 @@ internal fun MemberAddScreen(
     navigateToHome: () -> Unit,
     navigateToMemberListWithRegistration: (Boolean) -> Unit,
 ) {
+    val context = LocalContext.current
     val uiState by viewModel.state.collectAsStateWithLifecycle()
 
     LaunchedEffect(uiState.isAddSuccess) {
@@ -61,27 +63,37 @@ internal fun MemberAddScreen(
         }
     }
 
+    LaunchedEffect(uiState.toast) {
+        if (uiState.toast.isNotBlank()) {
+            Toast.makeText(context, uiState.toast, Toast.LENGTH_SHORT).show()
+        }
+    }
+
     MemberAdd(
         uiState = uiState,
-        viewModel = viewModel,
         onClickBackButton = navigateToHome,
-        onClickAddButton = {
-            viewModel.addMember()
-        }
+        onClickAddButton = viewModel::addMember,
+        onChangeName = viewModel::setName,
+        onClickGender = viewModel::setGender,
+        onChangeHeight = viewModel::setHeight,
+        onChangeWeight = viewModel::setWeight,
     )
 }
 
 @Composable
 private fun MemberAdd(
     uiState: MemberAddUiState,
-    viewModel: MemberAddViewModel,
     onClickBackButton: () -> Unit,
     onClickAddButton: () -> Unit,
+    onChangeName: (String) -> Unit,
+    onClickGender: (MemberAddUiState.Gender) -> Unit,
+    onChangeHeight: (String) -> Unit,
+    onChangeWeight: (String) -> Unit,
 ) {
     FitNoteScaffold(
         topBarTitle = stringResource(id = R.string.member_registration),
         onClickTopBarNavigationIcon = onClickBackButton,
-        onClickBackButton = onClickBackButton,
+        onBackButton = onClickBackButton,
     ) {
         Box(modifier = Modifier.padding(it)) {
             Column(
@@ -93,7 +105,10 @@ private fun MemberAdd(
 
                 MemberInfoList(
                     uiState = uiState,
-                    viewModel = viewModel,
+                    onChangeName = onChangeName,
+                    onClickGender = onClickGender,
+                    onChangeHeight = onChangeHeight,
+                    onChangeWeight = onChangeWeight,
                 )
             }
 
@@ -107,25 +122,22 @@ private fun MemberAdd(
 @Composable
 private fun MemberInfoList(
     uiState: MemberAddUiState,
-    viewModel: MemberAddViewModel,
+    onChangeName: (String) -> Unit,
+    onClickGender: (MemberAddUiState.Gender) -> Unit,
+    onChangeHeight: (String) -> Unit,
+    onChangeWeight: (String) -> Unit,
 ) {
     val context = LocalContext.current
 
-    var name by remember { mutableStateOf("") }
     var dateMilliSeconds by remember { mutableStateOf(System.currentTimeMillis()) }
-    var height by remember { mutableStateOf("") }
-    var weight by remember { mutableStateOf("") }
 
     Column {
         /**
          * 이름
          */
         DefaultTextField(
-            value = name,
-            onValueChange = { newText ->
-                viewModel.setName(newText)
-                name = newText
-            },
+            value = uiState.name,
+            onValueChange = onChangeName,
             labelText = stringResource(id = R.string.name),
             placeholderText = stringResource(id = R.string.default_name),
         )
@@ -147,7 +159,7 @@ private fun MemberInfoList(
         ) {
             GenderComponent(
                 selectedGender = uiState.gender,
-                onClick = viewModel::setGender,
+                onClick = onClickGender,
             )
         }
 
@@ -155,13 +167,8 @@ private fun MemberInfoList(
          * 키 / 165cm -> 100
          */
         DefaultTextField(
-            value = height,
-            onValueChange = {
-                height = it.ifEmpty {
-                    "0"
-                }
-                viewModel.setHeight(height.toInt())
-            },
+            value = uiState.height,
+            onValueChange = onChangeHeight,
             labelText = stringResource(id = R.string.height),
             placeholderText = stringResource(id = R.string.default_height),
             keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
@@ -170,13 +177,8 @@ private fun MemberInfoList(
          * 몸무게 / 52kg -> 52
          */
         DefaultTextField(
-            value = weight,
-            onValueChange = {
-                weight = it.ifEmpty {
-                    "0"
-                }
-                viewModel.setWeight(it.toInt())
-            },
+            value = uiState.weight,
+            onValueChange = onChangeWeight,
             labelText = stringResource(id = R.string.weight),
             placeholderText = stringResource(id = R.string.default_weight),
             keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
@@ -318,9 +320,12 @@ private fun PreviewMemberAdd() {
     FitNoteTheme {
         MemberAdd(
             uiState = previewUiState,
-            viewModel = hiltViewModel(),
             onClickAddButton = {},
             onClickBackButton = {},
+            onChangeName = {},
+            onClickGender = {},
+            onChangeHeight = {},
+            onChangeWeight = {},
         )
     }
 }

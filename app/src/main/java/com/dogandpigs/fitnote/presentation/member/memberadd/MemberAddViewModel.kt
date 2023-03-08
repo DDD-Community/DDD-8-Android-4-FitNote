@@ -16,37 +16,49 @@ internal class MemberAddViewModel @Inject constructor(
 
     fun addMember() {
         currentState {
-            val member = MemberRequest(
-                userName = name,
-                userWeight = weight.toDouble(),
-                userHeight = height.toDouble(),
-                userGender = gender.value,
-            )
-
             viewModelScope.launch {
-                memberRepository.addMember(member).let { result ->
-                    if (result) {
-                        setState {
-                            copy(isAddSuccess = true)
-                        }
+                runCatching {
+                    check(name.isNotBlank()) { "이름을 입력해주세요." }
+                    val userWeight = weight.toDoubleOrNull()
+                    checkNotNull(userWeight) { "몸무게는 숫자만 입력가능합니다." }
+                    val userHeight = height.toDoubleOrNull()
+                    checkNotNull(userHeight) { "키는 숫자만 입력가능합니다." }
+
+                    val member = MemberRequest(
+                        userName = name,
+                        userWeight = userWeight,
+                        userHeight = userHeight,
+                        userGender = gender.value,
+                    )
+
+                    memberRepository.addMember(member)
+                }.onSuccess {
+                    setState {
+                        copy(isAddSuccess = true)
+                    }
+                }.onFailure {
+                    setState {
+                        copy(
+                            toast = it.message ?: ""
+                        )
                     }
                 }
             }
         }
     }
-    
+
     fun setName(name: String) = setState {
         copy(name = name)
     }
-    
-    fun setHeight(height: Int) = setState {
+
+    fun setHeight(height: String) = setState {
         copy(height = height)
     }
-    
-    fun setWeight(weight: Int) = setState {
+
+    fun setWeight(weight: String) = setState {
         copy(weight = weight)
     }
-    
+
     fun setGender(gender: MemberAddUiState.Gender) = setState {
         copy(gender = gender)
     }

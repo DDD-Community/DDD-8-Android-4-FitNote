@@ -9,8 +9,8 @@ data class ResBase<T>(
     @SerializedName("result")
     val result: String,
 
-    @SerializedName("code")
-    val code: String,
+    @SerializedName("status_code")
+    val statusCode: String,
 
     @SerializedName("message")
     val message: String,
