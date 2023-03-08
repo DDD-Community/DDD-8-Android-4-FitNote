@@ -4,6 +4,7 @@ import androidx.lifecycle.viewModelScope
 import com.dogandpigs.fitnote.data.repository.LessonRepository
 import com.dogandpigs.fitnote.data.repository.MemberRepository
 import com.dogandpigs.fitnote.presentation.base.BaseViewModel
+import com.dogandpigs.fitnote.presentation.util.toStringYMD
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -54,7 +55,7 @@ internal class MemberLessonListViewModel @Inject constructor(
                     lessonInfo.forEach { lesson ->
                         lessonList.add(
                             MemberLessonListUiState.Tab.Lesson(
-                                dateString = lesson.lessonsDate.toString(),
+                                dateString = lesson.lessonsDate.toStringYMD(),
                                 exercises = lesson.lessonsName
                             )
                         )
