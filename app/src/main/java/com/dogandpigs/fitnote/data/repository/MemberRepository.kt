@@ -19,6 +19,10 @@ class MemberRepository @Inject constructor(
         handleResponse(memberApi.addMember(memberRequest))
     }
 
+    suspend fun editMember(memberRequest: MemberRequest) {
+        handleResponse(memberApi.putEditMember(memberRequest))
+    }
+
     suspend fun getMemberInfo(): LessonResponse? {
         memberApi.getMemberInfo().run {
             if (!isSuccessful || body() == null || body()?.data == null) {

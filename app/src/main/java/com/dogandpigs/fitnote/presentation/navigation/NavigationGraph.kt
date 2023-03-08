@@ -105,20 +105,20 @@ private fun NavGraphBuilder.addMember(
         }
     )
     addMemberEdit(
-        route = ROUTE_MEMBER_EDIT,
+        route = "$ROUTE_MEMBER_EDIT/{$ARGUMENT_MEMBER_ID}",
         popBackStack = { navController.popBackStack() },
-        navigateToMemberListWithRegistration = {
+        navigateToMemberDetail = {
             navController.navigate(
-                route = "${MemberListNavRoute.route}/$it"
+                route = "$ROUTE_MEMBER_DETAIL/$it"
             ) {
-                popUpTo(MemberListNavRoute.route) { inclusive = true }
+                popUpTo("$ROUTE_MEMBER_DETAIL/{$ARGUMENT_MEMBER_ID}") { inclusive = true }
             }
         }
     )
     addMemberDetail(
         route = "$ROUTE_MEMBER_DETAIL/{$ARGUMENT_MEMBER_ID}",
         popBackStack = { navController.popBackStack() },
-        navigateToMemberEdit = { navController.navigate(ROUTE_MEMBER_EDIT) },
+        navigateToMemberEdit = { navController.navigate("$ROUTE_MEMBER_EDIT/$it") },
         navigateToMemberLessonList = { navController.navigate("$ROUTE_MEMBER_LESSON_LIST/$it") },
     )
 }

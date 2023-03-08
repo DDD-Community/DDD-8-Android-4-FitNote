@@ -8,6 +8,7 @@ import retrofit2.Response
 import retrofit2.http.Body
 import retrofit2.http.DELETE
 import retrofit2.http.POST
+import retrofit2.http.PUT
 
 interface MemberApi {
     @POST("/attention/list/")
@@ -15,6 +16,9 @@ interface MemberApi {
 
     @POST("/attention/add/")
     suspend fun addMember(@Body memberRequest: MemberRequest): Response<ResBase<Any>>
+
+    @PUT("/attention/edit/")
+    suspend fun putEditMember(@Body memberRequest: MemberRequest): Response<ResBase<Any>>
 
     @POST("/attention/info/")
     suspend fun getMemberInfo(): Response<ResBase<LessonResponse>>
