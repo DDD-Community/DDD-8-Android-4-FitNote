@@ -1,6 +1,6 @@
-package com.dogandpigs.fitnote.presentation.member.memberadd
+package com.dogandpigs.fitnote.presentation.member
 
-internal data class MemberAddUiState(
+internal data class MemberUiState(
     val name: String = "",
     val profileImgUrl: String = "",
     val height: String = "160",
@@ -13,6 +13,7 @@ internal data class MemberAddUiState(
         val value: Int,
         val text: String,
     ) {
+        NONE(0, "없음"),
         MALE(1, "남성"),
         FEMALE(2, "여성"),
     }

@@ -4,6 +4,7 @@ import androidx.lifecycle.viewModelScope
 import com.dogandpigs.fitnote.data.repository.MemberRepository
 import com.dogandpigs.fitnote.data.source.remote.request.MemberRequest
 import com.dogandpigs.fitnote.presentation.base.BaseViewModel
+import com.dogandpigs.fitnote.presentation.member.MemberUiState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -11,8 +12,8 @@ import javax.inject.Inject
 @HiltViewModel
 internal class MemberAddViewModel @Inject constructor(
     private val memberRepository: MemberRepository
-) : BaseViewModel<MemberAddUiState>() {
-    override fun createInitialState(): MemberAddUiState = MemberAddUiState()
+) : BaseViewModel<MemberUiState>() {
+    override fun createInitialState(): MemberUiState = MemberUiState()
 
     fun addMember() {
         currentState {
@@ -59,7 +60,7 @@ internal class MemberAddViewModel @Inject constructor(
         copy(weight = weight)
     }
 
-    fun setGender(gender: MemberAddUiState.Gender) = setState {
+    fun setGender(gender: MemberUiState.Gender) = setState {
         copy(gender = gender)
     }
 }
