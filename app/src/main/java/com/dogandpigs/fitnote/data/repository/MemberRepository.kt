@@ -12,12 +12,7 @@ class MemberRepository @Inject constructor(
     private val memberApi: MemberApi
 ) {
     suspend fun getMemberList(): ListResponse? {
-        memberApi.getMemberList().run {
-            if (!isSuccessful || body() == null || body()?.data == null) {
-                return null
-            }
-            return body()?.data
-        }
+        return handleResponse(memberApi.getMemberList())
     }
 
     suspend fun addMember(memberRequest: MemberRequest) {

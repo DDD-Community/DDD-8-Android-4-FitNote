@@ -1,5 +1,6 @@
 package com.dogandpigs.fitnote.presentation.member.memberdetail
 
+import android.util.Log
 import androidx.lifecycle.viewModelScope
 import com.dogandpigs.fitnote.data.repository.MemberRepository
 import com.dogandpigs.fitnote.presentation.base.BaseViewModel
@@ -18,26 +19,27 @@ internal class MemberDetailViewModel @Inject constructor(
 
     fun initialize(memberId: Long) {
         viewModelScope.launch {
-            kotlin.runCatching {
-                memberRepository.getMemberList()
-            }.onSuccess {
-                val member = it?.memberList?.first { member ->
+            runCatching {
+                val response = memberRepository.getMemberList()
+                val member = response?.memberList?.first { member ->
                     member.id == memberId
                 }
-
-                member?.also {
-                    setState {
-                        copy(
-                            name = it.userName,
-                            date = it.createDate.formatDate() ?: "",
-                            gender = formatGender(it.userGender),
-                            height = "${trimTrailingZero(it.userHeight?.toString())}cm",
-                            weight = "${trimTrailingZero(it.userWeight?.toString())}kg",
-                        )
-                    }
-                } ?: return@onSuccess // TODO member is NULL
+                checkNotNull(member) { "member is null" }
+                setState {
+                    copy(
+                        name = member.userName,
+                        date = member.createDate.formatDate() ?: "",
+                        gender = formatGender(member.userGender),
+                        height = "${trimTrailingZero(member.userHeight?.toString())}cm",
+                        weight = "${trimTrailingZero(member.userWeight?.toString())}kg",
+                    )
+                }
+            }.onSuccess {
+                // TODO
+                Log.d("develop", "onSuccess")
             }.onFailure {
-                // TODO 실패할 경우
+                // TODO
+                Log.d("develop", "onFailure")
             }
         }
     }
