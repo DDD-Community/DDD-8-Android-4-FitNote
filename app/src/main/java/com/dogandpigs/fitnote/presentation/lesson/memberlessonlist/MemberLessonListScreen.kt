@@ -413,8 +413,9 @@ private fun AddLessonButton(
                 .fillMaxWidth(),
             shape = RoundedCornerShape(5.dp),
             colors = ButtonDefaults.buttonColors(
-                containerColor = BrandPrimary
-            )
+                containerColor = BrandPrimary,
+            ),
+            border = null,
         ) {
             Text(
                 text = stringResource(id = R.string.add_lesson),
