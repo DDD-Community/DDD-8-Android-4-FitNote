@@ -8,6 +8,7 @@ import com.dogandpigs.fitnote.presentation.join.addJoin
 import com.dogandpigs.fitnote.presentation.lesson.addlesson.addAddLessonScreen
 import com.dogandpigs.fitnote.presentation.lesson.loadlesson.addLoadLesson
 import com.dogandpigs.fitnote.presentation.lesson.memberlesson.addMemberLesson
+import com.dogandpigs.fitnote.presentation.lesson.memberlessonlist.MemberLessonListNavRoute
 import com.dogandpigs.fitnote.presentation.lesson.memberlessonlist.addMemberLessonListScreen
 import com.dogandpigs.fitnote.presentation.login.addLogin
 import com.dogandpigs.fitnote.presentation.login.addLoginWithEmail
@@ -32,7 +33,7 @@ internal fun NavigationGraph(navController: NavHostController) {
             navigateToHome = { navController.navigateToHome() },
             navigateToJoin = { navController.navigate(ROUTE_JOIN) },
             navigateToLogin = { navController.navigate(ROUTE_LOGIN) },
-            navigateToLesson = { navController.navigate(ROUTE_MEMBER_LESSON_LIST) },
+            navigateToLesson = { navController.navigateToMemberLessonListRoute(0) },
             navigateToMemberList = { navController.navigate(MemberListNavRoute.route) },
             navigateToMemberLesson = { navController.navigate(ROUTE_MEMBER_LESSON) },
         )
@@ -83,14 +84,14 @@ private fun NavGraphBuilder.addMember(
         route = MemberListNavRoute.route,
         navigateToMemberDetail = { navController.navigate("$ROUTE_MEMBER_DETAIL/$it") },
         navigateToMemberAdd = { navController.navigate(ROUTE_MEMBER_ADD) },
-        navigateToMemberLessonList = { navController.navigate("$ROUTE_MEMBER_LESSON_LIST/$it") },
+        navigateToMemberLessonList = { navController.navigateToMemberLessonListRoute(it) },
         navigateToSetting = { navController.navigate(ROUTE_SETTING) }
     )
     addMemberListWithRegistration(
         route = "${MemberListNavRoute.route}/{$ARGUMENT_REGISTRATION}",
         navigateToMemberDetail = { navController.navigate("$ROUTE_MEMBER_DETAIL/$it") },
         navigateToMemberAdd = { navController.navigate(ROUTE_MEMBER_ADD) },
-        navigateToMemberLessonList = { navController.navigate("$ROUTE_MEMBER_LESSON_LIST/$it") },
+        navigateToMemberLessonList = { navController.navigateToMemberLessonListRoute(it) },
         navigateToSetting = { navController.navigate(ROUTE_SETTING) }
     )
     addMemberAdd(
@@ -119,7 +120,7 @@ private fun NavGraphBuilder.addMember(
         route = "$ROUTE_MEMBER_DETAIL/{$ARGUMENT_MEMBER_ID}",
         popBackStack = { navController.popBackStack() },
         navigateToMemberEdit = { navController.navigate("$ROUTE_MEMBER_EDIT/$it") },
-        navigateToMemberLessonList = { navController.navigate("$ROUTE_MEMBER_LESSON_LIST/$it") },
+        navigateToMemberLessonList = { navController.navigateToMemberLessonListRoute(it) },
     )
 }
 
@@ -127,7 +128,7 @@ private fun NavGraphBuilder.addLesson(
     navController: NavHostController,
 ) {
     addMemberLessonListScreen(
-        route = "$ROUTE_MEMBER_LESSON_LIST/{$ARGUMENT_MEMBER_ID}",
+        route = MemberLessonListNavRoute.path,
         popBackStack = { navController.popBackStack() },
         navigateToAddLesson = {
             navController.navigate("$ROUTE_ADD_LESSON/$it")
