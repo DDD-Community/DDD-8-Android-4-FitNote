@@ -73,7 +73,7 @@ internal fun PlusLessonScreen(
     viewModel: PlusLessonViewModel = hiltViewModel(),
     popBackStack: () -> Unit,
     navigateToLoadLesson: () -> Unit,
-    navigateToMemberLessonList: () -> Unit,
+    navigateToMemberLessonList: (Int) -> Unit,
 ) {
     val uiState by viewModel.state.collectAsStateWithLifecycle()
 
@@ -85,9 +85,8 @@ internal fun PlusLessonScreen(
 
     LaunchedEffect(uiState.isSuccess) {
         if (uiState.isSuccess) {
-            popBackStack()
             // TODO 토스트 안내 제공
-//            navigateToMemberLessonList()
+            navigateToMemberLessonList(memberId)
         }
     }
 

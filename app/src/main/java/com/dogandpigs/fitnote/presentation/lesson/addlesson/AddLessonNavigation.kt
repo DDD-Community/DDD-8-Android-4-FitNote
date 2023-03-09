@@ -11,7 +11,7 @@ fun NavGraphBuilder.addAddLessonScreen(
     route: String,
     popBackStack: () -> Unit,
     navigateToLoadLesson: () -> Unit,
-    navigateToMemberLessonList: () -> Unit,
+    navigateToMemberLessonList: (Int) -> Unit,
 ) {
     val argument = ARGUMENT_MEMBER_ID
 
