@@ -11,6 +11,7 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.ClickableText
@@ -31,7 +32,6 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.geometry.CornerRadius
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.PathEffect
@@ -46,8 +46,9 @@ import com.dogandpigs.fitnote.R
 import com.dogandpigs.fitnote.presentation.base.FigmaPreview
 import com.dogandpigs.fitnote.presentation.lesson.Exercise
 import com.dogandpigs.fitnote.presentation.lesson.component.ExerciseColumn
-import com.dogandpigs.fitnote.presentation.lesson.component.ExerciseSetItemNumberTextField
-import com.dogandpigs.fitnote.presentation.lesson.component.ExerciseSetItemTextField
+import com.dogandpigs.fitnote.presentation.lesson.component.LessonCountTextField
+import com.dogandpigs.fitnote.presentation.lesson.component.LessonTextField
+import com.dogandpigs.fitnote.presentation.lesson.component.LessonWeightTextField
 import com.dogandpigs.fitnote.presentation.ui.component.DefaultBottomLargePositiveButton
 import com.dogandpigs.fitnote.presentation.ui.component.DefaultDatePickerDialog
 import com.dogandpigs.fitnote.presentation.ui.component.DefaultText
@@ -168,15 +169,15 @@ private fun PlusLesson(
                     ExerciseColumn(
                         exercise = exercise,
                         Title = {
-                            ExerciseName(
-                                name = exercise.name,
-                                onClickName = { newValue ->
+                            ItemMainExerciseName(
+                                text = exercise.name,
+                                onChangeName = { newValue ->
                                     changeExerciseName(index, newValue)
                                 },
                             )
                             HeightSpacer(height = LocalFitNoteSpacing.current.spacing4)
 
-                            ExerciseSetMainRow(
+                            ItemMainExerciseRow(
                                 set = exercise.numberOfSets.toString(),
                                 weight = exercise.mainWeight.format(),
                                 count = exercise.mainCount.toString(),
@@ -267,7 +268,7 @@ private fun DateLabel(
 }
 
 @Composable
-private fun ExerciseSetMainRow(
+private fun ItemMainExerciseRow(
     set: String,
     weight: String,
     count: String,
@@ -279,62 +280,61 @@ private fun ExerciseSetMainRow(
         horizontalArrangement = Arrangement.Center,
         verticalAlignment = Alignment.CenterVertically,
     ) {
-        val modifier = Modifier
-            .weight(1F)
-            .clip(RoundedCornerShape(5.dp))
-            .background(GrayScaleLightGray1)
-            .padding(
-                start = LocalFitNoteSpacing.current.spacing4,
-                top = 6.dp,
-                bottom = 6.dp,
-            )
-
-        ExerciseSetItemNumberTextField(
-            modifier = modifier,
+        LessonTextField(
+            modifier = Modifier
+                .weight(1f)
+                .wrapContentHeight(),
             text = set,
+            onValueChange = {},
             enabled = false,
-            suffix = "세트",
-        ) {}
+            suffix = {
+                DefaultText(
+                    text = "세트",
+                    color = GrayScaleMidGray3,
+                    style = LocalFitNoteTypography.current.buttonMedium,
+                )
+            }
+        )
         WidthSpacer(width = LocalFitNoteSpacing.current.spacing4)
 
-        ExerciseSetItemNumberTextField(
-            modifier = modifier,
-            text = weight.format(),
+        LessonWeightTextField(
+            modifier = Modifier
+                .weight(1f)
+                .wrapContentHeight(),
+            text = weight,
             enabled = false,
-            suffix = "kg",
-        ) {}
+        )
         WidthSpacer(width = LocalFitNoteSpacing.current.spacing4)
 
-        ExerciseSetItemNumberTextField(
-            modifier = modifier,
+        LessonCountTextField(
+            modifier = Modifier
+                .weight(1f)
+                .wrapContentHeight(),
             text = count,
             enabled = false,
-            suffix = "회",
-        ) {}
+        )
     }
 }
 
 @Composable
-private fun ExerciseName(
-    name: String,
-    onClickName: (String) -> Unit,
+private fun ItemMainExerciseName(
+    text: String,
+    onChangeName: (String) -> Unit,
 ) {
-    val modifier = Modifier
-        .fillMaxWidth()
-        .clip(RoundedCornerShape(5.dp))
-        .background(GrayScaleLightGray1)
-        .padding(
-            start = LocalFitNoteSpacing.current.spacing4,
-            top = 6.dp,
-            bottom = 6.dp,
-        )
-
-    ExerciseSetItemTextField(
-        modifier = modifier,
-        text = name,
-    ) {
-        onClickName(it)
-    }
+    LessonTextField(
+        modifier = Modifier
+            .fillMaxWidth()
+            .wrapContentHeight(),
+        text = text,
+        onValueChange = onChangeName,
+        placeholder = {
+            DefaultText(
+                text = stringResource(id = R.string.exercise_name),
+                color = GrayScaleMidGray3,
+                style = LocalFitNoteTypography.current.buttonMedium,
+            )
+        }
+    )
 }
 
 @Composable

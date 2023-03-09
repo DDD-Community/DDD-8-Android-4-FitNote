@@ -1,7 +1,7 @@
 package com.dogandpigs.fitnote.presentation.lesson
 
 internal data class Exercise(
-    val name: String = "운동명",
+    val name: String = "",
     val sets: List<ExerciseSet> = listOf(ExerciseSet()),
     val isFold: Boolean = true,
 ) {
