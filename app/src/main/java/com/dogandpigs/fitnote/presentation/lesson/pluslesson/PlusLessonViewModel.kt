@@ -195,4 +195,54 @@ internal class PlusLessonViewModel @Inject constructor(
             )
         }
     }
+
+    fun changeAllSet(
+        exerciseIndex: Int,
+        set: String,
+    ) = currentState {
+        runCatching {
+            val changedSet = set.toIntOrNull()?.let {
+                if (it > 10) {
+                    10
+                    // TODO 토스트 10보다 클 때 최대 10개 입니다. 로딩 필요?
+                } else {
+                    it
+                }
+            } ?: 0
+
+            val exerciseList = mutableListOf<Exercise>()
+            exerciseList.addAll(exercises)
+
+            val exerciseSetList = mutableListOf<Exercise.ExerciseSet>()
+            exerciseSetList.addAll(exerciseList[exerciseIndex].sets)
+
+            if (exerciseSetList.size < changedSet) {
+                repeat(changedSet - exerciseSetList.size) {
+                    exerciseSetList.add(
+                        Exercise.ExerciseSet(
+                            setIndex = exerciseSetList.size + 1,
+                        )
+                    )
+                }
+            } else if (exerciseSetList.size > changedSet) {
+                repeat(exerciseSetList.size - changedSet) {
+                    exerciseSetList.removeAt(exerciseSetList.size - 1)
+                }
+            }
+
+            exerciseList[exerciseIndex] = exerciseList[exerciseIndex].copy(
+                sets = exerciseSetList.toList()
+            )
+
+            exerciseList.toList()
+        }.onSuccess {
+            setState {
+                copy(
+                    exercises = it,
+                )
+            }
+        }.onFailure {
+            // TODO
+        }
+    }
 }

@@ -47,6 +47,7 @@ import com.dogandpigs.fitnote.presentation.base.FigmaPreview
 import com.dogandpigs.fitnote.presentation.lesson.Exercise
 import com.dogandpigs.fitnote.presentation.lesson.component.ExerciseColumn
 import com.dogandpigs.fitnote.presentation.lesson.component.LessonCountTextField
+import com.dogandpigs.fitnote.presentation.lesson.component.LessonSetTextField
 import com.dogandpigs.fitnote.presentation.lesson.component.LessonTextField
 import com.dogandpigs.fitnote.presentation.lesson.component.LessonWeightTextField
 import com.dogandpigs.fitnote.presentation.ui.component.DefaultBottomLargePositiveButton
@@ -102,6 +103,9 @@ internal fun PlusLessonScreen(
         onClickLoadLesson = navigateToLoadLesson,
         onClickAddExercise = viewModel::addExercise,
         onChangeDate = viewModel::setDateMilliSeconds,
+        onChangeAllSet = viewModel::changeAllSet,
+        onChangeAllWeight = {},
+        onChangeAllCount = {},
     )
 }
 
@@ -124,6 +128,12 @@ private fun PlusLesson(
     onClickLoadLesson: () -> Unit,
     onClickAddExercise: () -> Unit,
     onChangeDate: (Long?) -> Unit,
+    onChangeAllSet: (
+        exerciseIndex: Int,
+        set: String
+    ) -> Unit,
+    onChangeAllWeight: (String) -> Unit,
+    onChangeAllCount: (String) -> Unit,
 ) {
     val datePickerVisible = remember { mutableStateOf(false) }
 
@@ -181,6 +191,11 @@ private fun PlusLesson(
                                 set = exercise.numberOfSets.toString(),
                                 weight = exercise.mainWeight.format(),
                                 count = exercise.mainCount.toString(),
+                                onChangeAllSet = { set ->
+                                    onChangeAllSet(index, set)
+                                },
+                                onChangeAllWeight = onChangeAllWeight,
+                                onChangeAllCount = onChangeAllCount,
                             )
 
                             HeightSpacer(height = LocalFitNoteSpacing.current.spacing4)
@@ -272,28 +287,21 @@ private fun ItemMainExerciseRow(
     set: String,
     weight: String,
     count: String,
-    // TODO 차후 개발
-    onClickSet: () -> Unit = {},
+    onChangeAllSet: (set: String) -> Unit,
+    onChangeAllWeight: (String) -> Unit,
+    onChangeAllCount: (String) -> Unit,
 ) {
     Row(
         modifier = Modifier.fillMaxWidth(),
         horizontalArrangement = Arrangement.Center,
         verticalAlignment = Alignment.CenterVertically,
     ) {
-        LessonTextField(
+        LessonSetTextField(
             modifier = Modifier
                 .weight(1f)
                 .wrapContentHeight(),
             text = set,
-            onValueChange = {},
-            enabled = false,
-            suffix = {
-                DefaultText(
-                    text = "세트",
-                    color = GrayScaleMidGray3,
-                    style = LocalFitNoteTypography.current.buttonMedium,
-                )
-            }
+            onValueChange = onChangeAllSet,
         )
         WidthSpacer(width = LocalFitNoteSpacing.current.spacing4)
 
@@ -302,7 +310,7 @@ private fun ItemMainExerciseRow(
                 .weight(1f)
                 .wrapContentHeight(),
             text = weight,
-            enabled = false,
+            onValueChange = onChangeAllWeight,
         )
         WidthSpacer(width = LocalFitNoteSpacing.current.spacing4)
 
@@ -311,7 +319,7 @@ private fun ItemMainExerciseRow(
                 .weight(1f)
                 .wrapContentHeight(),
             text = count,
-            enabled = false,
+            onValueChange = onChangeAllCount,
         )
     }
 }
@@ -416,6 +424,9 @@ private fun PreviewPlusLesson() {
             onClickLoadLesson = {},
             onClickAddExercise = {},
             onChangeDate = {},
+            onChangeAllSet = { _: Int, _: String -> },
+            onChangeAllWeight = {},
+            onChangeAllCount = {},
         )
     }
 }

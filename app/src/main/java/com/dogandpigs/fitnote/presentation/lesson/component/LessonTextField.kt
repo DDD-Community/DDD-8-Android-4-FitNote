@@ -93,6 +93,23 @@ internal fun LessonTextField(
 }
 
 @Composable
+internal fun LessonSetTextField(
+    modifier: Modifier,
+    text: String,
+    onValueChange: (String) -> Unit = {},
+    enabled: Boolean = true,
+) {
+    LessonSuffixTextField(
+        modifier = modifier,
+        text = text,
+        onValueChange = onValueChange,
+        enabled = enabled,
+        keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
+        suffix = "세트",
+    )
+}
+
+@Composable
 internal fun LessonWeightTextField(
     modifier: Modifier,
     text: String,
