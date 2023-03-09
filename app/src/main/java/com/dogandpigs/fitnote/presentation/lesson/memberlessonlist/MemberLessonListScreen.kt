@@ -54,6 +54,7 @@ import com.dogandpigs.fitnote.presentation.ui.theme.GrayScaleLightGray1
 import com.dogandpigs.fitnote.presentation.ui.theme.GrayScaleLightGray2
 import com.dogandpigs.fitnote.presentation.ui.theme.GrayScaleMidGray2
 import com.dogandpigs.fitnote.presentation.ui.theme.GrayScaleMidGray3
+import com.dogandpigs.fitnote.presentation.util.formatYMD
 
 @Composable
 internal fun MemberLessonListScreen(
@@ -305,7 +306,7 @@ private fun LessonItem(
         HeightSpacer(height = 16.dp)
         Row {
             Text(
-                text = lesson.dateString,
+                text = lesson.dateString.formatYMD(),
                 fontSize = 16.sp,
             )
         }

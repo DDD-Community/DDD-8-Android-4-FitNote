@@ -30,10 +30,8 @@ internal fun Date.format(): String =
 internal fun Date.formatYYYYMMDD(): String =
     SimpleDateFormat("yyyyMMdd", Locale.KOREA).format(this)
 
-internal fun Int.toStringYMD(): String =
-    this.toString().run {
-        "${this.substring(0, 4)}년 ${this.substring(4, 6)}월 ${this.substring(6, 8)}일"
-    }
+internal fun String.formatYMD(): String =
+    "${this.substring(0, 4)}년 ${this.substring(4, 6)}월 ${this.substring(6, 8)}일"
 
 internal fun formatGender(gender: Int?): String = when (gender) {
     1 -> "남성"
