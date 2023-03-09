@@ -151,6 +151,7 @@ private fun NavGraphBuilder.addLesson(
         popBackStack = { navController.popBackStack() },
         navigateToAddLesson = { navController.navigate(ROUTE_ADD_LESSON) },
         navigateToSetting = {},
+        navigateToMemberLessonList = { navController.navigateToMemberLessonListRoute(it.toLong()) },
     )
     addLoadLesson(
         route = ROUTE_LOAD_LESSON,

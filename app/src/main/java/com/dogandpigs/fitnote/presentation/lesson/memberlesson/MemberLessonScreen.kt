@@ -53,6 +53,7 @@ internal fun MemberLessonScreen(
     popBackStack: () -> Unit,
     navigateToAddLesson: () -> Unit,
     navigateToSetting: () -> Unit,
+    navigateToMemberLessonList: (Int) -> Unit,
 ) {
     val uiState by viewModel.state.collectAsStateWithLifecycle()
 
@@ -65,7 +66,7 @@ internal fun MemberLessonScreen(
 
     LaunchedEffect(uiState.isNext) {
         if (uiState.isNext) {
-            popBackStack()
+            navigateToMemberLessonList(memberId)
         }
     }
 

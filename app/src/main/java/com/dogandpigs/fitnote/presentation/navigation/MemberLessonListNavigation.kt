@@ -6,5 +6,7 @@ import com.dogandpigs.fitnote.presentation.lesson.memberlessonlist.MemberLessonL
 internal fun NavHostController.navigateToMemberLessonListRoute(
     memberId: Long,
 ) {
-    this.navigate(MemberLessonListNavRoute.getPath(memberId))
+    this.navigate(MemberLessonListNavRoute.getPath(memberId)) {
+        popUpTo(MemberLessonListNavRoute.path) { inclusive = true }
+    }
 }

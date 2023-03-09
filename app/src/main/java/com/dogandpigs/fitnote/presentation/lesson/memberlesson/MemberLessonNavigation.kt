@@ -12,6 +12,7 @@ fun NavGraphBuilder.addMemberLesson(
     popBackStack: () -> Unit,
     navigateToAddLesson: () -> Unit,
     navigateToSetting: () -> Unit,
+    navigateToMemberLessonList: (Int) -> Unit,
 ) {
     composable(
         route = route,
@@ -30,6 +31,7 @@ fun NavGraphBuilder.addMemberLesson(
             lessonDate = lessonDate,
             navigateToAddLesson = navigateToAddLesson,
             navigateToSetting = navigateToSetting,
+            navigateToMemberLessonList = navigateToMemberLessonList,
         )
     }
 }
