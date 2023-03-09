@@ -14,7 +14,6 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.MoreVert
-import androidx.compose.material3.Checkbox
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -34,6 +33,7 @@ import com.dogandpigs.fitnote.presentation.base.FigmaPreview
 import com.dogandpigs.fitnote.presentation.lesson.Exercise
 import com.dogandpigs.fitnote.presentation.lesson.component.ExerciseColumn
 import com.dogandpigs.fitnote.presentation.ui.component.DefaultBottomLargePositiveButton
+import com.dogandpigs.fitnote.presentation.ui.component.DefaultCheckbox
 import com.dogandpigs.fitnote.presentation.ui.component.FitNoteScaffold
 import com.dogandpigs.fitnote.presentation.ui.component.HeightSpacer
 import com.dogandpigs.fitnote.presentation.ui.component.WidthSpacer
@@ -139,7 +139,7 @@ private fun MemberLessonList(
                         horizontal = LocalFitNoteSpacing.current.spacing4,
                     ),
                     ItemButton = { index, exerciseSet ->
-                        Checkbox(
+                        DefaultCheckbox(
                             checked = exerciseSet.isDone,
                             onCheckedChange = { onClickSetCheckbox(exerciseIndex, index) }
                         )
@@ -203,7 +203,7 @@ private fun ExerciseSetMain(
             )
         }
 
-        Checkbox(
+        DefaultCheckbox(
             modifier = Modifier.padding(paddingValues),
             checked = isDone,
             onCheckedChange = { onClickCheckbox() }
