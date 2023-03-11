@@ -1,5 +1,6 @@
 package com.dogandpigs.fitnote.presentation.lesson.loadlesson
 
+import android.util.Log
 import androidx.lifecycle.viewModelScope
 import com.dogandpigs.fitnote.data.repository.LessonRepository
 import com.dogandpigs.fitnote.data.repository.MemberRepository
@@ -12,20 +13,36 @@ import javax.inject.Inject
 internal class LoadLessonViewModel @Inject constructor(
     private val memberRepository: MemberRepository,
     private val lessonRepository: LessonRepository
-) : BaseViewModel<LoadLessonState>() {
-    override fun createInitialState(): LoadLessonState = LoadLessonState()
+) : BaseViewModel<LoadLessonUiState>() {
+    override fun createInitialState(): LoadLessonUiState = LoadLessonUiState()
 
     fun initialize() {
         getMemberList()
-//        getLessonList()
     }
 
-    fun getMemberList() {
+    fun setSelectedMemberId(memberId: Long) {
+        setState {
+            copy(
+                selectedMemberId = memberId,
+            )
+        }
+    }
+
+    fun setSelectedRoutineId(routineId: Int) {
+        setState {
+            copy(
+                selectedRoutineId = routineId,
+            )
+        }
+    }
+
+    private fun getMemberList() {
         viewModelScope.launch {
             runCatching {
                 val response = memberRepository.getMemberList()
-                val memberList = response?.memberList
-                checkNotNull(memberList) { "memberList is null" }
+                checkNotNull(response) { "response is null" }
+                val memberList = response.memberList
+                memberList
             }.onSuccess {
                 setState {
                     copy(
@@ -40,13 +57,25 @@ internal class LoadLessonViewModel @Inject constructor(
         }
     }
 
-//    fun getLessonList() = currentState {
-//        viewModelScope.launch {
-//            lessonRepository.getCompletedLessons(selectedUserId)?.run {
-//                setState {
-//                    copy(exerciseList = this@run.lessonInfo)
-//                }
-//            }
-//        }
-//    }
+    fun getLessonList() {
+        viewModelScope.launch {
+            runCatching {
+                currentState {
+                    check(selectedMemberId > 0) { "memberId is invaild" }
+                    val response = lessonRepository.getIntendedLessons(selectedMemberId)
+                    checkNotNull(response) { "response is null" }
+                }
+            }.onSuccess {
+                setState {
+                    copy(
+                        routineList = it.lessonInfo.map { lessonInfo ->
+                            lessonInfo.toPresentation()
+                        }
+                    )
+                }
+            }.onFailure {
+                Log.e("aa12", it.toString())
+            }
+        }
+    }
 }
