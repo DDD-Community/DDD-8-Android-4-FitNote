@@ -20,7 +20,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.dogandpigs.fitnote.R
 import com.dogandpigs.fitnote.presentation.base.ComponentPreview
 import com.dogandpigs.fitnote.presentation.member.MemberUiState
-import com.dogandpigs.fitnote.presentation.member.component.MemberButton
+import com.dogandpigs.fitnote.presentation.ui.component.BottomPositiveButton
 import com.dogandpigs.fitnote.presentation.member.component.MemberInfoList
 import com.dogandpigs.fitnote.presentation.ui.component.DefaultDatePickerDialog
 import com.dogandpigs.fitnote.presentation.ui.component.FitNoteScaffold
@@ -104,7 +104,7 @@ private fun MemberEdit(
                 )
             }
 
-            MemberButton(
+            BottomPositiveButton(
                 text = stringResource(id = R.string.modification_completion),
                 onClick = onClickAddButton,
             )
