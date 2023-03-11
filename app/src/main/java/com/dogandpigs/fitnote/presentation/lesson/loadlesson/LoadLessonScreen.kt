@@ -7,10 +7,10 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.defaultMinSize
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
@@ -30,7 +30,6 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.dogandpigs.fitnote.R
@@ -38,16 +37,18 @@ import com.dogandpigs.fitnote.data.source.remote.model.LessonInfo
 import com.dogandpigs.fitnote.presentation.base.FigmaPreview
 import com.dogandpigs.fitnote.presentation.lesson.addlesson.ExpandableCard
 import com.dogandpigs.fitnote.presentation.lesson.addlesson.Routine
+import com.dogandpigs.fitnote.presentation.ui.DefaultValue
 import com.dogandpigs.fitnote.presentation.ui.component.BottomPositiveButton
 import com.dogandpigs.fitnote.presentation.ui.component.DefaultSpacer
+import com.dogandpigs.fitnote.presentation.ui.component.DefaultText
 import com.dogandpigs.fitnote.presentation.ui.component.FitNoteScaffold
 import com.dogandpigs.fitnote.presentation.ui.component.HeightSpacer
-import com.dogandpigs.fitnote.presentation.ui.component.WidthSpacer
 import com.dogandpigs.fitnote.presentation.ui.component.defaultBorder
 import com.dogandpigs.fitnote.presentation.ui.theme.BrandPrimary
 import com.dogandpigs.fitnote.presentation.ui.theme.FitNoteTheme
 import com.dogandpigs.fitnote.presentation.ui.theme.GrayScaleDarkGray2
 import com.dogandpigs.fitnote.presentation.ui.theme.GrayScaleLightGray1
+import com.dogandpigs.fitnote.presentation.ui.theme.GrayScaleLightGray2
 import com.dogandpigs.fitnote.presentation.ui.theme.GrayScaleMidGray3
 import com.dogandpigs.fitnote.presentation.ui.theme.LocalFitNoteSpacing
 import com.dogandpigs.fitnote.presentation.ui.theme.LocalFitNoteTypography
@@ -68,7 +69,7 @@ internal fun LoadLessonScreen(
 }
 
 @Composable
-internal fun LoadLesson(
+private fun LoadLesson(
     lessonState: LoadLessonState,
     popBackStack: () -> Unit,
     onLoadButtonClick: () -> Unit,
@@ -99,29 +100,47 @@ internal fun LoadLesson(
 private fun LoadLessonContent(
     lessonState: LoadLessonState,
 ) {
+    val selectedMemberIndex = remember { mutableStateOf(DefaultValue.ITEM_INDEX_NOT_SELECTED) }
+
     Column(
         modifier = Modifier.fillMaxSize()
     ) {
         DefaultSpacer(height = LocalFitNoteSpacing.current.spacing5)
-        RowTagList(lessonState, 5.dp, PaddingValues(12.dp, 6.dp))
+        RowMemberNameList(
+            memberList = lessonState.memberList,
+            selectedMemberIndex = selectedMemberIndex.value,
+            onMemberNameClick = {
+                selectedMemberIndex.value = it
+            },
+        )
         DefaultSpacer(height = LocalFitNoteSpacing.current.spacing5)
         RoutineList(lessonState)
     }
 }
 
 @Composable
-private fun RowTagList(
-    lessonState: LoadLessonState,
-    borderRadius: Dp,
-    paddingValue: PaddingValues
+private fun RowMemberNameList(
+    memberList: List<LoadLessonState.Member>,
+    selectedMemberIndex: Int,
+    onMemberNameClick: (Int) -> Unit,
 ) {
     val scrollState = rememberScrollState()
+
     Row(
-        Modifier.horizontalScroll(scrollState)
+        modifier = Modifier
+            .fillMaxWidth()
+            .wrapContentHeight()
+            .horizontalScroll(scrollState)
     ) {
-        lessonState.memberList.forEach { member ->
-            Tag(member.userName, borderRadius, paddingValue)
-            WidthSpacer(width = 10.dp)
+        memberList.forEachIndexed { index, member ->
+            MemberNameTag(
+                name = member.name,
+                isSelected = index == selectedMemberIndex,
+                onMemberNameClick = {
+                    onMemberNameClick(index)
+                }
+            )
+            DefaultSpacer(width = LocalFitNoteSpacing.current.spacing3)
         }
     }
 }
@@ -137,39 +156,44 @@ private fun RowExerciseList(
         Modifier.horizontalScroll(scrollState)
     ) {
         exerciseList.forEach { name ->
-            Tag(name, borderRadius, paddingValue)
-            WidthSpacer(width = 10.dp)
         }
     }
 }
 
 @Composable
-private fun Tag(
-    text: String,
-    borderRadius: Dp,
-    paddingValue: PaddingValues
+private fun MemberNameTag(
+    name: String,
+    isSelected: Boolean,
+    onMemberNameClick: () -> Unit,
 ) {
     OutlinedButton(
+        onClick = onMemberNameClick,
+        shape = RoundedCornerShape(50.dp),
         colors = ButtonDefaults.outlinedButtonColors(
-            disabledContentColor = SubPrimary,
-            disabledContainerColor = BrandPrimary,
-            contentColor = GrayScaleMidGray3,
-            containerColor = GrayScaleLightGray1
+            contentColor = if (isSelected) {
+                SubPrimary
+            } else {
+                GrayScaleLightGray1
+            },
+            containerColor = if (isSelected) {
+                BrandPrimary
+            } else {
+                GrayScaleLightGray2
+            }
         ),
-        contentPadding = paddingValue,
-        modifier = Modifier
-            .defaultMinSize(
-                minWidth = ButtonDefaults.MinWidth,
-                minHeight = 10.dp
-            ),
-        onClick = { },
-        shape = RoundedCornerShape(borderRadius)
+        contentPadding = PaddingValues(
+            horizontal = 12.dp,
+            vertical = 6.dp,
+        ),
     ) {
-        Text(
-            text = text,
-            fontSize = 12.sp,
+        DefaultText(
+            text = name,
+            color = if (isSelected) {
+                BrandPrimary
+            } else {
+                GrayScaleMidGray3
+            },
             style = LocalFitNoteTypography.current.buttonSmall,
-            color = GrayScaleMidGray3
         )
     }
 }
