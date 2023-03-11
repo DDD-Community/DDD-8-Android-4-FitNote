@@ -52,6 +52,18 @@ internal fun HeightSpacer(height: Dp) {
     Spacer(modifier = Modifier.height(height))
 }
 
+@Composable
+internal fun DefaultSpacer(
+    width: Dp = 0.dp,
+    height: Dp = 0.dp,
+) {
+    Spacer(
+        modifier = Modifier
+            .width(width)
+            .height(height)
+    )
+}
+
 internal fun Modifier.defaultBorder(): Modifier = composed {
     this.border(
         width = 1.dp,
