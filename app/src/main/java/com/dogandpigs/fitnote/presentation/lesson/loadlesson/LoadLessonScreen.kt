@@ -45,6 +45,7 @@ import com.dogandpigs.fitnote.presentation.ui.component.BottomPositiveButton
 import com.dogandpigs.fitnote.presentation.ui.component.DefaultSpacer
 import com.dogandpigs.fitnote.presentation.ui.component.DefaultText
 import com.dogandpigs.fitnote.presentation.ui.component.FitNoteScaffold
+import com.dogandpigs.fitnote.presentation.ui.component.HeightSpacer
 import com.dogandpigs.fitnote.presentation.ui.theme.BrandPrimary
 import com.dogandpigs.fitnote.presentation.ui.theme.FitNoteTheme
 import com.dogandpigs.fitnote.presentation.ui.theme.GrayScaleDarkGray2
@@ -239,6 +240,7 @@ private fun ColumnRoutineList(
             )
             DefaultSpacer(height = LocalFitNoteSpacing.current.spacing4)
         }
+        HeightSpacer(height = LocalFitNoteSpacing.current.spacing10)
     }
 }
 
