@@ -1,5 +1,6 @@
 package com.dogandpigs.fitnote.presentation.lesson.loadlesson
 
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.Box
@@ -132,6 +133,7 @@ private fun RowMemberNameList(
             .wrapContentHeight()
             .horizontalScroll(scrollState)
     ) {
+        DefaultSpacer(width = LocalFitNoteSpacing.current.spacing3)
         memberList.forEachIndexed { index, member ->
             MemberNameTag(
                 name = member.name,
@@ -170,16 +172,19 @@ private fun MemberNameTag(
         onClick = onMemberNameClick,
         shape = RoundedCornerShape(50.dp),
         colors = ButtonDefaults.outlinedButtonColors(
-            contentColor = if (isSelected) {
+            containerColor = if (isSelected) {
                 SubPrimary
             } else {
                 GrayScaleLightGray1
             },
-            containerColor = if (isSelected) {
+        ),
+        border = BorderStroke(
+            1.dp,
+            if (isSelected) {
                 BrandPrimary
             } else {
                 GrayScaleLightGray2
-            }
+            },
         ),
         contentPadding = PaddingValues(
             horizontal = 12.dp,
