@@ -6,7 +6,7 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import com.dogandpigs.fitnote.presentation.join.addJoin
 import com.dogandpigs.fitnote.presentation.lesson.addlesson.addAddLessonScreen
-import com.dogandpigs.fitnote.presentation.lesson.loadlesson.addLoadLesson
+import com.dogandpigs.fitnote.presentation.lesson.loadlesson.LoadLessonNavRoute
 import com.dogandpigs.fitnote.presentation.lesson.memberlesson.addMemberLesson
 import com.dogandpigs.fitnote.presentation.lesson.memberlessonlist.MemberLessonListNavRoute
 import com.dogandpigs.fitnote.presentation.lesson.memberlessonlist.addMemberLessonListScreen
@@ -143,7 +143,7 @@ private fun NavGraphBuilder.addLesson(
     addAddLessonScreen(
         route = "$ROUTE_ADD_LESSON/{$ARGUMENT_MEMBER_ID}",
         popBackStack = { navController.popBackStack() },
-        navigateToLoadLesson = { navController.navigate(ROUTE_LOAD_LESSON) },
+        navigateToLoadLesson = { navController.navigateToLoadLesson() },
         navigateToMemberLessonList = { navController.navigateToMemberLessonListRoute(it.toLong()) },
     )
     addMemberLesson(
@@ -154,7 +154,7 @@ private fun NavGraphBuilder.addLesson(
         navigateToMemberLessonList = { navController.navigateToMemberLessonListRoute(it.toLong()) },
     )
     addLoadLesson(
-        route = ROUTE_LOAD_LESSON,
+        route = LoadLessonNavRoute.route,
         popBackStack = { navController.popBackStack() }
     )
 }
