@@ -143,7 +143,7 @@ private fun PlusLesson(
         topBarActions = {
             TextButton(onClick = onClickLoadLesson) {
                 DefaultText(
-                    text = stringResource(id = R.string.btn_load),
+                    text = stringResource(id = R.string.load),
                     color = BrandPrimary,
                     style = LocalFitNoteTypography.current.buttonMedium
                 )
