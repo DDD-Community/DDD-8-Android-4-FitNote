@@ -107,13 +107,23 @@ internal class LoadLessonViewModel @Inject constructor(
             runCatching {
                 currentState {
                     check(selectedMemberId > 0) { "memberId is invaild" }
-                    val response = lessonRepository.getIntendedLessons(selectedMemberId)
-                    checkNotNull(response) { "response is null" }
+
+                    val intendedResponse = lessonRepository.getIntendedLessons(selectedMemberId)
+                    checkNotNull(intendedResponse) { "intendedResponse is null" }
+                    val intendedLessonList = intendedResponse.lessonInfo
+
+                    val completedResponse = lessonRepository.getCompletedLessons(selectedMemberId)
+                    checkNotNull(completedResponse) { "completedResponse is null" }
+                    val completedLessonList = completedResponse.lessonInfo
+
+                    (intendedLessonList + completedLessonList).sortedByDescending {
+                        it.lessonsDate
+                    }
                 }
             }.onSuccess {
                 setState {
                     copy(
-                        routineList = it.lessonInfo.map { lessonInfo ->
+                        routineList = it.map { lessonInfo ->
                             lessonInfo.toPresentation()
                         }
                     )
