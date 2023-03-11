@@ -32,7 +32,7 @@ import com.dogandpigs.fitnote.R
 import com.dogandpigs.fitnote.presentation.base.FigmaPreview
 import com.dogandpigs.fitnote.presentation.lesson.Exercise
 import com.dogandpigs.fitnote.presentation.lesson.component.ExerciseColumn
-import com.dogandpigs.fitnote.presentation.ui.component.DefaultBottomLargePositiveButton
+import com.dogandpigs.fitnote.presentation.ui.component.BottomPositiveButton
 import com.dogandpigs.fitnote.presentation.ui.component.DefaultCheckbox
 import com.dogandpigs.fitnote.presentation.ui.component.FitNoteScaffold
 import com.dogandpigs.fitnote.presentation.ui.component.HeightSpacer
@@ -157,12 +157,10 @@ private fun MemberLessonList(
             HeightSpacer(height = LocalFitNoteSpacing.current.spacing10)
         }
 
-        DefaultBottomLargePositiveButton(
-            positiveText = "수업 완료",
-            onClickPositive = onClickComplete,
-        ) {
-            HeightSpacer(height = LocalFitNoteSpacing.current.spacing5)
-        }
+        BottomPositiveButton(
+            text = "수업 완료",
+            onClick = onClickComplete,
+        )
     }
 }
 

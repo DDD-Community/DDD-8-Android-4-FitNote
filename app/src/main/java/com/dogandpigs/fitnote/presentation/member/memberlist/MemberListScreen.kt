@@ -41,8 +41,8 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.dogandpigs.fitnote.BuildConfig
 import com.dogandpigs.fitnote.R
 import com.dogandpigs.fitnote.presentation.base.ComponentPreview
+import com.dogandpigs.fitnote.presentation.ui.component.BottomPositiveButton
 import com.dogandpigs.fitnote.presentation.ui.component.DebugMenu
-import com.dogandpigs.fitnote.presentation.ui.component.DefaultBottomLargePositiveButton
 import com.dogandpigs.fitnote.presentation.ui.component.DefaultText
 import com.dogandpigs.fitnote.presentation.ui.component.DefaultToast
 import com.dogandpigs.fitnote.presentation.ui.component.FitNoteScaffold
@@ -116,12 +116,10 @@ internal fun MemberListScreen(
                 )
             }
 
-            DefaultBottomLargePositiveButton(
-                positiveText = stringResource(id = R.string.btn_add_member),
-                onClickPositive = navigateToMemberAdd,
-            ) {
-                HeightSpacer(height = LocalFitNoteSpacing.current.spacing5)
-            }
+            BottomPositiveButton(
+                text = stringResource(id = R.string.btn_add_member),
+                onClick = navigateToMemberAdd,
+            )
 
             DefaultToast(
                 visible = visibleToast.value,

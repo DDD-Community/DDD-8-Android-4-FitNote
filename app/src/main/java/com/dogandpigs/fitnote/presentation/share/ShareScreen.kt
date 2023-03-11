@@ -9,9 +9,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.viewinterop.AndroidView
 import com.dogandpigs.fitnote.presentation.base.ComponentPreview
-import com.dogandpigs.fitnote.presentation.ui.component.DefaultBottomLargePositiveButton
-import com.dogandpigs.fitnote.presentation.ui.component.HeightSpacer
-import com.dogandpigs.fitnote.presentation.ui.theme.LocalFitNoteSpacing
+import com.dogandpigs.fitnote.presentation.ui.component.BottomPositiveButton
 
 @Composable
 internal fun ShareScreen(
@@ -38,18 +36,16 @@ private fun Share(
             url = url,
         )
 
-        DefaultBottomLargePositiveButton(
-            positiveText = "공유하기",
-            onClickPositive = {
+        BottomPositiveButton(
+            text = "공유하기",
+            onClick = {
                 val intent = Intent(Intent.ACTION_SEND).apply {
                     type = "text/plain"
                     putExtra(Intent.EXTRA_TEXT, url)
                 }
                 context.startActivity(Intent.createChooser(intent, url))
             },
-        ) {
-            HeightSpacer(height = LocalFitNoteSpacing.current.spacing5)
-        }
+        )
     }
 }
 

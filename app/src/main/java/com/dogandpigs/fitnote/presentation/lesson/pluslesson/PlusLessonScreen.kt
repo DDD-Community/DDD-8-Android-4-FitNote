@@ -50,7 +50,7 @@ import com.dogandpigs.fitnote.presentation.lesson.component.LessonCountTextField
 import com.dogandpigs.fitnote.presentation.lesson.component.LessonSetTextField
 import com.dogandpigs.fitnote.presentation.lesson.component.LessonTextField
 import com.dogandpigs.fitnote.presentation.lesson.component.LessonWeightTextField
-import com.dogandpigs.fitnote.presentation.ui.component.DefaultBottomLargePositiveButton
+import com.dogandpigs.fitnote.presentation.ui.component.BottomPositiveButton
 import com.dogandpigs.fitnote.presentation.ui.component.DefaultDatePickerDialog
 import com.dogandpigs.fitnote.presentation.ui.component.DefaultText
 import com.dogandpigs.fitnote.presentation.ui.component.FitNoteScaffold
@@ -236,12 +236,10 @@ private fun PlusLesson(
                 HeightSpacer(height = LocalFitNoteSpacing.current.spacing9)
             }
 
-            DefaultBottomLargePositiveButton(
-                positiveText = stringResource(id = R.string.btn_save),
-                onClickPositive = plusLesson,
-            ) {
-                HeightSpacer(height = LocalFitNoteSpacing.current.spacing5)
-            }
+            BottomPositiveButton(
+                text = stringResource(id = R.string.btn_save),
+                onClick = plusLesson,
+            )
 
             DefaultDatePickerDialog(
                 visible = datePickerVisible.value,
