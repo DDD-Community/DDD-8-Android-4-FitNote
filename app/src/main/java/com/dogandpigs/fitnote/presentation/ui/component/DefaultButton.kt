@@ -249,28 +249,6 @@ private fun DefaultButton(
     }
 }
 
-@Composable
-internal fun DefaultBottomLargePositiveButton(
-    positiveText: String,
-    buttonTextStyle: TextStyle = LocalFitNoteTypography.current.buttonDefault,
-    onClickPositive: () -> Unit,
-    content: @Composable (() -> Unit)? = null
-) {
-    Column(
-        modifier = Modifier
-            .fillMaxSize(),
-        horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.Bottom
-    ) {
-        DefaultPositiveButton(
-            positiveText = positiveText,
-            buttonTextStyle = buttonTextStyle,
-            onClickPositive = onClickPositive,
-        )
-        content?.invoke()
-    }
-}
-
 @ComponentPreview
 @Composable
 private fun PreviewDefaultTwoButton() {
