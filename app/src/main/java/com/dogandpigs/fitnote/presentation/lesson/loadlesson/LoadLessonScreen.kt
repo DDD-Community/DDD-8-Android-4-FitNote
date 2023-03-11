@@ -41,6 +41,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.dogandpigs.fitnote.R
 import com.dogandpigs.fitnote.presentation.base.FigmaPreview
+import com.dogandpigs.fitnote.presentation.ui.DefaultValue
 import com.dogandpigs.fitnote.presentation.ui.component.BottomPositiveButton
 import com.dogandpigs.fitnote.presentation.ui.component.DefaultSpacer
 import com.dogandpigs.fitnote.presentation.ui.component.DefaultText
@@ -74,7 +75,7 @@ internal fun LoadLessonScreen(
     }
 
     LoadLesson(
-        lessonState = uiState,
+        uiState = uiState,
         popBackStack = popBackStack,
         onLoadButtonClick = {},
         onMemberNameClick = viewModel::setSelectedMemberId,
@@ -85,7 +86,7 @@ internal fun LoadLessonScreen(
 
 @Composable
 private fun LoadLesson(
-    lessonState: LoadLessonUiState,
+    uiState: LoadLessonUiState,
     popBackStack: () -> Unit,
     onLoadButtonClick: () -> Unit,
     onMemberNameClick: (Long) -> Unit,
@@ -103,7 +104,7 @@ private fun LoadLesson(
                 .background(Color.White),
         ) {
             LoadLessonContent(
-                lessonState = lessonState,
+                uiState = uiState,
                 onMemberNameClick = onMemberNameClick,
                 onRoutineClick = onRoutineClick,
                 onRoutineFold = onRoutineFold,
@@ -111,6 +112,7 @@ private fun LoadLesson(
 
             BottomPositiveButton(
                 text = stringResource(id = R.string.load),
+                enabled = uiState.selectedRoutineId != DefaultValue.ITEM_INDEX_NOT_SELECTED,
                 onClick = onLoadButtonClick,
             )
         }
@@ -119,7 +121,7 @@ private fun LoadLesson(
 
 @Composable
 private fun LoadLessonContent(
-    lessonState: LoadLessonUiState,
+    uiState: LoadLessonUiState,
     onMemberNameClick: (Long) -> Unit,
     onRoutineClick: (Int) -> Unit,
     onRoutineFold: (Int) -> Unit,
@@ -129,14 +131,14 @@ private fun LoadLessonContent(
     ) {
         DefaultSpacer(height = LocalFitNoteSpacing.current.spacing5)
         RowMemberNameList(
-            memberList = lessonState.memberList,
-            selectedMemberId = lessonState.selectedMemberId,
+            memberList = uiState.memberList,
+            selectedMemberId = uiState.selectedMemberId,
             onMemberNameClick = onMemberNameClick,
         )
         DefaultSpacer(height = LocalFitNoteSpacing.current.spacing5)
         ColumnRoutineList(
-            routineList = lessonState.routineList,
-            selectedRoutineId = lessonState.selectedRoutineId,
+            routineList = uiState.routineList,
+            selectedRoutineId = uiState.selectedRoutineId,
             onRoutineClick = onRoutineClick,
             onRoutineFold = onRoutineFold,
         )
@@ -498,7 +500,7 @@ private val mockUiState = LoadLessonUiState()
 internal fun PreviewLoadLesson() {
     FitNoteTheme {
         LoadLesson(
-            lessonState = mockUiState,
+            uiState = mockUiState,
             popBackStack = {},
             onLoadButtonClick = {},
             onMemberNameClick = {},
