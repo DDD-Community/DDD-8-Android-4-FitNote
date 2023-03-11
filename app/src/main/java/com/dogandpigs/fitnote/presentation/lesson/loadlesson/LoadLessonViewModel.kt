@@ -36,6 +36,51 @@ internal class LoadLessonViewModel @Inject constructor(
         }
     }
 
+    // TODO 로딩 추가
+    fun toggleFold(routineIndex: Int) {
+        viewModelScope.launch {
+            currentState {
+                runCatching {
+                    if (routineList[routineIndex].exerciseList.isEmpty()) {
+                        getExerciseList(routineIndex)
+                    } else {
+                        null
+                    }
+                }.onSuccess {
+                    val newRoutineList = it ?: routineList.toMutableList().apply {
+                        this[routineIndex] = routineList[routineIndex].copy(
+                            exerciseListVisible = !routineList[routineIndex].exerciseListVisible
+                        )
+                    }.toList()
+
+                    setState {
+                        copy(
+                            routineList = newRoutineList
+                        )
+                    }
+                }.onFailure {
+                    Log.e("aa12", it.toString())
+                }
+            }
+        }
+    }
+
+    private suspend fun getExerciseList(
+        routineIndex: Int
+    ): List<LoadLessonUiState.Routine> {
+        val memberId = state.value.selectedMemberId.toInt()
+        val lessonId = state.value.routineList[routineIndex].id
+
+        val response = lessonRepository.getLessonDetail(memberId, lessonId)
+        checkNotNull(response) { "response is null" }
+
+        return state.value.routineList.toMutableList().apply {
+            this[routineIndex] = state.value.routineList[routineIndex].copy(
+                exerciseList = response.toPresentation()
+            )
+        }.toList()
+    }
+
     private fun getMemberList() {
         viewModelScope.launch {
             runCatching {
@@ -52,7 +97,7 @@ internal class LoadLessonViewModel @Inject constructor(
                     )
                 }
             }.onFailure {
-
+                Log.e("aa12", it.toString())
             }
         }
     }

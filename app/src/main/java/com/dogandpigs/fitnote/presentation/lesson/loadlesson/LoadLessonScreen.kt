@@ -3,6 +3,7 @@ package com.dogandpigs.fitnote.presentation.lesson.loadlesson
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -15,15 +16,18 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.wrapContentHeight
+import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material.icons.filled.KeyboardArrowDown
+import androidx.compose.material.icons.filled.KeyboardArrowUp
 import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.Icon
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.RadioButton
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -46,6 +50,7 @@ import com.dogandpigs.fitnote.presentation.ui.theme.FitNoteTheme
 import com.dogandpigs.fitnote.presentation.ui.theme.GrayScaleDarkGray2
 import com.dogandpigs.fitnote.presentation.ui.theme.GrayScaleLightGray1
 import com.dogandpigs.fitnote.presentation.ui.theme.GrayScaleLightGray2
+import com.dogandpigs.fitnote.presentation.ui.theme.GrayScaleMidGray2
 import com.dogandpigs.fitnote.presentation.ui.theme.GrayScaleMidGray3
 import com.dogandpigs.fitnote.presentation.ui.theme.GrayScaleWhite
 import com.dogandpigs.fitnote.presentation.ui.theme.LocalFitNoteSpacing
@@ -73,7 +78,7 @@ internal fun LoadLessonScreen(
         onLoadButtonClick = {},
         onMemberNameClick = viewModel::setSelectedMemberId,
         onRoutineClick = viewModel::setSelectedRoutineId,
-        onRoutineFold = {},
+        onRoutineFold = viewModel::toggleFold,
     )
 }
 
@@ -302,17 +307,11 @@ private fun Routine(
                     )
             )
 
-            DefaultSpacer(height = LocalFitNoteSpacing.current.spacing4)
-            //
-//            if (routine.isFold) {
-//                DefaultSpacer(height = LocalFitNoteSpacing.current.spacing5)
-//                ExerciseList()
-//                DefaultSpacer(height = LocalFitNoteSpacing.current.spacing5)
-//            } else {
-//                DefaultSpacer(height = LocalFitNoteSpacing.current.spacing4)
-//                // 자세히보기
-//                DefaultSpacer(height = LocalFitNoteSpacing.current.spacing4)
-//            }
+            ExerciseListAndButton(
+                exerciseList = routine.exerciseList,
+                visible = routine.exerciseListVisible,
+                onRoutineToggle = onRoutineFold,
+            )
         }
     }
 }
@@ -395,19 +394,95 @@ private fun ExerciseNameTag(
 }
 
 @Composable
-fun Exercise(exercise: Exercise) {
+private fun ExerciseListAndButton(
+    exerciseList: List<LoadLessonUiState.Routine.Exercise>,
+    visible: Boolean,
+    onRoutineToggle: () -> Unit,
+) {
+    if (visible) {
+        DefaultSpacer(height = LocalFitNoteSpacing.current.spacing5)
+        ExerciseList(
+            exerciseList = exerciseList,
+        )
+        DefaultSpacer(height = LocalFitNoteSpacing.current.spacing2)
+    }
+    ExerciseListVisibleButton(
+        visible = visible,
+        onRoutineToggle = onRoutineToggle,
+    )
+}
+
+@Composable
+private fun ExerciseList(
+    exerciseList: List<LoadLessonUiState.Routine.Exercise>
+) {
+    Column {
+        exerciseList.forEachIndexed { index, exercise ->
+            Exercise(exercise = exercise)
+            if (index != exerciseList.lastIndex) {
+                DefaultSpacer(height = LocalFitNoteSpacing.current.spacing4)
+            }
+        }
+    }
+}
+
+@Composable
+private fun ExerciseListVisibleButton(
+    visible: Boolean,
+    onRoutineToggle: () -> Unit,
+) {
+    DefaultSpacer(height = LocalFitNoteSpacing.current.spacing4)
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .wrapContentHeight()
+            .clickable {
+                onRoutineToggle()
+            },
+        horizontalArrangement = Arrangement.Center,
+        verticalAlignment = Alignment.CenterVertically,
+    ) {
+        DefaultText(
+            modifier = Modifier.wrapContentSize(),
+            text = if (visible) {
+                stringResource(id = R.string.string_fold)
+            } else {
+                stringResource(id = R.string.show_detail)
+            },
+            color = GrayScaleMidGray2,
+            style = LocalFitNoteTypography.current.buttonSmall,
+        )
+        DefaultSpacer(width = LocalFitNoteSpacing.current.spacing1)
+        Icon(
+            imageVector = if (visible) {
+                Icons.Default.KeyboardArrowUp
+            } else {
+                Icons.Default.KeyboardArrowDown
+            },
+            tint = GrayScaleMidGray2,
+            contentDescription = null,
+        )
+    }
+    DefaultSpacer(height = LocalFitNoteSpacing.current.spacing4)
+}
+
+@Composable
+private fun Exercise(
+    exercise: LoadLessonUiState.Routine.Exercise,
+) {
     Row(
         modifier = Modifier.fillMaxWidth(),
-        verticalAlignment = Alignment.CenterVertically
+        horizontalArrangement = Arrangement.End,
+        verticalAlignment = Alignment.CenterVertically,
     ) {
-        Text(
-            text = exercise.title,
+        DefaultText(
+            modifier = Modifier.weight(1f),
+            text = exercise.name,
             style = LocalFitNoteTypography.current.titleDefault,
-            color = GrayScaleDarkGray2
+            color = GrayScaleDarkGray2,
         )
-        Spacer(modifier = Modifier.weight(2f))
-        Text(
-            text = "${exercise.setCount}세트 ${exercise.weight}kg ${exercise.count}회",
+        DefaultText(
+            text = "${exercise.set}세트 ${exercise.weight}kg ${exercise.count}회",
             style = LocalFitNoteTypography.current.textDefault,
             color = GrayScaleMidGray3,
         )

@@ -40,12 +40,7 @@ class LessonRepository @Inject constructor(
             addProperty("today", today)
         }
 
-        lessonApi.getLessonDetail(json).run {
-            if (!isSuccessful || body() == null || body()?.data == null) {
-                return null
-            }
-            return body()?.data
-        }
+        return handleResponse(lessonApi.getLessonDetail(json))
     }
 
     suspend fun putLessonComplete(

@@ -19,6 +19,7 @@
     <string name="confirm">확인</string>
     <string name="exercise_name">운동명</string>
     <string name="load">불러오기</string>
+    <string name="show_detail">자세히 보기</string>
 
     <string name="btn_next">다음</string>
     <string name="btn_join">가입하기</string>

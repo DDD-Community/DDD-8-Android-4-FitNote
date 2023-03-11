@@ -18,12 +18,12 @@ internal data class LoadLessonUiState(
         val title: String,
         val exerciseNameList: List<String>,
         val exerciseList: List<Exercise>,
-        val isFold: Boolean,
+        val exerciseListVisible: Boolean,
     ) {
         data class Exercise(
             val name: String,
             val set: Int,
-            val weight: Int,
+            val weight: String,
             val count: Int,
         )
     }
