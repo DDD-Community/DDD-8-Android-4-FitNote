@@ -8,7 +8,7 @@ internal data class LoadLessonState(
     val exerciseList: List<LessonInfo> = emptyList(),
 ) {
     data class Member(
-        val id: Int,
+        val id: Long,
         val name: String,
     )
 }

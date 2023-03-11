@@ -9,32 +9,44 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
-class LoadLessonViewModel @Inject constructor(
+internal class LoadLessonViewModel @Inject constructor(
     private val memberRepository: MemberRepository,
     private val lessonRepository: LessonRepository
 ) : BaseViewModel<LoadLessonState>() {
     override fun createInitialState(): LoadLessonState = LoadLessonState()
-    
+
     fun initialize() {
         getMemberList()
-        getLessonList()
+//        getLessonList()
     }
-    fun getMemberList() = currentState {
+
+    fun getMemberList() {
         viewModelScope.launch {
-            memberRepository.getMemberList()?.run {
+            runCatching {
+                val response = memberRepository.getMemberList()
+                val memberList = response?.memberList
+                checkNotNull(memberList) { "memberList is null" }
+            }.onSuccess {
                 setState {
-                    copy(memberList = this@run.memberList)
+                    copy(
+                        memberList = it.map {
+                            it.toPresentation()
+                        },
+                    )
                 }
+            }.onFailure {
+
             }
         }
     }
-    fun getLessonList() = currentState {
-        viewModelScope.launch {
-            lessonRepository.getCompletedLessons(selectedUserId)?.run {
-                setState {
-                    copy(exerciseList = this@run.lessonInfo)
-                }
-            }
-        }
-    }
+
+//    fun getLessonList() = currentState {
+//        viewModelScope.launch {
+//            lessonRepository.getCompletedLessons(selectedUserId)?.run {
+//                setState {
+//                    copy(exerciseList = this@run.lessonInfo)
+//                }
+//            }
+//        }
+//    }
 }
