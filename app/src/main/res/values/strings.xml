@@ -18,11 +18,11 @@
     <string name="info">안내</string>
     <string name="confirm">확인</string>
     <string name="exercise_name">운동명</string>
+    <string name="load">불러오기</string>
 
     <string name="btn_next">다음</string>
     <string name="btn_join">가입하기</string>
     <string name="btn_login">로그인하기</string>
-    <string name="btn_load">불러오기</string>
     <string name="btn_save">저장</string>
     <string name="btn_add_set">세트 추가</string>
     <string name="btn_forget_pwd">비밀번호 찾기</string>
@@ -63,7 +63,6 @@
 
     <string name="string_fold">접기</string>
     <string name="show_each_set">세트별로 보기</string>
-    <string name="load_lesson">불러오기</string>
     <string name="view_detail">자세히 보기</string>
 
     <string name="information_modification">회원 정보 수정</string>

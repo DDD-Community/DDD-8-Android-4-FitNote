@@ -8,13 +8,14 @@ import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.defaultMinSize
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Close
+import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.RadioButton
@@ -37,7 +38,8 @@ import com.dogandpigs.fitnote.data.source.remote.model.LessonInfo
 import com.dogandpigs.fitnote.presentation.base.FigmaPreview
 import com.dogandpigs.fitnote.presentation.lesson.addlesson.ExpandableCard
 import com.dogandpigs.fitnote.presentation.lesson.addlesson.Routine
-import com.dogandpigs.fitnote.presentation.ui.component.CompleteButton
+import com.dogandpigs.fitnote.presentation.ui.component.BottomPositiveButton
+import com.dogandpigs.fitnote.presentation.ui.component.DefaultSpacer
 import com.dogandpigs.fitnote.presentation.ui.component.FitNoteScaffold
 import com.dogandpigs.fitnote.presentation.ui.component.HeightSpacer
 import com.dogandpigs.fitnote.presentation.ui.component.WidthSpacer
@@ -47,6 +49,7 @@ import com.dogandpigs.fitnote.presentation.ui.theme.FitNoteTheme
 import com.dogandpigs.fitnote.presentation.ui.theme.GrayScaleDarkGray2
 import com.dogandpigs.fitnote.presentation.ui.theme.GrayScaleLightGray1
 import com.dogandpigs.fitnote.presentation.ui.theme.GrayScaleMidGray3
+import com.dogandpigs.fitnote.presentation.ui.theme.LocalFitNoteSpacing
 import com.dogandpigs.fitnote.presentation.ui.theme.LocalFitNoteTypography
 import com.dogandpigs.fitnote.presentation.ui.theme.SubPrimary
 
@@ -55,37 +58,54 @@ internal fun LoadLessonScreen(
     viewModel: LoadLessonViewModel = hiltViewModel(),
     popBackStack: () -> Unit
 ) {
-    val state by viewModel.state.collectAsStateWithLifecycle()
+    val uiState by viewModel.state.collectAsStateWithLifecycle()
     viewModel.initialize()
-    LoadLesson(state, popBackStack)
+    LoadLesson(
+        lessonState = uiState,
+        popBackStack = popBackStack,
+        onLoadButtonClick = {},
+    )
 }
 
 @Composable
 internal fun LoadLesson(
     lessonState: LoadLessonState,
-    popBackStack: () -> Unit
+    popBackStack: () -> Unit,
+    onLoadButtonClick: () -> Unit,
 ) {
-    val paddingValues = PaddingValues(16.dp)
-
     FitNoteScaffold(
-        topBarTitle = stringResource(id = R.string.load_lesson),
+        topBarTitle = stringResource(id = R.string.load),
         onClickTopBarNavigationIcon = { popBackStack() },
-        topBarNavigationIconImageVector = Icons.Filled.Close,
+        topBarNavigationIconImageVector = Icons.Filled.ArrowBack,
     ) {
         Box(
             modifier = Modifier
                 .padding(it)
                 .background(Color.White),
         ) {
-            Column(modifier = Modifier.padding(paddingValues)) {
-                RowTagList(lessonState, 5.dp, PaddingValues(12.dp, 6.dp))
-                RoutineList(lessonState)
-                CompleteButton(
-                    text = stringResource(id = R.string.load_lesson),
-                    onClick = {}
-                )
-            }
+            LoadLessonContent(
+                lessonState = lessonState,
+            )
+
+            BottomPositiveButton(
+                text = stringResource(id = R.string.load),
+                onClick = onLoadButtonClick,
+            )
         }
+    }
+}
+
+@Composable
+private fun LoadLessonContent(
+    lessonState: LoadLessonState,
+) {
+    Column(
+        modifier = Modifier.fillMaxSize()
+    ) {
+        DefaultSpacer(height = LocalFitNoteSpacing.current.spacing5)
+        RowTagList(lessonState, 5.dp, PaddingValues(12.dp, 6.dp))
+        DefaultSpacer(height = LocalFitNoteSpacing.current.spacing5)
+        RoutineList(lessonState)
     }
 }
 
@@ -248,6 +268,10 @@ private val mockUiState = LoadLessonState()
 @Composable
 internal fun PreviewLoadLesson() {
     FitNoteTheme {
-        LoadLesson(lessonState = mockUiState, popBackStack = {})
+        LoadLesson(
+            lessonState = mockUiState,
+            popBackStack = {},
+            onLoadButtonClick = {},
+        )
     }
 }
