@@ -8,15 +8,19 @@ import com.dogandpigs.fitnote.presentation.lesson.loadlesson.LoadLessonScreen
 
 fun NavGraphBuilder.addLoadLesson(
     route: String,
-    popBackStack: () -> Unit
+    popBackStack: () -> Unit,
+    navigateToAddLessonWithLoad: (Int, Int) -> Unit,
 ) {
     composable(route = route) {
         LoadLessonScreen(
-            popBackStack = popBackStack
+            popBackStack = popBackStack,
+            navigateToAddLessonWithLoad = navigateToAddLessonWithLoad,
         )
     }
 }
 
 internal fun NavHostController.navigateToLoadLesson() {
-    this.navigate(LoadLessonNavRoute.route)
+    this.navigate(LoadLessonNavRoute.route) {
+        launchSingleTop = true
+    }
 }

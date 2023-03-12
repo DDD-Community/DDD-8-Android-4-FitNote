@@ -9,18 +9,24 @@ import com.dogandpigs.fitnote.presentation.navigation.ARGUMENT_MEMBER_ID
 fun NavGraphBuilder.addMemberLessonListScreen(
     route: String,
     popBackStack: () -> Unit,
-    navigateToAddLesson: (Long) -> Unit,
-    navigateToMemberLesson: (Long, Int) -> Unit,
-    navigateToShare: (Long, Int) -> Unit,
+    navigateToAddLesson: (Int) -> Unit,
+    navigateToMemberLesson: (Int, Int) -> Unit,
+    navigateToShare: (Int, Int) -> Unit,
 ) {
     val argument = ARGUMENT_MEMBER_ID
 
     composable(
         route = route,
-        arguments = listOf(navArgument(argument) { type = NavType.LongType }),
+        arguments = listOf(
+            navArgument(argument) {
+                type = NavType.IntType
+                nullable = false
+                defaultValue = 0
+            },
+        )
     ) { backStackEntry ->
 
-        val memberId = backStackEntry.arguments?.getLong(argument, 0L) ?: 0L
+        val memberId = backStackEntry.arguments?.getInt(argument, 0) ?: 0
 
         MemberLessonListScreen(
             memberId = memberId,

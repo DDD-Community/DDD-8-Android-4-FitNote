@@ -10,7 +10,6 @@ import com.dogandpigs.fitnote.presentation.navigation.ARGUMENT_MEMBER_ID
 fun NavGraphBuilder.addMemberLesson(
     route: String,
     popBackStack: () -> Unit,
-    navigateToAddLesson: () -> Unit,
     navigateToSetting: () -> Unit,
     navigateToMemberLessonList: (Int) -> Unit,
 ) {
@@ -29,7 +28,6 @@ fun NavGraphBuilder.addMemberLesson(
             popBackStack = popBackStack,
             memberId = memberId,
             lessonDate = lessonDate,
-            navigateToAddLesson = navigateToAddLesson,
             navigateToSetting = navigateToSetting,
             navigateToMemberLessonList = navigateToMemberLessonList,
         )

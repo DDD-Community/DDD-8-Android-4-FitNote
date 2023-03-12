@@ -11,7 +11,6 @@ internal const val ROUTE_MEMBER_EDIT = "route_member_edit"
 internal const val ROUTE_MEMBER_DETAIL = "route_member_detail"
 
 // lesson
-internal const val ROUTE_ADD_LESSON = "route_add_lesson"
 internal const val ROUTE_MEMBER_LESSON = "route_member_lesson"
 
 internal const val ROUTE_SHARE = "route_share"

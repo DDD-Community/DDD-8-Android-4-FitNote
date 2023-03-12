@@ -51,7 +51,6 @@ internal fun MemberLessonScreen(
     memberId: Int,
     lessonDate: Int,
     popBackStack: () -> Unit,
-    navigateToAddLesson: () -> Unit,
     navigateToSetting: () -> Unit,
     navigateToMemberLessonList: (Int) -> Unit,
 ) {
@@ -73,7 +72,6 @@ internal fun MemberLessonScreen(
     MemberLessonList(
         uiState = uiState,
         popBackStack = popBackStack,
-        onClickAddLesson = navigateToAddLesson,
         navigateToSetting = navigateToSetting,
         onClickMainCheckbox = viewModel::toggleExerciseIsDone,
         onClickSetCheckbox = viewModel::toggleExerciseSetIsDone,
@@ -87,7 +85,6 @@ internal fun MemberLessonScreen(
 private fun MemberLessonList(
     uiState: MemberLessonUiState,
     popBackStack: () -> Unit,
-    onClickAddLesson: () -> Unit,
     navigateToSetting: () -> Unit,
     onClickMainCheckbox: (Int) -> Unit,
     onClickSetCheckbox: (Int, Int) -> Unit,
@@ -298,7 +295,6 @@ private fun PreviewLesson() {
         MemberLessonList(
             uiState = previewUiState,
             popBackStack = {},
-            onClickAddLesson = {},
             navigateToSetting = {},
             onClickMainCheckbox = {},
             onClickSetCheckbox = { _: Int, _: Int -> },

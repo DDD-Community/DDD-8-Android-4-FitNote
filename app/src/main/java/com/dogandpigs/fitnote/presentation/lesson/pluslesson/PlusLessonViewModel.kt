@@ -5,6 +5,7 @@ import com.dogandpigs.fitnote.data.repository.LessonRepository
 import com.dogandpigs.fitnote.presentation.base.BaseViewModel
 import com.dogandpigs.fitnote.presentation.lesson.Exercise
 import com.dogandpigs.fitnote.presentation.lesson.addlesson.Routine
+import com.dogandpigs.fitnote.presentation.lesson.toPresentation
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -15,7 +16,30 @@ internal class PlusLessonViewModel @Inject constructor(
 ) : BaseViewModel<PlusLessonUiState>() {
     override fun createInitialState(): PlusLessonUiState = PlusLessonUiState()
 
-    fun initialize(memberId: Int) = currentState {
+    fun initialize(
+        memberId: Int,
+        lessonId: Int,
+    ) {
+        viewModelScope.launch {
+            if (lessonId > 0 ) {
+                runCatching {
+                    lessonRepository.getLessonDetail(
+                        id = memberId,
+                        today = lessonId,
+                    )
+                }.onSuccess {
+                    setState {
+                        copy(
+                            exercises = it.toPresentation(
+                                id = memberId,
+                                today = lessonId,
+                            ),
+                        )
+                    }
+                }
+            }
+        }
+
         setState {
             copy(
                 id = memberId

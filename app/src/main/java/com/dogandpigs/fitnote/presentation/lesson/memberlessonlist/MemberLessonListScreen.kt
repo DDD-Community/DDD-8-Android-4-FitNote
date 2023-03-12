@@ -59,11 +59,11 @@ import com.dogandpigs.fitnote.presentation.util.formatYMD
 @Composable
 internal fun MemberLessonListScreen(
     viewModel: MemberLessonListViewModel = hiltViewModel(),
-    memberId: Long,
+    memberId: Int,
     popBackStack: () -> Unit,
-    navigateToAddLesson: (Long) -> Unit,
-    navigateToMemberLesson: (memberId: Long, lessonDate: Int) -> Unit,
-    navigateToShare: (memberId: Long, lessonDate: Int) -> Unit,
+    navigateToAddLesson: (Int) -> Unit,
+    navigateToMemberLesson: (memberId: Int, lessonDate: Int) -> Unit,
+    navigateToShare: (memberId: Int, lessonDate: Int) -> Unit,
 ) {
     val uiState by viewModel.state.collectAsStateWithLifecycle()
 
@@ -90,7 +90,7 @@ internal fun MemberLessonListScreen(
 private fun MemberLessonList(
     uiState: MemberLessonListUiState,
     popBackStack: () -> Unit,
-    onClickAddLesson: (Long) -> Unit,
+    onClickAddLesson: (Int) -> Unit,
     onClickStartLesson: (Int) -> Unit,
     onClickShare: (lessonId: Int) -> Unit,
 ) {
@@ -390,7 +390,7 @@ private fun LessonItemButtons(
 @Composable
 private fun AddLessonButton(
     uiState: MemberLessonListUiState,
-    onClickAddLesson: (Long) -> Unit,
+    onClickAddLesson: (Int) -> Unit,
 ) {
     val paddingValues = PaddingValues(
         horizontal = 16.dp,

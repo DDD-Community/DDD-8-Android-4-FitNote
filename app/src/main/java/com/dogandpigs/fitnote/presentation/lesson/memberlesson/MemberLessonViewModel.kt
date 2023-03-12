@@ -2,9 +2,9 @@ package com.dogandpigs.fitnote.presentation.lesson.memberlesson
 
 import androidx.lifecycle.viewModelScope
 import com.dogandpigs.fitnote.data.repository.LessonRepository
-import com.dogandpigs.fitnote.data.source.remote.model.LessonDetailResponse
 import com.dogandpigs.fitnote.presentation.base.BaseViewModel
 import com.dogandpigs.fitnote.presentation.lesson.Exercise
+import com.dogandpigs.fitnote.presentation.lesson.toPresentation
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -50,55 +50,21 @@ internal class MemberLessonViewModel @Inject constructor(
                         exercises = it.toPresentation(
                             id = memberId,
                             today = lessonDate,
+                            tempListAction = { id, today, lessonId ->
+                                tempList.add(
+                                    Temp(
+                                        memberId = id,
+                                        today = today,
+                                        lessonId = lessonId,
+                                    )
+                                )
+                            }
                         ),
                     )
                 }
             }
         }
     }
-
-    private fun LessonDetailResponse?.toPresentation(
-        id: Int,
-        today: Int,
-    ): List<Exercise> =
-        this?.run {
-            this.lessonInfo.flatten().groupBy {
-                it.name
-            }.let { maps ->
-                val exerciseList = mutableListOf<Exercise>()
-                maps.forEach { (name, lessonDescriptionList) ->
-                    exerciseList.add(
-                        Exercise(
-                            name = name,
-                            sets = lessonDescriptionList.let {
-                                val list = mutableListOf<Exercise.ExerciseSet>()
-                                it.forEach { lessonDescription ->
-                                    list.add(
-                                        Exercise.ExerciseSet(
-                                            setIndex = lessonDescription.set,
-                                            weight = lessonDescription.weight.toDouble(),
-                                            count = lessonDescription.count,
-                                            // TODO
-                                            isDone = false,
-                                        )
-                                    )
-                                    tempList.add(
-                                        Temp(
-                                            memberId = id,
-                                            today = today,
-                                            lessonId = lessonDescription.lessonId,
-                                        )
-                                    )
-                                }
-                                list
-                            },
-                            isFold = false,
-                        )
-                    )
-                }
-                exerciseList
-            }
-        } ?: emptyList()
 
     fun complete() = currentState {
         runCatching {

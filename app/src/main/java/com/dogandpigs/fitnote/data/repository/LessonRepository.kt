@@ -17,14 +17,14 @@ class LessonRepository @Inject constructor(
         }
     }
 
-    suspend fun getIntendedLessons(id: Long): LessonResponse? {
+    suspend fun getIntendedLessons(id: Int): LessonResponse? {
         val json = JsonObject().apply {
             addProperty("id", id)
         }
         return handleResponse(lessonApi.getIntendedLessonList(json))
     }
 
-    suspend fun getCompletedLessons(id: Long): LessonResponse? {
+    suspend fun getCompletedLessons(id: Int): LessonResponse? {
         val json = JsonObject().apply {
             addProperty("id", id)
         }

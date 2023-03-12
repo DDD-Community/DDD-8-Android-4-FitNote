@@ -5,7 +5,7 @@ import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import com.dogandpigs.fitnote.presentation.join.addJoin
-import com.dogandpigs.fitnote.presentation.lesson.addlesson.addAddLessonScreen
+import com.dogandpigs.fitnote.presentation.lesson.addlesson.AddLessonNavRoute
 import com.dogandpigs.fitnote.presentation.lesson.loadlesson.LoadLessonNavRoute
 import com.dogandpigs.fitnote.presentation.lesson.memberlesson.addMemberLesson
 import com.dogandpigs.fitnote.presentation.lesson.memberlessonlist.MemberLessonListNavRoute
@@ -131,7 +131,7 @@ private fun NavGraphBuilder.addLesson(
         route = MemberLessonListNavRoute.path,
         popBackStack = { navController.popBackStack() },
         navigateToAddLesson = {
-            navController.navigate("$ROUTE_ADD_LESSON/$it")
+            navController.navigateToAddLesson(it)
         },
         navigateToMemberLesson = { memberId, lessonDate ->
             navController.navigate("$ROUTE_MEMBER_LESSON/$memberId/$lessonDate")
@@ -141,7 +141,7 @@ private fun NavGraphBuilder.addLesson(
         },
     )
     addAddLessonScreen(
-        route = "$ROUTE_ADD_LESSON/{$ARGUMENT_MEMBER_ID}",
+        route = AddLessonNavRoute.path,
         popBackStack = { navController.popBackStack() },
         navigateToLoadLesson = { navController.navigateToLoadLesson() },
         navigateToMemberLessonList = { navController.navigateToMemberLessonListRoute(it.toLong()) },
@@ -149,12 +149,14 @@ private fun NavGraphBuilder.addLesson(
     addMemberLesson(
         route = "$ROUTE_MEMBER_LESSON/{$ARGUMENT_MEMBER_ID}/{$ARGUMENT_LESSON_DATE}",
         popBackStack = { navController.popBackStack() },
-        navigateToAddLesson = { navController.navigate(ROUTE_ADD_LESSON) },
         navigateToSetting = {},
         navigateToMemberLessonList = { navController.navigateToMemberLessonListRoute(it.toLong()) },
     )
     addLoadLesson(
         route = LoadLessonNavRoute.route,
-        popBackStack = { navController.popBackStack() }
+        popBackStack = { navController.popBackStack() },
+        navigateToAddLessonWithLoad = { memberId, lessonId ->
+            navController.navigateToAddLesson(memberId, lessonId)
+        },
     )
 }

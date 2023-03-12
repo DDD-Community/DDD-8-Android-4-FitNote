@@ -20,7 +20,7 @@ internal class LoadLessonViewModel @Inject constructor(
         getMemberList()
     }
 
-    fun setSelectedMemberId(memberId: Long) {
+    fun setSelectedMemberId(memberId: Int) {
         setState {
             copy(
                 selectedMemberId = memberId,
@@ -68,7 +68,7 @@ internal class LoadLessonViewModel @Inject constructor(
     private suspend fun getExerciseList(
         routineIndex: Int
     ): List<LoadLessonUiState.Routine> {
-        val memberId = state.value.selectedMemberId.toInt()
+        val memberId = state.value.selectedMemberId
         val lessonId = state.value.routineList[routineIndex].id
 
         val response = lessonRepository.getLessonDetail(memberId, lessonId)
@@ -131,6 +131,22 @@ internal class LoadLessonViewModel @Inject constructor(
             }.onFailure {
                 Log.e("aa12", it.toString())
             }
+        }
+    }
+
+    fun load() {
+        setState {
+            copy(
+                isLoad = true,
+            )
+        }
+    }
+
+    fun setIsLoad(isLoad: Boolean) {
+        setState {
+            copy(
+                isLoad = isLoad,
+            )
         }
     }
 }

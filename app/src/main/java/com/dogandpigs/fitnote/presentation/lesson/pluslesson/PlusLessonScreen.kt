@@ -70,6 +70,7 @@ import com.dogandpigs.fitnote.presentation.util.format
 @Composable
 internal fun PlusLessonScreen(
     memberId: Int,
+    lessonId: Int = 0, // TODO
     viewModel: PlusLessonViewModel = hiltViewModel(),
     popBackStack: () -> Unit,
     navigateToLoadLesson: () -> Unit,
@@ -80,6 +81,7 @@ internal fun PlusLessonScreen(
     LaunchedEffect(Unit) {
         viewModel.initialize(
             memberId = memberId,
+            lessonId = lessonId,
         )
     }
 

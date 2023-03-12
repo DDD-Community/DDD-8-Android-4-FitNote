@@ -3,13 +3,14 @@ package com.dogandpigs.fitnote.presentation.lesson.loadlesson
 import com.dogandpigs.fitnote.presentation.ui.DefaultValue
 
 internal data class LoadLessonUiState(
-    val selectedMemberId: Long = DefaultValue.ITEM_INDEX_NOT_SELECTED_LONG,
+    val selectedMemberId: Int = DefaultValue.ITEM_INDEX_NOT_SELECTED,
     val selectedRoutineId: Int = DefaultValue.ITEM_INDEX_NOT_SELECTED,
     val memberList: List<Member> = emptyList(),
     val routineList: List<Routine> = emptyList(),
+    val isLoad: Boolean = false,
 ) {
     data class Member(
-        val id: Long,
+        val id: Int,
         val name: String,
     )
 

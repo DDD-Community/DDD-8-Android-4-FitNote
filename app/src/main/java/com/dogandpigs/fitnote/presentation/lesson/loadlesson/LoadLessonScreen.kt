@@ -62,7 +62,8 @@ import com.dogandpigs.fitnote.presentation.ui.theme.SubPrimary
 @Composable
 internal fun LoadLessonScreen(
     viewModel: LoadLessonViewModel = hiltViewModel(),
-    popBackStack: () -> Unit
+    popBackStack: () -> Unit,
+    navigateToAddLessonWithLoad: (Int, Int) -> Unit,
 ) {
     val uiState by viewModel.state.collectAsStateWithLifecycle()
 
@@ -74,10 +75,17 @@ internal fun LoadLessonScreen(
         viewModel.getLessonList()
     }
 
+    LaunchedEffect(uiState.isLoad) {
+        if (uiState.isLoad) {
+            navigateToAddLessonWithLoad(uiState.selectedMemberId, uiState.selectedRoutineId)
+            viewModel.setIsLoad(false)
+        }
+    }
+
     LoadLesson(
         uiState = uiState,
         popBackStack = popBackStack,
-        onLoadButtonClick = {},
+        onLoadButtonClick = viewModel::load,
         onMemberNameClick = viewModel::setSelectedMemberId,
         onRoutineClick = viewModel::setSelectedRoutineId,
         onRoutineFold = viewModel::toggleFold,
@@ -89,7 +97,7 @@ private fun LoadLesson(
     uiState: LoadLessonUiState,
     popBackStack: () -> Unit,
     onLoadButtonClick: () -> Unit,
-    onMemberNameClick: (Long) -> Unit,
+    onMemberNameClick: (Int) -> Unit,
     onRoutineClick: (Int) -> Unit,
     onRoutineFold: (Int) -> Unit,
 ) {
@@ -122,7 +130,7 @@ private fun LoadLesson(
 @Composable
 private fun LoadLessonContent(
     uiState: LoadLessonUiState,
-    onMemberNameClick: (Long) -> Unit,
+    onMemberNameClick: (Int) -> Unit,
     onRoutineClick: (Int) -> Unit,
     onRoutineFold: (Int) -> Unit,
 ) {
@@ -148,8 +156,8 @@ private fun LoadLessonContent(
 @Composable
 private fun RowMemberNameList(
     memberList: List<LoadLessonUiState.Member>,
-    selectedMemberId: Long,
-    onMemberNameClick: (Long) -> Unit,
+    selectedMemberId: Int,
+    onMemberNameClick: (Int) -> Unit,
 ) {
     val scrollState = rememberScrollState()
 
