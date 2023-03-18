@@ -7,7 +7,7 @@ import com.dogandpigs.fitnote.presentation.util.format
 
 internal fun Info.toPresentation(): LoadLessonUiState.Member =
     LoadLessonUiState.Member(
-        id = id.toInt(),
+        id = id,
         name = userName,
     )
 

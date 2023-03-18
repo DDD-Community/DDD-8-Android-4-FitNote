@@ -17,7 +17,7 @@ internal class MemberDetailViewModel @Inject constructor(
 ) : BaseViewModel<MemberDetailUiState>() {
     override fun createInitialState(): MemberDetailUiState = MemberDetailUiState()
 
-    fun initialize(memberId: Long) {
+    fun initialize(memberId: Int) {
         viewModelScope.launch {
             runCatching {
                 val response = memberRepository.getMemberList()

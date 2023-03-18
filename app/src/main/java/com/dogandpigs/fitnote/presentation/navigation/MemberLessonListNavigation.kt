@@ -4,7 +4,7 @@ import androidx.navigation.NavHostController
 import com.dogandpigs.fitnote.presentation.lesson.memberlessonlist.MemberLessonListNavRoute
 
 internal fun NavHostController.navigateToMemberLessonListRoute(
-    memberId: Long,
+    memberId: Int,
 ) {
     this.navigate(MemberLessonListNavRoute.getPath(memberId)) {
         popUpTo(MemberLessonListNavRoute.route) { inclusive = true }

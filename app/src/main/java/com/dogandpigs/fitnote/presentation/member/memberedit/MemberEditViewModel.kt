@@ -18,7 +18,7 @@ internal class MemberEditViewModel @Inject constructor(
 ) : BaseViewModel<MemberUiState>() {
     override fun createInitialState(): MemberUiState = MemberUiState()
 
-    fun initialize(memberId: Long) {
+    fun initialize(memberId: Int) {
         viewModelScope.launch {
             runCatching {
                 val response = memberRepository.getMemberList()
@@ -28,6 +28,7 @@ internal class MemberEditViewModel @Inject constructor(
                 checkNotNull(member) { "member is null" }
                 setState {
                     copy(
+                        memberId = memberId,
                         name = member.userName,
                         dateMillis = member.createDate.formatDate()?.time
                             ?: System.currentTimeMillis(),
@@ -53,7 +54,6 @@ internal class MemberEditViewModel @Inject constructor(
             else -> MemberUiState.Gender.NONE
         }
 
-    // TODO
     fun editMember() {
         currentState {
             viewModelScope.launch {
@@ -65,6 +65,7 @@ internal class MemberEditViewModel @Inject constructor(
                     checkNotNull(userHeight) { "키는 숫자만 입력가능합니다." }
 
                     val member = MemberRequest(
+                        userId = memberId,
                         userName = name,
                         userWeight = userWeight,
                         userHeight = userHeight,

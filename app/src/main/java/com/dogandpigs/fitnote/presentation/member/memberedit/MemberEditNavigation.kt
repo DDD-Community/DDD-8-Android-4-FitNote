@@ -9,16 +9,16 @@ import com.dogandpigs.fitnote.presentation.navigation.ARGUMENT_MEMBER_ID
 fun NavGraphBuilder.addMemberEdit(
     route: String,
     popBackStack: () -> Unit,
-    navigateToMemberDetail: (Long) -> Unit,
+    navigateToMemberDetail: (Int) -> Unit,
 ) {
     val argument = ARGUMENT_MEMBER_ID
 
     composable(
         route = route,
-        arguments = listOf(navArgument(argument) { type = NavType.LongType }),
+        arguments = listOf(navArgument(argument) { type = NavType.IntType }),
     ) { backStackEntry ->
 
-        val memberId = backStackEntry.arguments?.getLong(argument, 0L) ?: 0L
+        val memberId = backStackEntry.arguments?.getInt(argument, 0) ?: 0
 
         MemberEditScreen(
             memberId = memberId,

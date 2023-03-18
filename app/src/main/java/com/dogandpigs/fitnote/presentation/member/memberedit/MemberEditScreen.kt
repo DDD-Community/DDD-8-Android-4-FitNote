@@ -31,9 +31,9 @@ import com.dogandpigs.fitnote.presentation.ui.theme.LocalFitNoteSpacing
 @Composable
 internal fun MemberEditScreen(
     viewModel: MemberEditViewModel = hiltViewModel(),
-    memberId: Long,
+    memberId: Int,
     popBackStack: () -> Unit,
-    navigateToMemberDetail: (Long) -> Unit,
+    navigateToMemberDetail: (Int) -> Unit,
 ) {
     val context = LocalContext.current
     val uiState by viewModel.state.collectAsStateWithLifecycle()

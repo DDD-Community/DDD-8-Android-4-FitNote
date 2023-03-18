@@ -33,10 +33,10 @@ import com.dogandpigs.fitnote.presentation.ui.theme.LocalFitNoteTypography
 @Composable
 internal fun MemberDetailScreen(
     viewModel: MemberDetailViewModel = hiltViewModel(),
-    memberId: Long,
+    memberId: Int,
     popBackStack: () -> Unit,
-    navigateToMemberEdit: (Long) -> Unit,
-    navigateToMemberLessonList: (Long) -> Unit,
+    navigateToMemberEdit: (Int) -> Unit,
+    navigateToMemberLessonList: (Int) -> Unit,
 ) {
     val uiState by viewModel.state.collectAsStateWithLifecycle()
 

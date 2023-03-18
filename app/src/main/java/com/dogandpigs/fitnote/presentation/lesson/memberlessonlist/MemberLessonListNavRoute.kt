@@ -10,6 +10,6 @@ object MemberLessonListNavRoute : NavRoute {
 
     val route: String = "$path/{$memberId}"
 
-    fun getPath(memberId: Long): String =
+    fun getPath(memberId: Int): String =
         "$path/$memberId"
 }

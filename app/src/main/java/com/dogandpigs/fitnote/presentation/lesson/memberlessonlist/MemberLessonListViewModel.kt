@@ -30,7 +30,7 @@ internal class MemberLessonListViewModel @Inject constructor(
                 memberRepository.getMemberList()
             }.onSuccess {
                 val member = it?.memberList?.first { member ->
-                    member.id == memberId.toLong()
+                    member.id == memberId
                 }
 
                 member?.also {

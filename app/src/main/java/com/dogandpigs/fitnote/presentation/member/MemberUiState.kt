@@ -1,6 +1,7 @@
 package com.dogandpigs.fitnote.presentation.member
 
 internal data class MemberUiState(
+    val memberId: Int = 0,
     val name: String = "",
     val profileImgUrl: String = "",
     val dateMillis: Long = System.currentTimeMillis(),
