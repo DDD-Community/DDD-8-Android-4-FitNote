@@ -64,6 +64,7 @@ internal fun MemberLessonListScreen(
     navigateToAddLesson: (Int) -> Unit,
     navigateToMemberLesson: (memberId: Int, lessonDate: Int) -> Unit,
     navigateToShare: (memberId: Int, lessonDate: Int) -> Unit,
+    navigateToEdit: (memberId: Int, lessonDate: Int) -> Unit,
 ) {
     val uiState by viewModel.state.collectAsStateWithLifecycle()
 
@@ -82,7 +83,10 @@ internal fun MemberLessonListScreen(
         },
         onClickShare = { lessonDate ->
             navigateToShare(memberId, lessonDate)
-        }
+        },
+        onEditButtonClick = { lessonDate ->
+            navigateToEdit(memberId, lessonDate)
+        },
     )
 }
 
@@ -93,6 +97,7 @@ private fun MemberLessonList(
     onClickAddLesson: (Int) -> Unit,
     onClickStartLesson: (Int) -> Unit,
     onClickShare: (lessonId: Int) -> Unit,
+    onEditButtonClick: (lessonId: Int) -> Unit,
 ) {
     var selectedTabType by remember { mutableStateOf(MemberLessonListUiState.Tab.TabType.SCHEDULED) }
 
@@ -117,7 +122,7 @@ private fun MemberLessonList(
                     onClickLessonTab = { tabType ->
                         selectedTabType = tabType
                     },
-                    onClickLessonEdit = {},
+                    onEditButtonClick = onEditButtonClick,
                     onClickLessonStart = onClickStartLesson,
                     onClickShare = onClickShare,
                 )
@@ -139,7 +144,7 @@ private fun LessonTabList(
     scheduledLessonTab: MemberLessonListUiState.Tab,
     completedLessonTab: MemberLessonListUiState.Tab,
     onClickLessonTab: (MemberLessonListUiState.Tab.TabType) -> Unit,
-    onClickLessonEdit: () -> Unit,
+    onEditButtonClick: (lessonId: Int) -> Unit,
     onClickLessonStart: (Int) -> Unit,
     onClickShare: (lessonId: Int) -> Unit,
 ) {
@@ -209,7 +214,7 @@ private fun LessonTabList(
                 LessonList(
                     selectedTabType = selectedTabType,
                     lessons = selectedTab.lessons,
-                    onClickLessonEdit = onClickLessonEdit,
+                    onEditButtonClick = onEditButtonClick,
                     onClickLessonStart = onClickLessonStart,
                     onClickShare = onClickShare,
                 )
@@ -270,7 +275,7 @@ private fun LessonTab(
 private fun LessonList(
     selectedTabType: MemberLessonListUiState.Tab.TabType,
     lessons: List<MemberLessonListUiState.Tab.Lesson>,
-    onClickLessonEdit: () -> Unit,
+    onEditButtonClick: (lessonId: Int) -> Unit,
     onClickLessonStart: (Int) -> Unit,
     onClickShare: (lessonId: Int) -> Unit,
 ) {
@@ -279,7 +284,7 @@ private fun LessonList(
         LessonItem(
             selectedTabType = selectedTabType,
             lesson = lesson,
-            onClickLessonEdit = onClickLessonEdit,
+            onEditButtonClick = onEditButtonClick,
             onClickLessonStart = onClickLessonStart,
             onClickShare = onClickShare,
         )
@@ -290,7 +295,7 @@ private fun LessonList(
 private fun LessonItem(
     selectedTabType: MemberLessonListUiState.Tab.TabType,
     lesson: MemberLessonListUiState.Tab.Lesson,
-    onClickLessonEdit: () -> Unit,
+    onEditButtonClick: (lessonId: Int) -> Unit,
     onClickLessonStart: (Int) -> Unit,
     onClickShare: (lessonId: Int) -> Unit,
 ) {
@@ -318,7 +323,9 @@ private fun LessonItem(
         when (selectedTabType) {
             MemberLessonListUiState.Tab.TabType.SCHEDULED -> {
                 LessonItemButtons(
-                    onClickLessonEdit = onClickLessonEdit,
+                    onClickLessonEdit = {
+                        onEditButtonClick(lesson.dateString.toInt())
+                    },
                     onClickLessonStart = {
                         onClickLessonStart(lesson.dateString.toInt())
                     },
@@ -417,7 +424,7 @@ private fun AddLessonButton(
             border = null,
         ) {
             Text(
-                text = stringResource(id = R.string.add_lesson),
+                text = stringResource(id = R.string.lesson_add),
                 textAlign = TextAlign.Center,
                 fontSize = 16.sp,
                 color = Color.White,
@@ -477,6 +484,7 @@ private fun PreviewLesson() {
             onClickAddLesson = {},
             onClickStartLesson = {},
             onClickShare = {},
+            onEditButtonClick = {},
         )
     }
 }

@@ -5,6 +5,7 @@ import com.dogandpigs.fitnote.data.repository.LessonRepository
 import com.dogandpigs.fitnote.presentation.base.BaseViewModel
 import com.dogandpigs.fitnote.presentation.base.Event
 import com.dogandpigs.fitnote.presentation.lesson.Exercise
+import com.dogandpigs.fitnote.presentation.lesson.Routine
 import com.dogandpigs.fitnote.presentation.lesson.toPresentation
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -24,6 +25,7 @@ internal class AddLessonViewModel @Inject constructor(
     fun initialize(
         memberId: Int,
         lessonId: Int,
+        mode: Int,
     ) {
         viewModelScope.launch {
             if (lessonId > 0) {
@@ -49,7 +51,8 @@ internal class AddLessonViewModel @Inject constructor(
 
         setState {
             copy(
-                id = memberId
+                id = memberId,
+                mode = mode,
             )
         }
     }

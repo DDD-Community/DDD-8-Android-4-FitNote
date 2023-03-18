@@ -1,4 +1,4 @@
-package com.dogandpigs.fitnote.presentation.lesson.addlesson
+package com.dogandpigs.fitnote.presentation.lesson
 
 import com.google.gson.annotations.SerializedName
 

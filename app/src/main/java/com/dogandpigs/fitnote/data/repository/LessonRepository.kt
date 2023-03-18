@@ -4,7 +4,7 @@ import com.dogandpigs.fitnote.data.source.remote.api.LessonApi
 import com.dogandpigs.fitnote.data.source.remote.model.LessonDetailResponse
 import com.dogandpigs.fitnote.data.source.remote.response.LessonResponse
 import com.dogandpigs.fitnote.data.util.handleResponse
-import com.dogandpigs.fitnote.presentation.lesson.addlesson.Routine
+import com.dogandpigs.fitnote.presentation.lesson.Routine
 import com.google.gson.JsonObject
 import javax.inject.Inject
 

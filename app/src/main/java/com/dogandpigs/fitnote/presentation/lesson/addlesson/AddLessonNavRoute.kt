@@ -8,12 +8,16 @@ object AddLessonNavRoute : NavRoute {
 
     const val memberId = "member_id"
     const val lessonId = "lesson_id"
+    const val mode = "mode"
+    const val addMode = 0
+    const val editMode = 1
 
-    val route: String = "$path/{$memberId}/{$lessonId}"
+    val route: String = "$path/{$memberId}/{$lessonId}/{$mode}"
 
-    fun query(memberId: Int): String =
-        "$path/$memberId"
-
-    fun query(memberId: Int, lessonId: Int): String =
-        "$path/$memberId/$lessonId"
+    fun query(
+        memberId: Int,
+        lessonId: Int = 0,
+        mode: Int = addMode,
+    ): String =
+        "$path/$memberId/$lessonId/$mode"
 }

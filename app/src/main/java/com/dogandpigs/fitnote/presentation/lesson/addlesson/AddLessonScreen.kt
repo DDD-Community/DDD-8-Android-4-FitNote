@@ -76,6 +76,7 @@ import com.dogandpigs.fitnote.presentation.util.format
 internal fun AddLessonScreen(
     memberId: Int,
     lessonId: Int = 0, // TODO
+    mode: Int = AddLessonNavRoute.addMode,
     viewModel: AddLessonViewModel = hiltViewModel(),
     popBackStack: () -> Unit,
     navigateToLoadLesson: () -> Unit,
@@ -90,6 +91,7 @@ internal fun AddLessonScreen(
         viewModel.initialize(
             memberId = memberId,
             lessonId = lessonId,
+            mode = mode,
         )
     }
 
@@ -162,7 +164,14 @@ private fun AddLesson(
     val datePickerVisible = remember { mutableStateOf(false) }
 
     FitNoteScaffold(
-        topBarTitle = stringResource(id = R.string.add_lesson),
+        topBarTitle = when (uiState.mode) {
+            AddLessonNavRoute.editMode -> {
+                stringResource(id = R.string.lesson_edit)
+            }
+            else -> {
+                stringResource(id = R.string.lesson_add)
+            }
+        },
         onClickTopBarNavigationIcon = onClickClose,
         topBarNavigationIconImageVector = Icons.Filled.Close,
         topBarActions = {

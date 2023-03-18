@@ -12,6 +12,7 @@ fun NavGraphBuilder.addMemberLessonListScreen(
     navigateToAddLesson: (Int) -> Unit,
     navigateToMemberLesson: (Int, Int) -> Unit,
     navigateToShare: (Int, Int) -> Unit,
+    navigateToEdit: (memberId: Int, lessonDate: Int) -> Unit,
 ) {
     val argument = ARGUMENT_MEMBER_ID
 
@@ -34,6 +35,7 @@ fun NavGraphBuilder.addMemberLessonListScreen(
             navigateToAddLesson = navigateToAddLesson,
             navigateToMemberLesson = navigateToMemberLesson,
             navigateToShare = navigateToShare,
+            navigateToEdit = navigateToEdit,
         )
     }
 }

@@ -3,7 +3,7 @@ package com.dogandpigs.fitnote.data.source.remote.api
 import com.dogandpigs.fitnote.data.source.remote.model.LessonDetailResponse
 import com.dogandpigs.fitnote.data.source.remote.response.LessonResponse
 import com.dogandpigs.fitnote.data.source.remote.model.ResBase
-import com.dogandpigs.fitnote.presentation.lesson.addlesson.Routine
+import com.dogandpigs.fitnote.presentation.lesson.Routine
 import com.google.gson.JsonObject
 import retrofit2.Response
 import retrofit2.http.Body

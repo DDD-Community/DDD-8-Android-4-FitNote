@@ -139,6 +139,13 @@ private fun NavGraphBuilder.addLesson(
         navigateToShare = { memberId, lessonDate ->
             navController.navigate("$ROUTE_SHARE/$memberId/$lessonDate")
         },
+        navigateToEdit = { memberId, lessonDate ->
+            navController.navigateToAddLesson(
+                memberId = memberId,
+                lessonId = lessonDate,
+                mode = AddLessonNavRoute.editMode,
+            )
+        },
     )
     addAddLessonScreen(
         route = AddLessonNavRoute.route,
