@@ -2,25 +2,19 @@ package com.dogandpigs.fitnote.presentation.lesson
 
 internal data class Exercise(
     val name: String = "",
+    val numberOfSets: Int = 1,
+    val mainWeight: Double = 0.0,
+    val mainCount: Int = 0,
     val sets: List<ExerciseSet> = listOf(ExerciseSet()),
     val isFold: Boolean = true,
 ) {
-    private val maxWeightExerciseSet: ExerciseSet
+    val maxWeightExerciseSet: ExerciseSet
         get() = sets.maxBy { sets -> sets.weight }
             .let { exerciseSet ->
                 sets.first {
                     it == exerciseSet
                 }
             }
-
-    val numberOfSets: Int
-        get() = sets.size
-
-    val mainWeight: Double
-        get() = maxWeightExerciseSet.weight
-
-    val mainCount: Int
-        get() = maxWeightExerciseSet.count
 
     fun toggle(): Exercise = copy(
         sets = if (isFold) {

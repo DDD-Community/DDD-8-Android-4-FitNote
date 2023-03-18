@@ -1,5 +1,6 @@
 package com.dogandpigs.fitnote.presentation.lesson.addlesson
 
+import android.widget.Toast
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -36,6 +37,7 @@ import androidx.compose.ui.geometry.CornerRadius
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.PathEffect
 import androidx.compose.ui.graphics.drawscope.Stroke
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.AnnotatedString
@@ -44,6 +46,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.dogandpigs.fitnote.R
 import com.dogandpigs.fitnote.presentation.base.ComponentPreview
+import com.dogandpigs.fitnote.presentation.base.Event
 import com.dogandpigs.fitnote.presentation.base.FigmaPreview
 import com.dogandpigs.fitnote.presentation.lesson.Exercise
 import com.dogandpigs.fitnote.presentation.lesson.component.ExerciseColumn
@@ -78,13 +81,26 @@ internal fun AddLessonScreen(
     navigateToLoadLesson: () -> Unit,
     navigateToMemberLessonList: (Int) -> Unit,
 ) {
+    val context = LocalContext.current
+
     val uiState by viewModel.state.collectAsStateWithLifecycle()
+    val eventStateFlow by viewModel.eventStateFlow.collectAsStateWithLifecycle()
 
     LaunchedEffect(Unit) {
         viewModel.initialize(
             memberId = memberId,
             lessonId = lessonId,
         )
+    }
+
+    LaunchedEffect(eventStateFlow) {
+        when (eventStateFlow) {
+            Event.None -> {}
+            is Event.Toast -> {
+                val message = (eventStateFlow as Event.Toast).message
+                Toast.makeText(context, message, Toast.LENGTH_SHORT).show()
+            }
+        }
     }
 
     LaunchedEffect(uiState.isSuccess) {
@@ -107,8 +123,8 @@ internal fun AddLessonScreen(
         onClickAddExercise = viewModel::addExercise,
         onChangeDate = viewModel::setDateMilliSeconds,
         onChangeAllSet = viewModel::changeAllSet,
-        onChangeAllWeight = {},
-        onChangeAllCount = {},
+        onChangeAllWeight = viewModel::changeAllWeight,
+        onChangeAllCount = viewModel::changeAllCount,
         onExerciseSetDelete = viewModel::removeExercise,
     )
 }
@@ -133,11 +149,14 @@ private fun AddLesson(
     onClickAddExercise: () -> Unit,
     onChangeDate: (Long?) -> Unit,
     onChangeAllSet: (
-        exerciseIndex: Int,
-        set: String
+        exerciseIndex: Int, set: String
     ) -> Unit,
-    onChangeAllWeight: (String) -> Unit,
-    onChangeAllCount: (String) -> Unit,
+    onChangeAllWeight: (
+        exerciseIndex: Int, weight: String
+    ) -> Unit,
+    onChangeAllCount: (
+        exerciseIndex: Int, weight: String
+    ) -> Unit,
     onExerciseSetDelete: (index: Int) -> Unit,
 ) {
     val datePickerVisible = remember { mutableStateOf(false) }
@@ -196,14 +215,16 @@ private fun AddLesson(
                             HeightSpacer(height = LocalFitNoteSpacing.current.spacing4)
 
                             ItemMainExerciseRow(
-                                set = exercise.numberOfSets.toString(),
-                                weight = exercise.mainWeight.format(),
-                                count = exercise.mainCount.toString(),
+                                exercise = exercise,
                                 onChangeAllSet = { set ->
                                     onChangeAllSet(index, set)
                                 },
-                                onChangeAllWeight = onChangeAllWeight,
-                                onChangeAllCount = onChangeAllCount,
+                                onChangeAllWeight = { weight ->
+                                    onChangeAllWeight(index, weight)
+                                },
+                                onChangeAllCount = { count ->
+                                    onChangeAllCount(index, count)
+                                },
                             )
 
                             HeightSpacer(height = LocalFitNoteSpacing.current.spacing4)
@@ -291,13 +312,26 @@ private fun DateLabel(
 
 @Composable
 private fun ItemMainExerciseRow(
-    set: String,
-    weight: String,
-    count: String,
+    exercise: Exercise,
     onChangeAllSet: (set: String) -> Unit,
     onChangeAllWeight: (String) -> Unit,
     onChangeAllCount: (String) -> Unit,
 ) {
+    val set = remember { mutableStateOf(exercise.numberOfSets.toString()) }
+    LaunchedEffect(exercise.numberOfSets) {
+        set.value = exercise.numberOfSets.toString()
+    }
+
+    val weight = remember { mutableStateOf(exercise.mainWeight.format()) }
+    LaunchedEffect(exercise.mainWeight) {
+        weight.value = exercise.mainWeight.format()
+    }
+
+    val count = remember { mutableStateOf(exercise.mainCount.toString()) }
+    LaunchedEffect(exercise.mainCount) {
+        count.value = exercise.mainCount.toString()
+    }
+
     Row(
         modifier = Modifier.fillMaxWidth(),
         horizontalArrangement = Arrangement.Center,
@@ -307,8 +341,15 @@ private fun ItemMainExerciseRow(
             modifier = Modifier
                 .weight(1f)
                 .wrapContentHeight(),
-            text = set,
-            onValueChange = onChangeAllSet,
+            text = set.value,
+            onValueChange = { newValue ->
+                if (newValue.isNotBlank()) {
+                    onChangeAllSet(newValue)
+                } else {
+                    onChangeAllSet("0")
+                }
+                set.value = newValue
+            },
         )
         WidthSpacer(width = LocalFitNoteSpacing.current.spacing4)
 
@@ -316,8 +357,16 @@ private fun ItemMainExerciseRow(
             modifier = Modifier
                 .weight(1f)
                 .wrapContentHeight(),
-            text = weight,
-            onValueChange = onChangeAllWeight,
+            text = weight.value,
+            onValueChange = { newValue ->
+                // TODO 아래 세트별 운동에도 String 적용
+                if (newValue.isNotBlank()) {
+                    onChangeAllWeight(newValue)
+                } else {
+                    onChangeAllWeight("0")
+                }
+                weight.value = newValue
+            },
         )
         WidthSpacer(width = LocalFitNoteSpacing.current.spacing4)
 
@@ -325,8 +374,15 @@ private fun ItemMainExerciseRow(
             modifier = Modifier
                 .weight(1f)
                 .wrapContentHeight(),
-            text = count,
-            onValueChange = onChangeAllCount,
+            text = count.value,
+            onValueChange = { newValue ->
+                if (newValue.isNotBlank()) {
+                    onChangeAllCount(newValue)
+                } else {
+                    onChangeAllCount("0")
+                }
+                count.value = newValue
+            },
         )
     }
 }
@@ -449,8 +505,8 @@ private fun PreviewAddLesson() {
             onClickAddExercise = {},
             onChangeDate = {},
             onChangeAllSet = { _: Int, _: String -> },
-            onChangeAllWeight = {},
-            onChangeAllCount = {},
+            onChangeAllWeight = { _: Int, _: String -> },
+            onChangeAllCount = { _: Int, _: String -> },
             onExerciseSetDelete = {},
         )
     }
@@ -472,9 +528,7 @@ private fun PreviewExerciseColumn() {
                 HeightSpacer(height = LocalFitNoteSpacing.current.spacing4)
 
                 ItemMainExerciseRow(
-                    set = previewExercise.numberOfSets.toString(),
-                    weight = previewExercise.mainWeight.format(),
-                    count = previewExercise.mainCount.toString(),
+                    exercise = previewExercise,
                     onChangeAllSet = {},
                     onChangeAllWeight = {},
                     onChangeAllCount = {},

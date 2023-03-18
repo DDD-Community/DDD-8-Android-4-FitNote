@@ -3,9 +3,12 @@ package com.dogandpigs.fitnote.presentation.lesson.addlesson
 import androidx.lifecycle.viewModelScope
 import com.dogandpigs.fitnote.data.repository.LessonRepository
 import com.dogandpigs.fitnote.presentation.base.BaseViewModel
+import com.dogandpigs.fitnote.presentation.base.Event
 import com.dogandpigs.fitnote.presentation.lesson.Exercise
 import com.dogandpigs.fitnote.presentation.lesson.toPresentation
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -14,6 +17,9 @@ internal class AddLessonViewModel @Inject constructor(
     private val lessonRepository: LessonRepository
 ) : BaseViewModel<AddLessonUiState>() {
     override fun createInitialState(): AddLessonUiState = AddLessonUiState()
+
+    private val _eventStateFlow: MutableStateFlow<Event> = MutableStateFlow(Event.None)
+    val eventStateFlow = _eventStateFlow.asStateFlow()
 
     fun initialize(
         memberId: Int,
@@ -35,6 +41,8 @@ internal class AddLessonViewModel @Inject constructor(
                             ),
                         )
                     }
+                }.onFailure {
+                    showToast("불러오기", it.message)
                 }
             }
         }
@@ -48,7 +56,7 @@ internal class AddLessonViewModel @Inject constructor(
 
     fun addLesson() = currentState {
         viewModelScope.launch {
-            kotlin.runCatching {
+            runCatching {
                 exercises.forEach { exerciseList ->
                     exerciseList.sets.forEachIndexed { index, exerciseSet ->
                         val routine = Routine(
@@ -69,15 +77,22 @@ internal class AddLessonViewModel @Inject constructor(
                         isSuccess = true,
                     )
                 }
+            }.onFailure {
+                showToast("저장", it.message)
             }
         }
     }
 
-    fun setDateMilliSeconds(dateMilliSeconds: Long?) = setState {
-        checkNotNull(dateMilliSeconds)
-        copy(
-            dateMilliSeconds = dateMilliSeconds
-        )
+    fun setDateMilliSeconds(dateMilliSeconds: Long?) = currentState {
+        runCatching {
+            checkNotNull(dateMilliSeconds)
+        }.onSuccess {
+            setState {
+                copy(
+                    dateMilliSeconds = it
+                )
+            }
+        }
     }
 
     fun addExercise() = currentState {
@@ -86,11 +101,7 @@ internal class AddLessonViewModel @Inject constructor(
             add(Exercise())
         }
 
-        setState {
-            copy(
-                exercises = exerciseList.toList(),
-            )
-        }
+        setExercisesUiState(exerciseList.toList())
     }
 
     fun removeExercise(index: Int) = currentState {
@@ -99,11 +110,7 @@ internal class AddLessonViewModel @Inject constructor(
             removeAt(index)
         }
 
-        setState {
-            copy(
-                exercises = exerciseList.toList(),
-            )
-        }
+        setExercisesUiState(exerciseList.toList())
     }
 
     fun changeExerciseName(
@@ -117,21 +124,17 @@ internal class AddLessonViewModel @Inject constructor(
             name = name
         )
 
-        setState {
-            copy(
-                exercises = exerciseList.toList(),
-            )
-        }
+        setExercisesUiState(exerciseList.toList())
     }
 
     fun addExerciseSet(
-        index: Int,
+        exerciseIndex: Int,
     ) = currentState {
         val exerciseList = mutableListOf<Exercise>()
         exerciseList.addAll(exercises)
 
         val exerciseSetList = mutableListOf<Exercise.ExerciseSet>()
-        exerciseSetList.addAll(exerciseList[index].sets)
+        exerciseSetList.addAll(exerciseList[exerciseIndex].sets)
 
         exerciseSetList.add(
             Exercise.ExerciseSet(
@@ -139,15 +142,12 @@ internal class AddLessonViewModel @Inject constructor(
             )
         )
 
-        exerciseList[index] = exerciseList[index].copy(
+        exerciseList[exerciseIndex] = exerciseList[exerciseIndex].copy(
             sets = exerciseSetList.toList()
         )
 
-        setState {
-            copy(
-                exercises = exerciseList.toList(),
-            )
-        }
+        setExercisesUiState(exerciseList.toList())
+        setExerciseState(exerciseIndex)
     }
 
     fun removeExerciseSet(
@@ -166,11 +166,8 @@ internal class AddLessonViewModel @Inject constructor(
             sets = exerciseSetList.toList()
         )
 
-        setState {
-            copy(
-                exercises = exerciseList.toList(),
-            )
-        }
+        setExercisesUiState(exerciseList.toList())
+        setExerciseState(exerciseIndex)
     }
 
     fun changeWeight(
@@ -195,11 +192,9 @@ internal class AddLessonViewModel @Inject constructor(
         exerciseList[exerciseIndex] = exerciseList[exerciseIndex].copy(
             sets = exerciseSetList.toList()
         )
-        setState {
-            copy(
-                exercises = exerciseList.toList(),
-            )
-        }
+
+        setExercisesUiState(exerciseList.toList())
+        setExerciseState(exerciseIndex)
     }
 
     fun changeCount(
@@ -225,11 +220,8 @@ internal class AddLessonViewModel @Inject constructor(
             sets = exerciseSetList.toList()
         )
 
-        setState {
-            copy(
-                exercises = exerciseList.toList(),
-            )
-        }
+        setExercisesUiState(exerciseList.toList())
+        setExerciseState(exerciseIndex)
     }
 
     fun changeAllSet(
@@ -272,13 +264,145 @@ internal class AddLessonViewModel @Inject constructor(
 
             exerciseList.toList()
         }.onSuccess {
-            setState {
-                copy(
-                    exercises = it,
-                )
-            }
+            setExercisesUiState(it)
         }.onFailure {
             // TODO
         }
+    }
+
+    fun changeAllWeight(
+        exerciseIndex: Int,
+        weight: String,
+    ) = currentState {
+        runCatching {
+            val newWeight = weight.toDoubleOrNull()
+            checkNotNull(newWeight) { "숫자만 입력해주세요." }
+
+            mutableListOf<Exercise>().apply {
+                addAll(exercises)
+                this[exerciseIndex] = exercises[exerciseIndex].copy(
+                    sets = exercises[exerciseIndex].sets.map {
+                        it.copy(
+                            weight = newWeight
+                        )
+                    }
+                )
+            }.toList()
+        }.onSuccess {
+            setExercisesUiState(it)
+        }.onFailure {
+            showToast(
+                title = "전체 몸무게 변경",
+                message = it.message,
+            )
+        }
+    }
+
+    fun changeAllCount(
+        exerciseIndex: Int,
+        count: String,
+    ) = currentState {
+        runCatching {
+            val newCount = count.toIntOrNull()
+            checkNotNull(newCount) { "숫자만 입력해주세요." }
+
+            mutableListOf<Exercise>().apply {
+                addAll(exercises)
+                this[exerciseIndex] = exercises[exerciseIndex].copy(
+                    sets = exercises[exerciseIndex].sets.map {
+                        it.copy(
+                            count = newCount
+                        )
+                    }
+                )
+            }.toList()
+        }.onSuccess {
+            setExercisesUiState(it)
+        }.onFailure {
+            showToast(
+                title = "전체 횟수 변경",
+                message = it.message,
+            )
+        }
+    }
+
+    private fun changeExerciseList(
+        exerciseIndex: Int,
+        newExercise: Exercise,
+    ): List<Exercise> =
+        currentState {
+            val exerciseList = mutableListOf<Exercise>().apply {
+                addAll(exercises)
+            }
+            exerciseList[exerciseIndex] = newExercise
+            exerciseList.toList()
+        }
+
+    private fun setExerciseState(
+        exerciseIndex: Int,
+    ) {
+        setNumberOfSets(exerciseIndex)
+        setMainWeight(exerciseIndex)
+        setMainCount(exerciseIndex)
+    }
+
+    private fun setNumberOfSets(
+        exerciseIndex: Int,
+    ) = currentState {
+        runCatching {
+            changeExerciseList(
+                exerciseIndex = exerciseIndex,
+                newExercise = exercises[exerciseIndex].copy(
+                    numberOfSets = exercises[exerciseIndex].sets.size
+                ),
+            )
+        }.onSuccess {
+            setExercisesUiState(it)
+        }
+    }
+
+    private fun setMainWeight(
+        exerciseIndex: Int,
+    ) = currentState {
+        runCatching {
+            changeExerciseList(
+                exerciseIndex = exerciseIndex,
+                newExercise = exercises[exerciseIndex].copy(
+                    mainWeight = exercises[exerciseIndex].maxWeightExerciseSet.weight
+                ),
+            )
+        }.onSuccess {
+            setExercisesUiState(it)
+        }
+    }
+
+    private fun setMainCount(
+        exerciseIndex: Int,
+    ) = currentState {
+        runCatching {
+            changeExerciseList(
+                exerciseIndex = exerciseIndex,
+                newExercise = exercises[exerciseIndex].copy(
+                    mainCount = exercises[exerciseIndex].maxWeightExerciseSet.count
+                ),
+            )
+        }.onSuccess {
+            setExercisesUiState(it)
+        }
+    }
+
+    private fun setExercisesUiState(exercises: List<Exercise>) {
+        setState {
+            copy(
+                exercises = exercises,
+            )
+        }
+    }
+
+    private fun showToast(
+        title: String,
+        message: String?,
+    ) {
+        _eventStateFlow.value = Event.Toast("$title 실패\n사유 : $message")
     }
 }
