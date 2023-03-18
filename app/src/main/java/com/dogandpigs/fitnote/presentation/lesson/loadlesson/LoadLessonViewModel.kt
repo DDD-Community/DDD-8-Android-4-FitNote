@@ -109,12 +109,10 @@ internal class LoadLessonViewModel @Inject constructor(
                     check(selectedMemberId > 0) { "memberId is invaild" }
 
                     val intendedResponse = lessonRepository.getIntendedLessons(selectedMemberId)
-                    checkNotNull(intendedResponse) { "intendedResponse is null" }
-                    val intendedLessonList = intendedResponse.lessonInfo
+                    val intendedLessonList = intendedResponse?.lessonInfo ?: emptyList()
 
                     val completedResponse = lessonRepository.getCompletedLessons(selectedMemberId)
-                    checkNotNull(completedResponse) { "completedResponse is null" }
-                    val completedLessonList = completedResponse.lessonInfo
+                    val completedLessonList = completedResponse?.lessonInfo ?: emptyList()
 
                     (intendedLessonList + completedLessonList).sortedByDescending {
                         it.lessonsDate

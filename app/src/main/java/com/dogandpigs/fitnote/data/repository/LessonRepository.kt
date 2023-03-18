@@ -21,14 +21,20 @@ class LessonRepository @Inject constructor(
         val json = JsonObject().apply {
             addProperty("id", id)
         }
-        return handleResponse(lessonApi.getIntendedLessonList(json))
+        return handleResponse(
+            response = lessonApi.getIntendedLessonList(json),
+            isCheck = false,
+        )
     }
 
     suspend fun getCompletedLessons(id: Int): LessonResponse? {
         val json = JsonObject().apply {
             addProperty("id", id)
         }
-        return handleResponse(lessonApi.getCompletedLessonList(json))
+        return handleResponse(
+            response = lessonApi.getCompletedLessonList(json),
+            isCheck = false,
+        )
     }
 
     suspend fun getLessonDetail(
