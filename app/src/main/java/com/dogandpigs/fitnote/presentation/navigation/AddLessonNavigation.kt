@@ -7,7 +7,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
 import com.dogandpigs.fitnote.presentation.lesson.addlesson.AddLessonNavRoute
 import com.dogandpigs.fitnote.presentation.lesson.loadlesson.LoadLessonNavRoute
-import com.dogandpigs.fitnote.presentation.lesson.pluslesson.PlusLessonScreen
+import com.dogandpigs.fitnote.presentation.lesson.addlesson.AddLessonScreen
 
 fun NavGraphBuilder.addAddLessonScreen(
     route: String,
@@ -33,7 +33,7 @@ fun NavGraphBuilder.addAddLessonScreen(
         val memberId = it.arguments?.getInt(AddLessonNavRoute.memberId, 0) ?: 0
         val lessonId = it.arguments?.getInt(AddLessonNavRoute.lessonId, 0) ?: 0
 
-        PlusLessonScreen(
+        AddLessonScreen(
             memberId = memberId,
             lessonId = lessonId,
             popBackStack = popBackStack,

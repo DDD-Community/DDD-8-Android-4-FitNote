@@ -8,29 +8,28 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.foundation.text.ClickableText
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Close
+import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.CornerRadius
@@ -40,15 +39,21 @@ import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.AnnotatedString
-import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import androidx.navigation.compose.rememberNavController
 import com.dogandpigs.fitnote.R
+import com.dogandpigs.fitnote.presentation.base.ComponentPreview
 import com.dogandpigs.fitnote.presentation.base.FigmaPreview
-import com.dogandpigs.fitnote.presentation.lesson.memberlesson.SuffixVisualTransformation
-import com.dogandpigs.fitnote.presentation.ui.component.CompleteButton
+import com.dogandpigs.fitnote.presentation.lesson.Exercise
+import com.dogandpigs.fitnote.presentation.lesson.component.ExerciseColumn
+import com.dogandpigs.fitnote.presentation.lesson.component.LessonCountTextField
+import com.dogandpigs.fitnote.presentation.lesson.component.LessonSetTextField
+import com.dogandpigs.fitnote.presentation.lesson.component.LessonTextField
+import com.dogandpigs.fitnote.presentation.lesson.component.LessonWeightTextField
+import com.dogandpigs.fitnote.presentation.ui.component.BottomPositiveButton
+import com.dogandpigs.fitnote.presentation.ui.component.DefaultDatePickerDialog
+import com.dogandpigs.fitnote.presentation.ui.component.DefaultSpacer
 import com.dogandpigs.fitnote.presentation.ui.component.DefaultText
 import com.dogandpigs.fitnote.presentation.ui.component.FitNoteScaffold
 import com.dogandpigs.fitnote.presentation.ui.component.HeightSpacer
@@ -61,37 +66,84 @@ import com.dogandpigs.fitnote.presentation.ui.theme.GrayScaleLightGray1
 import com.dogandpigs.fitnote.presentation.ui.theme.GrayScaleMidGray3
 import com.dogandpigs.fitnote.presentation.ui.theme.LocalFitNoteSpacing
 import com.dogandpigs.fitnote.presentation.ui.theme.LocalFitNoteTypography
+import com.dogandpigs.fitnote.presentation.ui.theme.SubPrimary
+import com.dogandpigs.fitnote.presentation.util.format
 
 @Composable
 internal fun AddLessonScreen(
     memberId: Int,
+    lessonId: Int = 0, // TODO
     viewModel: AddLessonViewModel = hiltViewModel(),
     popBackStack: () -> Unit,
     navigateToLoadLesson: () -> Unit,
-    navigateToAddExercise: () -> Unit,
+    navigateToMemberLessonList: (Int) -> Unit,
 ) {
-    val state by viewModel.state.collectAsStateWithLifecycle()
-    viewModel.setMemberId(memberId)
+    val uiState by viewModel.state.collectAsStateWithLifecycle()
+
+    LaunchedEffect(Unit) {
+        viewModel.initialize(
+            memberId = memberId,
+            lessonId = lessonId,
+        )
+    }
+
+    LaunchedEffect(uiState.isSuccess) {
+        if (uiState.isSuccess) {
+            // TODO 토스트 안내 제공
+            navigateToMemberLessonList(memberId)
+        }
+    }
+
     AddLesson(
-        viewModel,
-        state = state,
+        uiState = uiState,
+        changeExerciseName = viewModel::changeExerciseName,
+        addExerciseSet = viewModel::addExerciseSet,
+        removeExerciseSet = viewModel::removeExerciseSet,
+        onChangeWeight = viewModel::changeWeight,
+        onChangeCount = viewModel::changeCount,
+        addLesson = viewModel::addLesson,
         onClickClose = popBackStack,
         onClickLoadLesson = navigateToLoadLesson,
-        onClickAddExercise = navigateToAddExercise,
+        onClickAddExercise = viewModel::addExercise,
+        onChangeDate = viewModel::setDateMilliSeconds,
+        onChangeAllSet = viewModel::changeAllSet,
+        onChangeAllWeight = {},
+        onChangeAllCount = {},
+        onExerciseSetDelete = viewModel::removeExercise,
     )
 }
 
 @Composable
 private fun AddLesson(
-    viewModel: AddLessonViewModel,
-    state: AddLessonState,
-    onClickClose: () -> Unit = {},
-    onClickLoadLesson: () -> Unit = {},
-    onClickAddExercise: () -> Unit = {},
+    uiState: AddLessonUiState,
+    changeExerciseName: (
+        index: Int,
+        name: String,
+    ) -> Unit,
+    addExerciseSet: (index: Int) -> Unit,
+    removeExerciseSet: (
+        exerciseIndex: Int,
+        exerciseSetIndex: Int,
+    ) -> Unit,
+    onChangeWeight: (String, Int, Int) -> Unit,
+    onChangeCount: (String, Int, Int) -> Unit,
+    addLesson: () -> Unit,
+    onClickClose: () -> Unit,
+    onClickLoadLesson: () -> Unit,
+    onClickAddExercise: () -> Unit,
+    onChangeDate: (Long?) -> Unit,
+    onChangeAllSet: (
+        exerciseIndex: Int,
+        set: String
+    ) -> Unit,
+    onChangeAllWeight: (String) -> Unit,
+    onChangeAllCount: (String) -> Unit,
+    onExerciseSetDelete: (index: Int) -> Unit,
 ) {
-    val navController = rememberNavController()
+    val datePickerVisible = remember { mutableStateOf(false) }
 
-    FitNoteScaffold(topBarTitle = stringResource(id = R.string.add_lesson),
+    FitNoteScaffold(
+        topBarTitle = stringResource(id = R.string.add_lesson),
         onClickTopBarNavigationIcon = onClickClose,
         topBarNavigationIconImageVector = Icons.Filled.Close,
         topBarActions = {
@@ -102,7 +154,8 @@ private fun AddLesson(
                     style = LocalFitNoteTypography.current.buttonMedium
                 )
             }
-        }) {
+        }
+    ) {
         Box(
             modifier = Modifier
                 .padding(it)
@@ -110,58 +163,100 @@ private fun AddLesson(
         ) {
             val paddingValues = PaddingValues(16.dp)
             val scrollState = rememberScrollState()
+
             Column(
                 modifier = Modifier
                     .padding(paddingValues)
                     .background(color = Color.White)
-                    .verticalScroll(scrollState), horizontalAlignment = Alignment.CenterHorizontally
+                    .verticalScroll(scrollState),
+                horizontalAlignment = Alignment.CenterHorizontally,
             ) {
-//                DateLabel(
-//                    dateString = uiState.dateString,
-//                    onClickShowCalendar = onClickShowCalendar,
-//                )
-                AddLessonCard(
-                    state,
-                    viewModel,
-                    onClickAddExercise = {
-                        viewModel.addLesson(Routine())
-                    }
+                HeightSpacer(height = LocalFitNoteSpacing.current.spacing4)
+
+                DateLabel(
+                    dateString = uiState.dateString,
+                    onClick = { datePickerVisible.value = true },
                 )
-            }
-            CompleteButton(stringResource(id = R.string.btn_save), onClick = {
-                viewModel.addAllLessons()
-            })
 
-//            if (uiState.isShowCalendar) {
-//                DefaultCalendarView(
-//                    dateMilliSeconds = uiState.dateMilliSeconds,
-//                    onChangeCalendar = onChangeCalendar,
-//                )
-//            }
-        }
-    }
-}
-
-@Composable
-private fun AddLessonCard(
-    uiState: AddLessonState,
-    viewModel: AddLessonViewModel,
-    onClickAddExercise: () -> Unit = {}
-) {
-    Box(
-        modifier = Modifier.fillMaxSize()
-    ) {
-        Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(vertical = LocalFitNoteSpacing.current.spacing4)
-        ) {
-            HeightSpacer(height = LocalFitNoteSpacing.current.spacing5)
-            for (i in uiState.exerciseList.indices) {
-                InputLesson(uiState.exerciseList[i], viewModel, uiState)
                 HeightSpacer(height = LocalFitNoteSpacing.current.spacing5)
+
+                uiState.exercises.forEachIndexed { index, exercise ->
+                    ExerciseColumn(
+                        exercise = exercise,
+                        Title = {
+                            ItemMainExerciseName(
+                                text = exercise.name,
+                                onChangeName = { newValue ->
+                                    changeExerciseName(index, newValue)
+                                },
+                                onExerciseSetDelete = {
+                                    onExerciseSetDelete(index)
+                                },
+                            )
+                            HeightSpacer(height = LocalFitNoteSpacing.current.spacing4)
+
+                            ItemMainExerciseRow(
+                                set = exercise.numberOfSets.toString(),
+                                weight = exercise.mainWeight.format(),
+                                count = exercise.mainCount.toString(),
+                                onChangeAllSet = { set ->
+                                    onChangeAllSet(index, set)
+                                },
+                                onChangeAllWeight = onChangeAllWeight,
+                                onChangeAllCount = onChangeAllCount,
+                            )
+
+                            HeightSpacer(height = LocalFitNoteSpacing.current.spacing4)
+                        },
+                        foldText = stringResource(id = R.string.edit_per_set),
+                        ItemButton = { exerciseSetIndex: Int, _: Exercise.ExerciseSet ->
+                            IconButton(
+                                onClick = {
+                                    removeExerciseSet(index, exerciseSetIndex)
+                                }
+                            ) {
+                                Icon(
+                                    painter = painterResource(id = R.drawable.trash),
+                                    stringResource(id = R.string.delete),
+                                )
+                            }
+                        },
+                        BottomButton = {
+                            PlusSetButton(
+                                onClick = {
+                                    addExerciseSet(index)
+                                }
+                            )
+                        },
+                        onChangeWeight = { newValue: String, exerciseSetIndex: Int ->
+                            onChangeWeight(newValue, index, exerciseSetIndex)
+                        },
+                        onChangeCount = { newValue: String, exerciseSetIndex: Int ->
+                            onChangeCount(newValue, index, exerciseSetIndex)
+                        },
+                    )
+                    HeightSpacer(height = LocalFitNoteSpacing.current.spacing5)
+                }
+
+                HeightSpacer(height = 18.dp)
+                AddExerciseButton(
+                    onClickAddExercise = onClickAddExercise,
+                )
+                HeightSpacer(height = LocalFitNoteSpacing.current.spacing9)
             }
-            AddExercise(onClickAddExercise = onClickAddExercise)
+
+            BottomPositiveButton(
+                text = stringResource(id = R.string.btn_save),
+                enabled = uiState.exercises.isNotEmpty(),
+                onClick = addLesson,
+            )
+
+            DefaultDatePickerDialog(
+                visible = datePickerVisible.value,
+                onDismissRequest = { datePickerVisible.value = false },
+                onClickConfirmButton = onChangeDate,
+                dateMilliSeconds = uiState.dateMilliSeconds,
+            )
         }
     }
 }
@@ -169,7 +264,7 @@ private fun AddLessonCard(
 @Composable
 private fun DateLabel(
     dateString: String,
-    onClickShowCalendar: () -> Unit,
+    onClick: () -> Unit,
 ) {
     Row(
         modifier = Modifier
@@ -188,200 +283,116 @@ private fun DateLabel(
         ClickableText(text = AnnotatedString(dateString),
             style = LocalFitNoteTypography.current.textDefault,
             onClick = {
-                onClickShowCalendar()
+                onClick()
             }
         )
     }
 }
 
 @Composable
-private fun InputLesson(
-    exercise: Routine,
-    viewModel: AddLessonViewModel,
-    uiState: AddLessonState
+private fun ItemMainExerciseRow(
+    set: String,
+    weight: String,
+    count: String,
+    onChangeAllSet: (set: String) -> Unit,
+    onChangeAllWeight: (String) -> Unit,
+    onChangeAllCount: (String) -> Unit,
 ) {
-    var exerciseName by remember { mutableStateOf("") }
-    val name = exercise.name.ifBlank {
-        exerciseName
-    }
-    Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .defaultBorder()
-            .padding(16.dp, 16.dp),
+    Row(
+        modifier = Modifier.fillMaxWidth(),
+        horizontalArrangement = Arrangement.Center,
+        verticalAlignment = Alignment.CenterVertically,
     ) {
-        Row(modifier = Modifier.fillMaxSize()) {
-            AddLessonTextField(
-                modifier = Modifier
-                    .weight(1f)
-                    .wrapContentHeight(),
-                value = name,
-                onValueChange = { textValue ->
-                    exerciseName = textValue
-                    viewModel.setLessonName(exercise.index, exerciseName)
-                },
-                placeholderValue = "운동명"
-            )
-            WidthSpacer(width = 10.dp)
-            IconButton(onClick = {
-                viewModel.removeExercise(exercise.index, exerciseName)
-            }) {
-                Icon(
-                    painter = painterResource(id = R.drawable.trash),
-                    contentDescription = "Back"
-                )
-            }
-        }
-        HeightSpacer(height = LocalFitNoteSpacing.current.spacing4)
-
-        Routine(
-            index = exercise.index,
-            Routine(set = 0, weight = 0, count = 0),
-            viewModel = viewModel,
-            btnRoutineCloseVisibility = false,
+        LessonSetTextField(
+            modifier = Modifier
+                .weight(1f)
+                .wrapContentHeight(),
+            text = set,
+            onValueChange = onChangeAllSet,
         )
+        WidthSpacer(width = LocalFitNoteSpacing.current.spacing4)
 
-        Spacer(modifier = Modifier.height(20.dp))
-        ExpandableCard(header = stringResource(id = R.string.edit_per_set),
-            color = Color.LightGray,
-            routineView = { routine ->
-                Routine(
-                    index = exercise.index,
-                    routine = routine,
-                    viewModel = viewModel,
-                    btnRoutineCloseVisibility = true,
-                    isEdit = true
-                )
-            },
-            routineList = uiState.routineList.toMutableList(),
-            onClickAdd = {
-                viewModel.addRoutine(
-                    Routine(weight = 0, count = 0)
-                )
-            })
+        LessonWeightTextField(
+            modifier = Modifier
+                .weight(1f)
+                .wrapContentHeight(),
+            text = weight,
+            onValueChange = onChangeAllWeight,
+        )
+        WidthSpacer(width = LocalFitNoteSpacing.current.spacing4)
+
+        LessonCountTextField(
+            modifier = Modifier
+                .weight(1f)
+                .wrapContentHeight(),
+            text = count,
+            onValueChange = onChangeAllCount,
+        )
     }
 }
 
 @Composable
-private fun AddLessonTextField(
-    modifier: Modifier,
-    value: String,
-    onValueChange: (String) -> Unit,
-    placeholderValue: String = "",
-    suffix: String? = null,
+private fun ItemMainExerciseName(
+    text: String,
+    onChangeName: (String) -> Unit,
+    onExerciseSetDelete: () -> Unit,
 ) {
-    BasicTextField(modifier = modifier,
-        value = value,
-        onValueChange = onValueChange,
-        textStyle = LocalFitNoteTypography.current.buttonMedium.copy(
-            color = GrayScaleMidGray3,
-        ),
-        visualTransformation = if (suffix != null) {
-            SuffixVisualTransformation(suffix)
-        } else {
-            VisualTransformation.None
-        },
-        decorationBox = { innerTextField ->
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .wrapContentHeight()
-                    .background(
-                        color = GrayScaleLightGray1, shape = RoundedCornerShape(size = 5.dp)
-                    )
-                    .padding(16.dp, 6.dp), verticalAlignment = Alignment.CenterVertically
-            ) {
-                if (value.isEmpty() && placeholderValue.isNotEmpty()) {
-                    DefaultText(
-                        text = placeholderValue,
-                        color = GrayScaleMidGray3,
-                        style = LocalFitNoteTypography.current.buttonMedium,
-                    )
-                }
-                innerTextField()
-            }
-        })
-}
-
-@Composable
-private fun Routine(
-    index: Int,
-    routine: Routine,
-    viewModel: AddLessonViewModel,
-    btnRoutineCloseVisibility: Boolean,
-    isEdit: Boolean = false
-) {
-    var set by remember {
-        mutableStateOf(routine.set)
-    }
-    var weight by remember {
-        mutableStateOf(routine.weight)
-    }
-    var count by remember {
-        mutableStateOf(routine.count)
-    }
     Row(
         modifier = Modifier
             .fillMaxWidth()
             .wrapContentHeight(),
         verticalAlignment = Alignment.CenterVertically,
     ) {
-        if (isEdit) {
-            Text(
-                text = "${set}세트",
-                style = LocalFitNoteTypography.current.buttonMedium,
-                color = GrayScaleMidGray3
-            )
-        } else {
-            AddLessonTextField(
-                modifier = Modifier.weight(1F),
-                value = "$set",
-                onValueChange = { value ->
-                    set = value.toIntOrNull() ?: 0
-                    viewModel.setLessonSet(index = index, set = set)
-                },
-                suffix = "세트",
-            )
-        }
-        WidthSpacer(width = 10.dp)
-        AddLessonTextField(
+        LessonTextField(
             modifier = Modifier
-                .weight(1F)
+                .weight(1f)
                 .wrapContentHeight(),
-            value = "$weight",
-            onValueChange = { value ->
-                weight = value.toIntOrNull() ?: 0
-                viewModel.setLessonWeight(index, weight)
-            },
-            suffix = "kg",
-        )
-        WidthSpacer(width = 10.dp)
-        AddLessonTextField(
-            modifier = Modifier.weight(1F),
-            value = "$count",
-            onValueChange = { value ->
-                count = value.toIntOrNull() ?: 0
-                viewModel.setLessonCount(index, count)
-            },
-            suffix = "회",
-        )
-        if (btnRoutineCloseVisibility) {
-            WidthSpacer(width = 10.dp)
-            IconButton(onClick = {
-                viewModel.removeRoutine(routine.set)
-            }) {
-                Icon(
-                    painter = painterResource(id = R.drawable.trash),
-//                    imageVector = Icons.Filled.Close,
-                    contentDescription = "Back"
+            text = text,
+            onValueChange = onChangeName,
+            placeholder = {
+                DefaultText(
+                    text = stringResource(id = R.string.exercise_name),
+                    color = GrayScaleMidGray3,
+                    style = LocalFitNoteTypography.current.buttonMedium,
                 )
             }
+        )
+        DefaultSpacer(width = LocalFitNoteSpacing.current.spacing6)
+        IconButton(
+            onClick = onExerciseSetDelete
+        ) {
+            Icon(
+                painter = painterResource(id = R.drawable.trash),
+                contentDescription = stringResource(id = R.string.delete),
+            )
         }
     }
 }
 
 @Composable
-private fun AddExercise(
+private fun PlusSetButton(
+    onClick: () -> Unit,
+) {
+    Button(
+        colors = ButtonDefaults.outlinedButtonColors(
+            disabledContentColor = SubPrimary,
+            disabledContainerColor = BrandPrimary,
+            contentColor = GrayScaleMidGray3,
+            containerColor = GrayScaleLightGray1
+        ),
+        contentPadding = PaddingValues(16.dp, 6.dp),
+        onClick = onClick,
+        modifier = Modifier
+//            .align(Alignment.CenterHorizontally)
+            .fillMaxWidth(),
+        shape = RoundedCornerShape(5.dp)
+    ) {
+        Text(text = stringResource(id = R.string.btn_add_set))
+    }
+}
+
+@Composable
+private fun AddExerciseButton(
     onClickAddExercise: () -> Unit
 ) {
     val stroke = Stroke(
@@ -408,10 +419,10 @@ private fun AddExercise(
         ) {
             Icon(
                 imageVector = Icons.Default.Add, tint = Color.Black, // Icon Color
-                contentDescription = "Add Exercise"
+                contentDescription = stringResource(id = R.string.add_exercise)
             )
             DefaultText(
-                text = stringResource(id = R.string.btn_add_exercise),
+                text = stringResource(id = R.string.add_exercise),
                 color = GrayScaleDarkGray1,
                 style = LocalFitNoteTypography.current.buttonMedium,
             )
@@ -419,18 +430,78 @@ private fun AddExercise(
     }
 }
 
-private val mockUiState = AddLessonState()
+private val mockUiState = AddLessonUiState()
 
 @FigmaPreview
 @Composable
 private fun PreviewAddLesson() {
     FitNoteTheme {
         AddLesson(
-            viewModel = hiltViewModel(),
-            state = mockUiState,
+            uiState = mockUiState,
+            changeExerciseName = { _: Int, _: String -> },
+            addExerciseSet = {},
+            removeExerciseSet = { _: Int, _: Int -> },
+            onChangeWeight = { _: String, _: Int, _: Int -> },
+            onChangeCount = { _: String, _: Int, _: Int -> },
+            addLesson = {},
             onClickClose = {},
             onClickLoadLesson = {},
             onClickAddExercise = {},
+            onChangeDate = {},
+            onChangeAllSet = { _: Int, _: String -> },
+            onChangeAllWeight = {},
+            onChangeAllCount = {},
+            onExerciseSetDelete = {},
+        )
+    }
+}
+
+@ComponentPreview
+@Composable
+private fun PreviewExerciseColumn() {
+    val previewExercise = mockUiState.exercises.first()
+    FitNoteTheme {
+        ExerciseColumn(
+            exercise = previewExercise,
+            Title = {
+                ItemMainExerciseName(
+                    text = previewExercise.name,
+                    onChangeName = {},
+                    onExerciseSetDelete = {},
+                )
+                HeightSpacer(height = LocalFitNoteSpacing.current.spacing4)
+
+                ItemMainExerciseRow(
+                    set = previewExercise.numberOfSets.toString(),
+                    weight = previewExercise.mainWeight.format(),
+                    count = previewExercise.mainCount.toString(),
+                    onChangeAllSet = {},
+                    onChangeAllWeight = {},
+                    onChangeAllCount = {},
+                )
+
+                HeightSpacer(height = LocalFitNoteSpacing.current.spacing4)
+            },
+            foldText = stringResource(id = R.string.edit_per_set),
+            ItemButton = { _: Int, _: Exercise.ExerciseSet ->
+                IconButton(
+                    onClick = {}
+                ) {
+                    Icon(
+                        painter = painterResource(id = R.drawable.trash),
+                        contentDescription = stringResource(id = R.string.delete),
+                    )
+                }
+            },
+            BottomButton = {
+                PlusSetButton(
+                    onClick = {}
+                )
+            },
+            onChangeWeight = { _: String, _: Int ->
+            },
+            onChangeCount = { _: String, _: Int ->
+            },
         )
     }
 }

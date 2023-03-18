@@ -1,11 +1,11 @@
-package com.dogandpigs.fitnote.presentation.lesson.pluslesson
+package com.dogandpigs.fitnote.presentation.lesson.addlesson
 
 import com.dogandpigs.fitnote.presentation.lesson.Exercise
 import com.dogandpigs.fitnote.presentation.util.format
 import com.dogandpigs.fitnote.presentation.util.formatYYYYMMDD
 import java.util.Date
 
-internal data class PlusLessonUiState(
+internal data class AddLessonUiState(
     val id: Int = 0,
     val dateMilliSeconds: Long = System.currentTimeMillis(),
     val exercises: List<Exercise> = listOf(

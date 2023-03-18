@@ -1,11 +1,10 @@
 package com.dogandpigs.fitnote.presentation.lesson.addlesson
 
-import android.os.Build
-import android.util.Log
 import androidx.lifecycle.viewModelScope
-import com.dogandpigs.fitnote.core.Constants
 import com.dogandpigs.fitnote.data.repository.LessonRepository
 import com.dogandpigs.fitnote.presentation.base.BaseViewModel
+import com.dogandpigs.fitnote.presentation.lesson.Exercise
+import com.dogandpigs.fitnote.presentation.lesson.toPresentation
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -13,156 +12,273 @@ import javax.inject.Inject
 @HiltViewModel
 internal class AddLessonViewModel @Inject constructor(
     private val lessonRepository: LessonRepository
-) : BaseViewModel<AddLessonState>() {
-    override fun createInitialState(): AddLessonState = AddLessonState()
-    
-    
-    fun setMemberId(memberId: Int) = currentState {
-        setState { copy(id = memberId) }
-    }
-    
-    fun addRoutine(routine: Routine) = currentState {
-        val routineList = routineList.toMutableList()
-        if (routineList.isNotEmpty()) {
-            routine.set = routineList.last().set + 1
+) : BaseViewModel<AddLessonUiState>() {
+    override fun createInitialState(): AddLessonUiState = AddLessonUiState()
+
+    fun initialize(
+        memberId: Int,
+        lessonId: Int,
+    ) {
+        viewModelScope.launch {
+            if (lessonId > 0) {
+                runCatching {
+                    lessonRepository.getLessonDetail(
+                        id = memberId,
+                        today = lessonId,
+                    )
+                }.onSuccess {
+                    setState {
+                        copy(
+                            exercises = it.toPresentation(
+                                id = memberId,
+                                today = lessonId,
+                            ),
+                        )
+                    }
+                }
+            }
         }
-        routineList.add(routine)
-        setState { copy(routineList = routineList) }
-    }
-    
-    fun removeRoutine(set: Int) = currentState {
-        val routineList = routineList.toMutableList()
-        val routine = routineList.find { routine ->
-            routine.set == set
-        }
-        routineList.remove(routine)
-        setState { copy(routineList = sortSet(routineList)) }
-    }
-    
-    fun addLesson(routine: Routine) = currentState {
-        val exerciseList = exerciseList.toMutableList()
-        if (exerciseList.isNotEmpty()) {
-            routine.index = exerciseList.last().index + 1
-        }
-        exerciseList.add(routine)
+
         setState {
             copy(
-                exerciseList = exerciseList
+                id = memberId
             )
         }
-        exerciseList.forEach {
-            Log.d(Constants.TAG_DEBUG, "addLesson: ${it.index}")
-        }
+    }
+
+    fun addLesson() = currentState {
         viewModelScope.launch {
-//            lessonRepository.addLesson(routine)
+            kotlin.runCatching {
+                exercises.forEach { exerciseList ->
+                    exerciseList.sets.forEachIndexed { index, exerciseSet ->
+                        val routine = Routine(
+                            id = id,
+                            index = index,
+                            name = exerciseList.name,
+                            set = exerciseSet.setIndex,
+                            weight = exerciseSet.weight.toInt(),
+                            count = exerciseSet.count,
+                            today = dateStringYYYYMMDD,
+                        )
+                        lessonRepository.addLesson(routine)
+                    }
+                }
+            }.onSuccess {
+                setState {
+                    copy(
+                        isSuccess = true,
+                    )
+                }
+            }
         }
     }
-    
-    fun removeExercise(index: Int, name: String) = currentState {
-        val removedList = exerciseList.toMutableList()
-        
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-            removedList.removeIf {
-                it.index == index
-            }
-            
-            removedList.forEach {
-                Log.d(Constants.TAG_DEBUG, "removeExercise: ${it.index} / ${it.name}")
-            }
-            setState {
-                copy(exerciseList = removedList)
-            }
+
+    fun setDateMilliSeconds(dateMilliSeconds: Long?) = setState {
+        checkNotNull(dateMilliSeconds)
+        copy(
+            dateMilliSeconds = dateMilliSeconds
+        )
+    }
+
+    fun addExercise() = currentState {
+        val exerciseList = mutableListOf<Exercise>().apply {
+            addAll(exercises)
+            add(Exercise())
+        }
+
+        setState {
+            copy(
+                exercises = exerciseList.toList(),
+            )
         }
     }
-    
-    fun setLessonName(index: Int, name: String) = currentState {
-        val list = exerciseList.toMutableList()
-        val routine = currentRoutine.copy(
-            index = index,
+
+    fun removeExercise(index: Int) = currentState {
+        val exerciseList = mutableListOf<Exercise>().apply {
+            addAll(exercises)
+            removeAt(index)
+        }
+
+        setState {
+            copy(
+                exercises = exerciseList.toList(),
+            )
+        }
+    }
+
+    fun changeExerciseName(
+        index: Int,
+        name: String,
+    ) = currentState {
+        val exerciseList = mutableListOf<Exercise>()
+        exerciseList.addAll(exercises)
+
+        exerciseList[index] = exerciseList[index].copy(
             name = name
         )
+
         setState {
-            copy(currentRoutine = routine)
-        }
-        list[index] = routine
-        setState {
-            copy(exerciseList = list)
+            copy(
+                exercises = exerciseList.toList(),
+            )
         }
     }
-    
-    fun setLessonDate() = currentState {
-        val list = exerciseList.toMutableList()
-        val routine = currentRoutine.copy(
-            today = dateString
+
+    fun addExerciseSet(
+        index: Int,
+    ) = currentState {
+        val exerciseList = mutableListOf<Exercise>()
+        exerciseList.addAll(exercises)
+
+        val exerciseSetList = mutableListOf<Exercise.ExerciseSet>()
+        exerciseSetList.addAll(exerciseList[index].sets)
+
+        exerciseSetList.add(
+            Exercise.ExerciseSet(
+                setIndex = exerciseSetList.size + 1,
+            )
         )
-        setState {
-            copy(currentRoutine = routine)
-        }
-        list[currentRoutine.index] = routine
-        setState {
-            copy(exerciseList = list)
-        }
-    }
-    
-    
-    fun setLessonWeight(index: Int, weight: Int) = currentState {
-        val list = exerciseList.toMutableList()
-        val routine = currentRoutine.copy(
-            weight = weight,
+
+        exerciseList[index] = exerciseList[index].copy(
+            sets = exerciseSetList.toList()
         )
-        
-        list[index] = routine
+
         setState {
-            copy(currentRoutine = routine)
-        }
-        setState {
-            copy(exerciseList = list)
+            copy(
+                exercises = exerciseList.toList(),
+            )
         }
     }
-    
-    fun setLessonCount(index: Int, count: Int) = currentState {
-        val list = exerciseList.toMutableList()
-        val routine = currentRoutine.copy(
-            count = count
+
+    fun removeExerciseSet(
+        exerciseIndex: Int,
+        exerciseSetIndex: Int,
+    ) = currentState {
+        val exerciseList = mutableListOf<Exercise>()
+        exerciseList.addAll(exercises)
+
+        val exerciseSetList = mutableListOf<Exercise.ExerciseSet>()
+        exerciseSetList.addAll(exerciseList[exerciseIndex].sets)
+
+        exerciseSetList.removeAt(exerciseSetIndex)
+
+        exerciseList[exerciseIndex] = exerciseList[exerciseIndex].copy(
+            sets = exerciseSetList.toList()
         )
-        list[index] = routine
-        
+
         setState {
-            copy(currentRoutine = routine)
-        }
-        setState {
-            copy(exerciseList = list)
+            copy(
+                exercises = exerciseList.toList(),
+            )
         }
     }
-    
-    fun setLessonSet(index: Int, set: Int) = currentState {
-        val list = exerciseList.toMutableList()
-        val routine = currentRoutine.copy(
-            set = set
-        )
-        list[index] = routine
-        setState {
-            copy(currentRoutine = routine)
-        }
-        setState {
-            copy(exerciseList = list)
-        }
-    }
-    
-    fun addAllLessons() = currentState {
-        viewModelScope.launch {
-            exerciseList.forEach { routine ->
-                routine.id = id
-                routine.today = dateStringYYYYMMDD
-                lessonRepository.addLesson(routine)
+
+    fun changeWeight(
+        value: String,
+        exerciseIndex: Int,
+        exerciseSetIndex: Int,
+    ) = currentState {
+        val exerciseList = mutableListOf<Exercise>()
+        exerciseList.addAll(exercises)
+
+        val exerciseSetList = mutableListOf<Exercise.ExerciseSet>()
+        exerciseSetList.addAll(exerciseList[exerciseIndex].sets)
+
+        exerciseSetList[exerciseSetIndex] = exerciseSetList[exerciseSetIndex].copy(
+            weight = if (value.isEmpty()) {
+                0.0
+            } else {
+                value.toDouble()
             }
+        )
+
+        exerciseList[exerciseIndex] = exerciseList[exerciseIndex].copy(
+            sets = exerciseSetList.toList()
+        )
+        setState {
+            copy(
+                exercises = exerciseList.toList(),
+            )
         }
     }
-    
-    private fun sortSet(routineList: MutableList<Routine>): MutableList<Routine> = currentState {
-        for (i in routineList.indices) {
-            routineList[i].set = i + 1
+
+    fun changeCount(
+        value: String,
+        exerciseIndex: Int,
+        exerciseSetIndex: Int,
+    ) = currentState {
+        val exerciseList = mutableListOf<Exercise>()
+        exerciseList.addAll(exercises)
+
+        val exerciseSetList = mutableListOf<Exercise.ExerciseSet>()
+        exerciseSetList.addAll(exerciseList[exerciseIndex].sets)
+
+        exerciseSetList[exerciseSetIndex] = exerciseSetList[exerciseSetIndex].copy(
+            count = if (value.isEmpty()) {
+                0
+            } else {
+                value.toInt()
+            }
+        )
+
+        exerciseList[exerciseIndex] = exerciseList[exerciseIndex].copy(
+            sets = exerciseSetList.toList()
+        )
+
+        setState {
+            copy(
+                exercises = exerciseList.toList(),
+            )
         }
-        return routineList
+    }
+
+    fun changeAllSet(
+        exerciseIndex: Int,
+        set: String,
+    ) = currentState {
+        runCatching {
+            val changedSet = set.toIntOrNull()?.let {
+                if (it > 10) {
+                    10
+                    // TODO 토스트 10보다 클 때 최대 10개 입니다. 로딩 필요?
+                } else {
+                    it
+                }
+            } ?: 0
+
+            val exerciseList = mutableListOf<Exercise>()
+            exerciseList.addAll(exercises)
+
+            val exerciseSetList = mutableListOf<Exercise.ExerciseSet>()
+            exerciseSetList.addAll(exerciseList[exerciseIndex].sets)
+
+            if (exerciseSetList.size < changedSet) {
+                repeat(changedSet - exerciseSetList.size) {
+                    exerciseSetList.add(
+                        Exercise.ExerciseSet(
+                            setIndex = exerciseSetList.size + 1,
+                        )
+                    )
+                }
+            } else if (exerciseSetList.size > changedSet) {
+                repeat(exerciseSetList.size - changedSet) {
+                    exerciseSetList.removeAt(exerciseSetList.size - 1)
+                }
+            }
+
+            exerciseList[exerciseIndex] = exerciseList[exerciseIndex].copy(
+                sets = exerciseSetList.toList()
+            )
+
+            exerciseList.toList()
+        }.onSuccess {
+            setState {
+                copy(
+                    exercises = it,
+                )
+            }
+        }.onFailure {
+            // TODO
+        }
     }
 }
