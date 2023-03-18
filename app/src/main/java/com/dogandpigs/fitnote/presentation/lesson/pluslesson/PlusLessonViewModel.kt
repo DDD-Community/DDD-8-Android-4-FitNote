@@ -21,7 +21,7 @@ internal class PlusLessonViewModel @Inject constructor(
         lessonId: Int,
     ) {
         viewModelScope.launch {
-            if (lessonId > 0 ) {
+            if (lessonId > 0) {
                 runCatching {
                     lessonRepository.getLessonDetail(
                         id = memberId,
@@ -82,10 +82,23 @@ internal class PlusLessonViewModel @Inject constructor(
     }
 
     fun addExercise() = currentState {
-        val exerciseList = mutableListOf<Exercise>()
-        exerciseList.addAll(exercises)
+        val exerciseList = mutableListOf<Exercise>().apply {
+            addAll(exercises)
+            add(Exercise())
+        }
 
-        exerciseList.add(Exercise())
+        setState {
+            copy(
+                exercises = exerciseList.toList(),
+            )
+        }
+    }
+
+    fun removeExercise(index: Int) = currentState {
+        val exerciseList = mutableListOf<Exercise>().apply {
+            addAll(exercises)
+            removeAt(index)
+        }
 
         setState {
             copy(

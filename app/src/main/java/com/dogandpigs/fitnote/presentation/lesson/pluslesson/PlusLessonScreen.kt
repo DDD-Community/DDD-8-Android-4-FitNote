@@ -43,6 +43,7 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.dogandpigs.fitnote.R
+import com.dogandpigs.fitnote.presentation.base.ComponentPreview
 import com.dogandpigs.fitnote.presentation.base.FigmaPreview
 import com.dogandpigs.fitnote.presentation.lesson.Exercise
 import com.dogandpigs.fitnote.presentation.lesson.component.ExerciseColumn
@@ -52,6 +53,7 @@ import com.dogandpigs.fitnote.presentation.lesson.component.LessonTextField
 import com.dogandpigs.fitnote.presentation.lesson.component.LessonWeightTextField
 import com.dogandpigs.fitnote.presentation.ui.component.BottomPositiveButton
 import com.dogandpigs.fitnote.presentation.ui.component.DefaultDatePickerDialog
+import com.dogandpigs.fitnote.presentation.ui.component.DefaultSpacer
 import com.dogandpigs.fitnote.presentation.ui.component.DefaultText
 import com.dogandpigs.fitnote.presentation.ui.component.FitNoteScaffold
 import com.dogandpigs.fitnote.presentation.ui.component.HeightSpacer
@@ -107,6 +109,7 @@ internal fun PlusLessonScreen(
         onChangeAllSet = viewModel::changeAllSet,
         onChangeAllWeight = {},
         onChangeAllCount = {},
+        onExerciseSetDelete = viewModel::removeExercise,
     )
 }
 
@@ -135,6 +138,7 @@ private fun PlusLesson(
     ) -> Unit,
     onChangeAllWeight: (String) -> Unit,
     onChangeAllCount: (String) -> Unit,
+    onExerciseSetDelete: (index: Int) -> Unit,
 ) {
     val datePickerVisible = remember { mutableStateOf(false) }
 
@@ -185,6 +189,9 @@ private fun PlusLesson(
                                 onChangeName = { newValue ->
                                     changeExerciseName(index, newValue)
                                 },
+                                onExerciseSetDelete = {
+                                    onExerciseSetDelete(index)
+                                },
                             )
                             HeightSpacer(height = LocalFitNoteSpacing.current.spacing4)
 
@@ -201,7 +208,7 @@ private fun PlusLesson(
 
                             HeightSpacer(height = LocalFitNoteSpacing.current.spacing4)
                         },
-                        foldText = "세트별 편집",
+                        foldText = stringResource(id = R.string.edit_per_set),
                         ItemButton = { exerciseSetIndex: Int, _: Exercise.ExerciseSet ->
                             IconButton(
                                 onClick = {
@@ -210,7 +217,7 @@ private fun PlusLesson(
                             ) {
                                 Icon(
                                     painter = painterResource(id = R.drawable.trash),
-                                    contentDescription = "Back"
+                                    stringResource(id = R.string.delete),
                                 )
                             }
                         },
@@ -240,6 +247,7 @@ private fun PlusLesson(
 
             BottomPositiveButton(
                 text = stringResource(id = R.string.btn_save),
+                enabled = uiState.exercises.isNotEmpty(),
                 onClick = plusLesson,
             )
 
@@ -327,21 +335,38 @@ private fun ItemMainExerciseRow(
 private fun ItemMainExerciseName(
     text: String,
     onChangeName: (String) -> Unit,
+    onExerciseSetDelete: () -> Unit,
 ) {
-    LessonTextField(
+    Row(
         modifier = Modifier
             .fillMaxWidth()
             .wrapContentHeight(),
-        text = text,
-        onValueChange = onChangeName,
-        placeholder = {
-            DefaultText(
-                text = stringResource(id = R.string.exercise_name),
-                color = GrayScaleMidGray3,
-                style = LocalFitNoteTypography.current.buttonMedium,
+        verticalAlignment = Alignment.CenterVertically,
+    ) {
+        LessonTextField(
+            modifier = Modifier
+                .weight(1f)
+                .wrapContentHeight(),
+            text = text,
+            onValueChange = onChangeName,
+            placeholder = {
+                DefaultText(
+                    text = stringResource(id = R.string.exercise_name),
+                    color = GrayScaleMidGray3,
+                    style = LocalFitNoteTypography.current.buttonMedium,
+                )
+            }
+        )
+        DefaultSpacer(width = LocalFitNoteSpacing.current.spacing6)
+        IconButton(
+            onClick = onExerciseSetDelete
+        ) {
+            Icon(
+                painter = painterResource(id = R.drawable.trash),
+                contentDescription = stringResource(id = R.string.delete),
             )
         }
-    )
+    }
 }
 
 @Composable
@@ -394,10 +419,10 @@ private fun AddExerciseButton(
         ) {
             Icon(
                 imageVector = Icons.Default.Add, tint = Color.Black, // Icon Color
-                contentDescription = "Add Exercise"
+                contentDescription = stringResource(id = R.string.add_exercise)
             )
             DefaultText(
-                text = stringResource(id = R.string.btn_add_exercise),
+                text = stringResource(id = R.string.add_exercise),
                 color = GrayScaleDarkGray1,
                 style = LocalFitNoteTypography.current.buttonMedium,
             )
@@ -426,6 +451,57 @@ private fun PreviewPlusLesson() {
             onChangeAllSet = { _: Int, _: String -> },
             onChangeAllWeight = {},
             onChangeAllCount = {},
+            onExerciseSetDelete = {},
+        )
+    }
+}
+
+@ComponentPreview
+@Composable
+private fun PreviewExerciseColumn() {
+    val previewExercise = mockUiState.exercises.first()
+    FitNoteTheme {
+        ExerciseColumn(
+            exercise = previewExercise,
+            Title = {
+                ItemMainExerciseName(
+                    text = previewExercise.name,
+                    onChangeName = {},
+                    onExerciseSetDelete = {},
+                )
+                HeightSpacer(height = LocalFitNoteSpacing.current.spacing4)
+
+                ItemMainExerciseRow(
+                    set = previewExercise.numberOfSets.toString(),
+                    weight = previewExercise.mainWeight.format(),
+                    count = previewExercise.mainCount.toString(),
+                    onChangeAllSet = {},
+                    onChangeAllWeight = {},
+                    onChangeAllCount = {},
+                )
+
+                HeightSpacer(height = LocalFitNoteSpacing.current.spacing4)
+            },
+            foldText = stringResource(id = R.string.edit_per_set),
+            ItemButton = { _: Int, _: Exercise.ExerciseSet ->
+                IconButton(
+                    onClick = {}
+                ) {
+                    Icon(
+                        painter = painterResource(id = R.drawable.trash),
+                        contentDescription = stringResource(id = R.string.delete),
+                    )
+                }
+            },
+            BottomButton = {
+                PlusSetButton(
+                    onClick = {}
+                )
+            },
+            onChangeWeight = { _: String, _: Int ->
+            },
+            onChangeCount = { _: String, _: Int ->
+            },
         )
     }
 }
