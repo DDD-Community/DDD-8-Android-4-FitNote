@@ -58,7 +58,8 @@ internal class MemberLessonViewModel @Inject constructor(
                                         lessonId = lessonId,
                                     )
                                 )
-                            }
+                            },
+                            isOnlyReady = true,
                         ),
                     )
                 }

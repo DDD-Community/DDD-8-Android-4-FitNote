@@ -5,10 +5,19 @@ import com.dogandpigs.fitnote.data.source.remote.model.LessonDetailResponse
 internal fun LessonDetailResponse?.toPresentation(
     id: Int,
     today: Int,
-    tempListAction: ((id: Int, today: Int, lessonId: Int) -> Unit)? = null
+    tempListAction: ((id: Int, today: Int, lessonId: Int) -> Unit)? = null,
+    isOnlyReady: Boolean = false,
 ): List<Exercise> =
     this?.run {
-        this.lessonInfo.flatten().groupBy {
+        this.lessonInfo.flatten().let {
+            if (isOnlyReady) {
+                it.filter { lesson ->
+                    lesson.completion == 0
+                }
+            } else {
+                it
+            }
+        }.groupBy {
             it.name
         }.let { maps ->
             val exerciseList = mutableListOf<Exercise>()
