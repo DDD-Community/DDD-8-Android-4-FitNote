@@ -5,14 +5,22 @@ internal data class Exercise(
     val sets: List<ExerciseSet> = listOf(ExerciseSet()),
     val isFold: Boolean = true,
 ) {
+    private val maxWeightExerciseSet: ExerciseSet
+        get() = sets.maxBy { sets -> sets.weight }
+            .let { exerciseSet ->
+                sets.first {
+                    it == exerciseSet
+                }
+            }
+
     val numberOfSets: Int
         get() = sets.size
 
     val mainWeight: Double
-        get() = sets.firstOrNull()?.weight ?: 0.0
+        get() = maxWeightExerciseSet.weight
 
     val mainCount: Int
-        get() = sets.firstOrNull()?.count ?: 0
+        get() = maxWeightExerciseSet.count
 
     fun toggle(): Exercise = copy(
         sets = if (isFold) {
