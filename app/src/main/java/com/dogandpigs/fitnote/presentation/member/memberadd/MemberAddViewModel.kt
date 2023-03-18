@@ -20,9 +20,9 @@ internal class MemberAddViewModel @Inject constructor(
             viewModelScope.launch {
                 runCatching {
                     check(name.isNotBlank()) { "이름을 입력해주세요." }
-                    val userWeight = weight.toDoubleOrNull()
+                    val userWeight = weight.ifEmpty { "0" }.toDoubleOrNull()
                     checkNotNull(userWeight) { "몸무게는 숫자만 입력가능합니다." }
-                    val userHeight = height.toDoubleOrNull()
+                    val userHeight = height.ifEmpty { "0" }.toDoubleOrNull()
                     checkNotNull(userHeight) { "키는 숫자만 입력가능합니다." }
 
                     val member = MemberRequest(
