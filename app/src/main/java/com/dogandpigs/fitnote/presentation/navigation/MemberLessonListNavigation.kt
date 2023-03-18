@@ -7,6 +7,6 @@ internal fun NavHostController.navigateToMemberLessonListRoute(
     memberId: Long,
 ) {
     this.navigate(MemberLessonListNavRoute.getPath(memberId)) {
-        popUpTo(MemberLessonListNavRoute.path) { inclusive = true }
+        popUpTo(MemberLessonListNavRoute.route) { inclusive = true }
     }
 }

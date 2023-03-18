@@ -46,6 +46,6 @@ fun NavGraphBuilder.addAddLessonScreen(
 internal fun NavHostController.navigateToAddLesson(memberId: Int, lessonId: Int = 0) {
     this.navigate(AddLessonNavRoute.query(memberId, lessonId)) {
         launchSingleTop = true
-        popUpTo(LoadLessonNavRoute.route) { inclusive = true }
+        popUpTo(LoadLessonNavRoute.path) { inclusive = true }
     }
 }

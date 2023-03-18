@@ -34,7 +34,7 @@ internal fun NavigationGraph(navController: NavHostController) {
             navigateToJoin = { navController.navigate(ROUTE_JOIN) },
             navigateToLogin = { navController.navigate(ROUTE_LOGIN) },
             navigateToLesson = { navController.navigateToMemberLessonListRoute(0) },
-            navigateToMemberList = { navController.navigate(MemberListNavRoute.route) },
+            navigateToMemberList = { navController.navigate(MemberListNavRoute.path) },
             navigateToMemberLesson = { navController.navigate(ROUTE_MEMBER_LESSON) },
         )
         addJoin(
@@ -81,14 +81,14 @@ private fun NavGraphBuilder.addMember(
     navController: NavHostController,
 ) {
     addMemberList(
-        route = MemberListNavRoute.route,
+        route = MemberListNavRoute.path,
         navigateToMemberDetail = { navController.navigate("$ROUTE_MEMBER_DETAIL/$it") },
         navigateToMemberAdd = { navController.navigate(ROUTE_MEMBER_ADD) },
         navigateToMemberLessonList = { navController.navigateToMemberLessonListRoute(it) },
         navigateToSetting = { navController.navigate(ROUTE_SETTING) }
     )
     addMemberListWithRegistration(
-        route = "${MemberListNavRoute.route}/{$ARGUMENT_REGISTRATION}",
+        route = "${MemberListNavRoute.path}/{$ARGUMENT_REGISTRATION}",
         navigateToMemberDetail = { navController.navigate("$ROUTE_MEMBER_DETAIL/$it") },
         navigateToMemberAdd = { navController.navigate(ROUTE_MEMBER_ADD) },
         navigateToMemberLessonList = { navController.navigateToMemberLessonListRoute(it) },
@@ -99,9 +99,9 @@ private fun NavGraphBuilder.addMember(
         navigateToHome = { navController.navigateToHome() },
         navigateToMemberListWithRegistration = {
             navController.navigate(
-                route = "${MemberListNavRoute.route}/$it"
+                route = "${MemberListNavRoute.path}/$it"
             ) {
-                popUpTo(MemberListNavRoute.route) { inclusive = true }
+                popUpTo(MemberListNavRoute.path) { inclusive = true }
             }
         }
     )
@@ -128,7 +128,7 @@ private fun NavGraphBuilder.addLesson(
     navController: NavHostController,
 ) {
     addMemberLessonListScreen(
-        route = MemberLessonListNavRoute.path,
+        route = MemberLessonListNavRoute.route,
         popBackStack = { navController.popBackStack() },
         navigateToAddLesson = {
             navController.navigateToAddLesson(it)
@@ -141,7 +141,7 @@ private fun NavGraphBuilder.addLesson(
         },
     )
     addAddLessonScreen(
-        route = AddLessonNavRoute.path,
+        route = AddLessonNavRoute.route,
         popBackStack = { navController.popBackStack() },
         navigateToLoadLesson = { navController.navigateToLoadLesson() },
         navigateToMemberLessonList = { navController.navigateToMemberLessonListRoute(it.toLong()) },
@@ -153,7 +153,7 @@ private fun NavGraphBuilder.addLesson(
         navigateToMemberLessonList = { navController.navigateToMemberLessonListRoute(it.toLong()) },
     )
     addLoadLesson(
-        route = LoadLessonNavRoute.route,
+        route = LoadLessonNavRoute.path,
         popBackStack = { navController.popBackStack() },
         navigateToAddLessonWithLoad = { memberId, lessonId ->
             navController.navigateToAddLesson(memberId, lessonId)

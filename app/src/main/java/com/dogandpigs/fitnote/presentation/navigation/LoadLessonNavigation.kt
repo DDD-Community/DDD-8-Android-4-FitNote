@@ -20,7 +20,7 @@ fun NavGraphBuilder.addLoadLesson(
 }
 
 internal fun NavHostController.navigateToLoadLesson() {
-    this.navigate(LoadLessonNavRoute.route) {
+    this.navigate(LoadLessonNavRoute.path) {
         launchSingleTop = true
     }
 }

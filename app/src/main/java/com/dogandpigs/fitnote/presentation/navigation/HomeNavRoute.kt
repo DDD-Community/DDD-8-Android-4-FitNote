@@ -4,12 +4,12 @@ import androidx.navigation.NavHostController
 import com.dogandpigs.fitnote.presentation.member.memberlist.MemberListNavRoute
 
 internal object HomeNavRoute : NavRoute {
-    override val route: String
-        get() = MemberListNavRoute.route
+    override val path: String
+        get() = MemberListNavRoute.path
 }
 
 internal fun NavHostController.navigateToHome() {
-    this.navigate(HomeNavRoute.route) {
+    this.navigate(HomeNavRoute.path) {
         popUpTo(this@navigateToHome.graph.id) {
             inclusive = true
         }
