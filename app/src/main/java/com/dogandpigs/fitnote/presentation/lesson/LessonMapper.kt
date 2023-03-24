@@ -1,16 +1,17 @@
 package com.dogandpigs.fitnote.presentation.lesson
 
 import com.dogandpigs.fitnote.data.source.remote.model.LessonDetailResponse
+import com.dogandpigs.fitnote.domain.model.Lesson
 
 internal fun LessonDetailResponse?.toPresentation(
     id: Int,
     today: Int,
     tempListAction: ((id: Int, today: Int, lessonId: Int) -> Unit)? = null,
-    isOnlyReady: Boolean = false,
+    mode: LessonMode = LessonMode.UNKNOWN,
 ): List<Exercise> =
     this?.run {
         this.lessonInfo.flatten().let {
-            if (isOnlyReady) {
+            if (mode == LessonMode.SHOW || mode == LessonMode.ADD || mode == LessonMode.EDIT) {
                 it.filter { lesson ->
                     lesson.completion == 0
                 }
@@ -30,6 +31,7 @@ internal fun LessonDetailResponse?.toPresentation(
                             it.forEach { lessonDescription ->
                                 list.add(
                                     Exercise.ExerciseSet(
+                                        lessonId = lessonDescription.lessonId,
                                         setIndex = lessonDescription.set,
                                         weight = lessonDescription.weight.toDouble(),
                                         count = lessonDescription.count,
@@ -52,3 +54,17 @@ internal fun LessonDetailResponse?.toPresentation(
             exerciseList
         }
     } ?: emptyList()
+
+internal fun Exercise.ExerciseSet.toLesson(
+    id: Int,
+    name: String,
+    today: String,
+): Lesson =
+    Lesson(
+        id = id,
+        name = name,
+        set = this.setIndex,
+        weight = this.weight.toString(),
+        count = this.count,
+        today = today,
+    )

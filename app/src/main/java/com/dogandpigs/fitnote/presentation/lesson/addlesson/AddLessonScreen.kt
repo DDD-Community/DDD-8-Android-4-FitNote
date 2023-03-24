@@ -49,6 +49,7 @@ import com.dogandpigs.fitnote.presentation.base.ComponentPreview
 import com.dogandpigs.fitnote.presentation.base.Event
 import com.dogandpigs.fitnote.presentation.base.FigmaPreview
 import com.dogandpigs.fitnote.presentation.lesson.Exercise
+import com.dogandpigs.fitnote.presentation.lesson.LessonMode
 import com.dogandpigs.fitnote.presentation.lesson.component.ExerciseColumn
 import com.dogandpigs.fitnote.presentation.lesson.component.LessonCountTextField
 import com.dogandpigs.fitnote.presentation.lesson.component.LessonSetTextField
@@ -76,7 +77,7 @@ import com.dogandpigs.fitnote.presentation.util.format
 internal fun AddLessonScreen(
     memberId: Int,
     lessonId: Int = 0, // TODO
-    mode: Int = AddLessonNavRoute.addMode,
+    mode: LessonMode = LessonMode.ADD,
     viewModel: AddLessonViewModel = hiltViewModel(),
     popBackStack: () -> Unit,
     navigateToLoadLesson: () -> Unit,
@@ -119,7 +120,7 @@ internal fun AddLessonScreen(
         removeExerciseSet = viewModel::removeExerciseSet,
         onChangeWeight = viewModel::changeWeight,
         onChangeCount = viewModel::changeCount,
-        addLesson = viewModel::addLesson,
+        onSaveButtonClick = viewModel::saveLesson,
         onClickClose = popBackStack,
         onClickLoadLesson = navigateToLoadLesson,
         onClickAddExercise = viewModel::addExercise,
@@ -145,7 +146,7 @@ private fun AddLesson(
     ) -> Unit,
     onChangeWeight: (String, Int, Int) -> Unit,
     onChangeCount: (String, Int, Int) -> Unit,
-    addLesson: () -> Unit,
+    onSaveButtonClick: () -> Unit,
     onClickClose: () -> Unit,
     onClickLoadLesson: () -> Unit,
     onClickAddExercise: () -> Unit,
@@ -165,7 +166,7 @@ private fun AddLesson(
 
     FitNoteScaffold(
         topBarTitle = when (uiState.mode) {
-            AddLessonNavRoute.editMode -> {
+            LessonMode.EDIT -> {
                 stringResource(id = R.string.lesson_edit)
             }
             else -> {
@@ -278,7 +279,7 @@ private fun AddLesson(
             BottomPositiveButton(
                 text = stringResource(id = R.string.btn_save),
                 enabled = uiState.exercises.isNotEmpty(),
-                onClick = addLesson,
+                onClick = onSaveButtonClick,
             )
 
             DefaultDatePickerDialog(
@@ -508,7 +509,7 @@ private fun PreviewAddLesson() {
             removeExerciseSet = { _: Int, _: Int -> },
             onChangeWeight = { _: String, _: Int, _: Int -> },
             onChangeCount = { _: String, _: Int, _: Int -> },
-            addLesson = {},
+            onSaveButtonClick = {},
             onClickClose = {},
             onClickLoadLesson = {},
             onClickAddExercise = {},

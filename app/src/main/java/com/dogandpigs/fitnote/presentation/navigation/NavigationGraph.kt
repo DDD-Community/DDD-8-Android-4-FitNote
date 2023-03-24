@@ -5,6 +5,7 @@ import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import com.dogandpigs.fitnote.presentation.join.addJoin
+import com.dogandpigs.fitnote.presentation.lesson.LessonMode
 import com.dogandpigs.fitnote.presentation.lesson.addlesson.AddLessonNavRoute
 import com.dogandpigs.fitnote.presentation.lesson.loadlesson.LoadLessonNavRoute
 import com.dogandpigs.fitnote.presentation.lesson.memberlesson.addMemberLesson
@@ -143,7 +144,7 @@ private fun NavGraphBuilder.addLesson(
             navController.navigateToAddLesson(
                 memberId = memberId,
                 lessonId = lessonDate,
-                mode = AddLessonNavRoute.editMode,
+                mode = LessonMode.EDIT,
             )
         },
     )

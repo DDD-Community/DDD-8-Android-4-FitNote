@@ -5,6 +5,7 @@ import androidx.navigation.NavHostController
 import androidx.navigation.NavType
 import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
+import com.dogandpigs.fitnote.presentation.lesson.LessonMode
 import com.dogandpigs.fitnote.presentation.lesson.addlesson.AddLessonNavRoute
 import com.dogandpigs.fitnote.presentation.lesson.addlesson.AddLessonScreen
 import com.dogandpigs.fitnote.presentation.lesson.loadlesson.LoadLessonNavRoute
@@ -31,14 +32,15 @@ fun NavGraphBuilder.addAddLessonScreen(
             navArgument(AddLessonNavRoute.mode) {
                 type = NavType.IntType
                 nullable = false
-                defaultValue = AddLessonNavRoute.addMode
+                defaultValue = LessonMode.UNKNOWN.value
             },
         )
     ) {
         val memberId = it.arguments?.getInt(AddLessonNavRoute.memberId, 0) ?: 0
         val lessonId = it.arguments?.getInt(AddLessonNavRoute.lessonId, 0) ?: 0
-        val mode = it.arguments?.getInt(AddLessonNavRoute.mode, AddLessonNavRoute.addMode)
-            ?: AddLessonNavRoute.addMode
+        val mode = LessonMode.values().firstOrNull { lessonMode ->
+            lessonMode.value == it.arguments?.getInt(AddLessonNavRoute.mode, LessonMode.UNKNOWN.value)
+        } ?: LessonMode.UNKNOWN
 
         AddLessonScreen(
             memberId = memberId,
@@ -54,7 +56,7 @@ fun NavGraphBuilder.addAddLessonScreen(
 internal fun NavHostController.navigateToAddLesson(
     memberId: Int,
     lessonId: Int = 0,
-    mode: Int = AddLessonNavRoute.addMode
+    mode: LessonMode = LessonMode.ADD,
 ) {
     this.navigate(AddLessonNavRoute.query(memberId, lessonId, mode)) {
         launchSingleTop = true

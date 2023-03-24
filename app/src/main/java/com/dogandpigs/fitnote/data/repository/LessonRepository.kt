@@ -1,18 +1,19 @@
 package com.dogandpigs.fitnote.data.repository
 
+import com.dogandpigs.fitnote.data.mapper.toData
 import com.dogandpigs.fitnote.data.source.remote.api.LessonApi
 import com.dogandpigs.fitnote.data.source.remote.model.LessonDetailResponse
 import com.dogandpigs.fitnote.data.source.remote.response.LessonResponse
 import com.dogandpigs.fitnote.data.util.handleResponse
-import com.dogandpigs.fitnote.presentation.lesson.Routine
+import com.dogandpigs.fitnote.domain.model.Lesson
 import com.google.gson.JsonObject
 import javax.inject.Inject
 
 class LessonRepository @Inject constructor(
     private val lessonApi: LessonApi
 ) {
-    suspend fun addLesson(routine: Routine): Int {
-        lessonApi.addLesson(routine).run {
+    suspend fun addLesson(lesson: Lesson): Int {
+        lessonApi.addLesson(lesson.toData()).run {
             return body()?.data ?: -1
         }
     }

@@ -5,7 +5,8 @@ import com.dogandpigs.fitnote.data.repository.LessonRepository
 import com.dogandpigs.fitnote.presentation.base.BaseViewModel
 import com.dogandpigs.fitnote.presentation.base.Event
 import com.dogandpigs.fitnote.presentation.lesson.Exercise
-import com.dogandpigs.fitnote.presentation.lesson.Routine
+import com.dogandpigs.fitnote.presentation.lesson.LessonMode
+import com.dogandpigs.fitnote.presentation.lesson.toLesson
 import com.dogandpigs.fitnote.presentation.lesson.toPresentation
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -22,10 +23,12 @@ internal class AddLessonViewModel @Inject constructor(
     private val _eventStateFlow: MutableStateFlow<Event> = MutableStateFlow(Event.None)
     val eventStateFlow = _eventStateFlow.asStateFlow()
 
+    private var originExerciseList: List<Exercise>? = null
+
     fun initialize(
         memberId: Int,
         lessonId: Int,
-        mode: Int,
+        mode: LessonMode,
     ) {
         viewModelScope.launch {
             if (lessonId > 0) {
@@ -35,13 +38,17 @@ internal class AddLessonViewModel @Inject constructor(
                         today = lessonId,
                     )
                 }.onSuccess {
+                    val exercises = it.toPresentation(
+                        id = memberId,
+                        today = lessonId,
+                    )
                     setState {
                         copy(
-                            exercises = it.toPresentation(
-                                id = memberId,
-                                today = lessonId,
-                            ),
+                            exercises = exercises,
                         )
+                    }
+                    if (mode == LessonMode.EDIT) {
+                        originExerciseList = exercises
                     }
                 }.onFailure {
                     showToast("불러오기", it.message)
@@ -57,21 +64,18 @@ internal class AddLessonViewModel @Inject constructor(
         }
     }
 
-    fun addLesson() = currentState {
+    fun saveLesson() = currentState {
         viewModelScope.launch {
             runCatching {
-                exercises.forEach { exerciseList ->
-                    exerciseList.sets.forEachIndexed { index, exerciseSet ->
-                        val routine = Routine(
-                            id = id,
-                            index = index,
-                            name = exerciseList.name,
-                            set = exerciseSet.setIndex,
-                            weight = exerciseSet.weight.toInt(),
-                            count = exerciseSet.count,
-                            today = dateStringYYYYMMDD,
-                        )
-                        lessonRepository.addLesson(routine)
+                when (mode) {
+                    LessonMode.ADD -> {
+                        addLesson()
+                    }
+                    LessonMode.EDIT -> {
+//                        editLesson()
+                    }
+                    else -> {
+
                     }
                 }
             }.onSuccess {
@@ -85,6 +89,67 @@ internal class AddLessonViewModel @Inject constructor(
             }
         }
     }
+
+    private suspend fun addLesson() = currentState {
+        exercises.forEach { exerciseList ->
+            exerciseList.sets.forEachIndexed { index, exerciseSet ->
+                val lesson = exerciseSet.toLesson(
+                    id = id,
+                    name = exerciseList.name,
+                    today = dateStringYYYYMMDD,
+                )
+                lessonRepository.addLesson(lesson)
+            }
+        }
+    }
+
+    // TODO
+//    private suspend fun editLesson() = currentState {
+//        // 삭제
+//        val originLessonIdList = originExerciseList?.flatMap {
+//            it.sets.map { exerciseSet ->
+//                exerciseSet.lessonId
+//            }
+//        }
+//        checkNotNull(originLessonIdList)
+//
+//        val newLessonIdList = exercises.map {
+//            it.sets.map { exerciseSet ->
+//                exerciseSet.lessonId
+//            }
+//        }.flatten()
+//
+//        val deleteLessonIdList = newLessonIdList.filterNot {
+//            originLessonIdList.contains(it)
+//        }
+//        val deleteLessonList = originExerciseList?.flatMap {
+//            it.sets.filter { exerciseSet ->
+//                deleteLessonIdList.contains(exerciseSet.lessonId)
+//            }
+//        }
+//
+//        // 수정
+//        // 추가
+//
+//        // 추가할 것
+//        originExerciseList?.zipWithNext { a, b -> }
+//
+//        originExerciseList?.forEach { exerciseList ->
+//            exerciseList.sets.filter {
+//                it.id in
+//            }
+//        }
+//        exercises.forEach { exerciseList ->
+//            exerciseList.sets.forEachIndexed { index, exerciseSet ->
+//                exerciseSet.lessonId
+//                // 기존에 있으면 업데이트
+//                // 없어진 거 삭제
+//                // id를 비교해서 없으면 삽입, 있으면 비교해서 업데이트 id가 없어졌으면 삭제
+//
+//                lessonRepository.addLesson(routine)
+//            }
+//        }
+//    }
 
     fun setDateMilliSeconds(dateMilliSeconds: Long?) = currentState {
         runCatching {

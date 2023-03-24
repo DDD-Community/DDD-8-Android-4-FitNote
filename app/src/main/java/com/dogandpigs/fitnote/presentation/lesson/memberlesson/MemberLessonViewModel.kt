@@ -4,6 +4,7 @@ import androidx.lifecycle.viewModelScope
 import com.dogandpigs.fitnote.data.repository.LessonRepository
 import com.dogandpigs.fitnote.presentation.base.BaseViewModel
 import com.dogandpigs.fitnote.presentation.lesson.Exercise
+import com.dogandpigs.fitnote.presentation.lesson.LessonMode
 import com.dogandpigs.fitnote.presentation.lesson.toPresentation
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
@@ -59,7 +60,7 @@ internal class MemberLessonViewModel @Inject constructor(
                                     )
                                 )
                             },
-                            isOnlyReady = true,
+                            mode = LessonMode.SHOW,
                         ),
                     )
                 }

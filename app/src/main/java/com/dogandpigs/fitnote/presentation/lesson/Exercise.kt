@@ -30,6 +30,7 @@ internal data class Exercise(
     )
 
     data class ExerciseSet(
+        val lessonId: Int = -1,
         val setIndex: Int = 1,
         val weight: Double = 0.0,
         val count: Int = 0,
