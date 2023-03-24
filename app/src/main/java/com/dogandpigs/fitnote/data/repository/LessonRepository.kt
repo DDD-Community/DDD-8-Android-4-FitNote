@@ -3,6 +3,7 @@ package com.dogandpigs.fitnote.data.repository
 import com.dogandpigs.fitnote.data.mapper.toData
 import com.dogandpigs.fitnote.data.source.remote.api.LessonApi
 import com.dogandpigs.fitnote.data.source.remote.model.LessonDetailResponse
+import com.dogandpigs.fitnote.data.source.remote.model.LessonIdRequest
 import com.dogandpigs.fitnote.data.source.remote.response.LessonResponse
 import com.dogandpigs.fitnote.data.util.handleResponse
 import com.dogandpigs.fitnote.domain.model.Lesson
@@ -62,5 +63,17 @@ class LessonRepository @Inject constructor(
         }
 
         lessonApi.putLessonComplete(json)
+    }
+
+    suspend fun deleteLesson(
+        lessonId: Int,
+    ): Int {
+        lessonApi.deleteLesson(
+            LessonIdRequest(
+                lessonId = lessonId
+            )
+        ).run {
+            return body()?.data ?: -1
+        }
     }
 }

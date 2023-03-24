@@ -1,5 +1,6 @@
 package com.dogandpigs.fitnote.presentation.lesson.addlesson
 
+import android.util.Log
 import androidx.lifecycle.viewModelScope
 import com.dogandpigs.fitnote.data.repository.LessonRepository
 import com.dogandpigs.fitnote.presentation.base.BaseViewModel
@@ -72,7 +73,7 @@ internal class AddLessonViewModel @Inject constructor(
                         addLesson()
                     }
                     LessonMode.EDIT -> {
-//                        editLesson()
+                        editLesson()
                     }
                     else -> {
 
@@ -85,6 +86,7 @@ internal class AddLessonViewModel @Inject constructor(
                     )
                 }
             }.onFailure {
+                Log.e("fitnote-develop", it.toString())
                 showToast("저장", it.message)
             }
         }
@@ -103,35 +105,29 @@ internal class AddLessonViewModel @Inject constructor(
         }
     }
 
-    // TODO
-//    private suspend fun editLesson() = currentState {
-//        // 삭제
-//        val originLessonIdList = originExerciseList?.flatMap {
-//            it.sets.map { exerciseSet ->
-//                exerciseSet.lessonId
-//            }
-//        }
-//        checkNotNull(originLessonIdList)
-//
-//        val newLessonIdList = exercises.map {
-//            it.sets.map { exerciseSet ->
-//                exerciseSet.lessonId
-//            }
-//        }.flatten()
-//
-//        val deleteLessonIdList = newLessonIdList.filterNot {
-//            originLessonIdList.contains(it)
-//        }
-//        val deleteLessonList = originExerciseList?.flatMap {
-//            it.sets.filter { exerciseSet ->
-//                deleteLessonIdList.contains(exerciseSet.lessonId)
-//            }
-//        }
-//
-//        // 수정
-//        // 추가
-//
-//        // 추가할 것
+    private suspend fun editLesson() = currentState {
+        val originLessonIdList = originExerciseList?.flatMap {
+            it.sets.map { exerciseSet ->
+                exerciseSet.lessonId
+            }
+        }
+        checkNotNull(originLessonIdList)
+
+        val newLessonIdList = exercises.flatMap {
+            it.sets.map { exerciseSet ->
+                exerciseSet.lessonId
+            }
+        }.toSet()
+
+        val deleteLessonIdList = (originLessonIdList - newLessonIdList)
+        deleteLessonIdList.forEach {
+            lessonRepository.deleteLesson(it)
+        }
+
+        // 수정
+        // 추가
+
+        // 추가할 것
 //        originExerciseList?.zipWithNext { a, b -> }
 //
 //        originExerciseList?.forEach { exerciseList ->
@@ -149,7 +145,7 @@ internal class AddLessonViewModel @Inject constructor(
 //                lessonRepository.addLesson(routine)
 //            }
 //        }
-//    }
+    }
 
     fun setDateMilliSeconds(dateMilliSeconds: Long?) = currentState {
         runCatching {
