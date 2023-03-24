@@ -1,6 +1,5 @@
 package com.dogandpigs.fitnote.presentation.lesson.addlesson
 
-import android.util.Log
 import androidx.lifecycle.viewModelScope
 import com.dogandpigs.fitnote.data.repository.LessonRepository
 import com.dogandpigs.fitnote.presentation.base.BaseViewModel
@@ -9,6 +8,7 @@ import com.dogandpigs.fitnote.presentation.lesson.Exercise
 import com.dogandpigs.fitnote.presentation.lesson.LessonMode
 import com.dogandpigs.fitnote.presentation.lesson.toLesson
 import com.dogandpigs.fitnote.presentation.lesson.toPresentation
+import com.dogandpigs.fitnote.util.debugLog
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -86,7 +86,7 @@ internal class AddLessonViewModel @Inject constructor(
                     )
                 }
             }.onFailure {
-                Log.e("fitnote-develop", it.toString())
+                debugLog(it.toString())
                 showToast("저장", it.message)
             }
         }
@@ -124,6 +124,9 @@ internal class AddLessonViewModel @Inject constructor(
             lessonRepository.deleteLesson(it)
         }
 
+        (exercises - originExerciseList).also {
+            debugLog(it.toString())
+        }
         // 수정
         // 추가
 
