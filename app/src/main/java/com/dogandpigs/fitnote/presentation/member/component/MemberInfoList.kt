@@ -20,6 +20,8 @@ import com.dogandpigs.fitnote.R
 import com.dogandpigs.fitnote.presentation.member.MemberUiState
 import com.dogandpigs.fitnote.presentation.ui.component.DefaultText
 import com.dogandpigs.fitnote.presentation.ui.component.DefaultTextField
+import com.dogandpigs.fitnote.presentation.ui.component.DefaultTextFieldLabel
+import com.dogandpigs.fitnote.presentation.ui.component.DefaultTextFieldPlaceholder
 import com.dogandpigs.fitnote.presentation.ui.component.HeightSpacer
 import com.dogandpigs.fitnote.presentation.ui.component.WidthSpacer
 import com.dogandpigs.fitnote.presentation.ui.theme.BrandPrimary
@@ -47,8 +49,12 @@ internal fun MemberInfoList(
         DefaultTextField(
             value = uiState.name,
             onValueChange = onChangeName,
-            labelText = stringResource(id = R.string.name),
-            placeholderText = stringResource(id = R.string.default_name),
+            label = {
+                DefaultTextFieldLabel(text = stringResource(id = R.string.name))
+            },
+            placeholder = {
+                DefaultTextFieldPlaceholder(text = stringResource(id = R.string.default_name))
+            },
         )
         MemberInfoItem(
             text = stringResource(id = R.string.registration_date),
@@ -71,16 +77,24 @@ internal fun MemberInfoList(
         DefaultTextField(
             value = uiState.height,
             onValueChange = onChangeHeight,
-            labelText = stringResource(id = R.string.height),
-            placeholderText = stringResource(id = R.string.default_height),
+            label = {
+                DefaultTextFieldLabel(text = stringResource(id = R.string.height))
+            },
+            placeholder = {
+                DefaultTextFieldPlaceholder(text = stringResource(id = R.string.default_height))
+            },
             keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
         )
 
         DefaultTextField(
             value = uiState.weight,
             onValueChange = onChangeWeight,
-            labelText = stringResource(id = R.string.weight),
-            placeholderText = stringResource(id = R.string.default_weight),
+            label = {
+                DefaultTextFieldLabel(text = stringResource(id = R.string.weight))
+            },
+            placeholder = {
+                DefaultTextFieldPlaceholder(text = stringResource(id = R.string.default_weight))
+            },
             keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
         )
     }

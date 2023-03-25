@@ -92,56 +92,6 @@ internal val passwordVisualTransformation: VisualTransformation =
         mask = '\u002A'
     )
 
-@OptIn(ExperimentalMaterial3Api::class)
-@Composable
-internal fun DefaultTextField(
-    isError: Boolean = false,
-    value: String,
-    onValueChange: (String) -> Unit,
-    labelText: String,
-    placeholderText: String,
-    visualTransformation: VisualTransformation = VisualTransformation.None,
-    keyboardOptions: KeyboardOptions = KeyboardOptions.Default,
-    supportingText: @Composable (() -> Unit)? = null,
-) {
-    val paddingValues = PaddingValues(
-        horizontal = 20.dp,
-        vertical = 10.dp,
-    )
-
-    TextField(
-        isError = isError,
-        label = {
-            Text(
-                text = labelText,
-                color = GrayScaleMidGray2,
-            )
-        },
-        colors = TextFieldDefaults.textFieldColors(
-            containerColor = Color.Transparent,
-            errorCursorColor = Alert,
-            errorIndicatorColor = Alert,
-            focusedIndicatorColor = BrandPrimary,
-        ),
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(paddingValues)
-            .background(Color.Transparent),
-        value = value,
-        onValueChange = onValueChange,
-        placeholder = {
-            Text(
-                text = placeholderText,
-                color = GrayScaleDarkGray2,
-                style = LocalFitNoteTypography.current.textDefault,
-            )
-        },
-        visualTransformation = visualTransformation,
-        keyboardOptions = keyboardOptions,
-        supportingText = supportingText,
-    )
-}
-
 @Composable
 internal fun CompleteButton(
     text: String,

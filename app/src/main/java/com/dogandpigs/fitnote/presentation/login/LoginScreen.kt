@@ -26,6 +26,8 @@ import com.dogandpigs.fitnote.presentation.base.FigmaPreview
 import com.dogandpigs.fitnote.presentation.ui.component.CompleteButton
 import com.dogandpigs.fitnote.presentation.ui.component.DefaultText
 import com.dogandpigs.fitnote.presentation.ui.component.DefaultTextField
+import com.dogandpigs.fitnote.presentation.ui.component.DefaultTextFieldLabel
+import com.dogandpigs.fitnote.presentation.ui.component.DefaultTextFieldPlaceholder
 import com.dogandpigs.fitnote.presentation.ui.component.FitNoteScaffold
 import com.dogandpigs.fitnote.presentation.ui.component.passwordVisualTransformation
 import com.dogandpigs.fitnote.presentation.ui.theme.FitNoteTheme
@@ -94,15 +96,23 @@ private fun Login(
                 DefaultTextField(
                     value = state.email,
                     onValueChange = onEmailValueChange,
-                    labelText = stringResource(id = R.string.email),
-                    placeholderText = stringResource(id = R.string.placeholder_email),
+                    label = {
+                        DefaultTextFieldLabel(text = stringResource(id = R.string.email))
+                    },
+                    placeholder = {
+                        DefaultTextFieldPlaceholder(text = stringResource(id = R.string.placeholder_email))
+                    },
                 )
 
                 DefaultTextField(
                     value = state.password,
                     onValueChange = onPasswordValueChange,
-                    labelText = stringResource(id = R.string.password),
-                    placeholderText = stringResource(id = R.string.password),
+                    label = {
+                        DefaultTextFieldLabel(text = stringResource(id = R.string.password))
+                    },
+                    placeholder = {
+                        DefaultTextFieldPlaceholder(text = stringResource(id = R.string.password))
+                    },
                     visualTransformation = passwordVisualTransformation,
                 )
 

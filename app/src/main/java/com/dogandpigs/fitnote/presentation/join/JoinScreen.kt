@@ -32,6 +32,8 @@ import com.dogandpigs.fitnote.presentation.base.FigmaPreview
 import com.dogandpigs.fitnote.presentation.ui.component.CompleteButton
 import com.dogandpigs.fitnote.presentation.ui.component.DefaultText
 import com.dogandpigs.fitnote.presentation.ui.component.DefaultTextField
+import com.dogandpigs.fitnote.presentation.ui.component.DefaultTextFieldLabel
+import com.dogandpigs.fitnote.presentation.ui.component.DefaultTextFieldPlaceholder
 import com.dogandpigs.fitnote.presentation.ui.component.FitNoteScaffold
 import com.dogandpigs.fitnote.presentation.ui.component.HeightSpacer
 import com.dogandpigs.fitnote.presentation.ui.component.passwordVisualTransformation
@@ -112,8 +114,12 @@ private fun Join(
                         // TODO 정규식 isNameError = true
                         name = newText
                     },
-                    labelText = stringResource(id = R.string.name),
-                    placeholderText = stringResource(id = R.string.name),
+                    label = {
+                        DefaultTextFieldLabel(text = stringResource(id = R.string.name))
+                    },
+                    placeholder = {
+                        DefaultTextFieldPlaceholder(text = stringResource(id = R.string.name))
+                    },
                 )
                 /**
                  * 이메일
@@ -126,8 +132,12 @@ private fun Join(
                         isEmailError = checkEmail(email)
                         check(!isEmailError && !isPwdError && !isCheckPwdError)
                     },
-                    labelText = stringResource(id = R.string.email),
-                    placeholderText = stringResource(id = R.string.placeholder_email),
+                    label = {
+                        DefaultTextFieldLabel(text = stringResource(id = R.string.email))
+                    },
+                    placeholder = {
+                        DefaultTextFieldPlaceholder(text = stringResource(id = R.string.placeholder_email))
+                    },
                     supportingText = {
                         if (isEmailError) {
                             DefaultText(
@@ -149,8 +159,12 @@ private fun Join(
                         isPwdError = checkPassword(pwd)
                         check(!isEmailError && !isPwdError && !isCheckPwdError)
                     },
-                    labelText = stringResource(id = R.string.password),
-                    placeholderText = stringResource(id = R.string.password),
+                    label = {
+                        DefaultTextFieldLabel(text = stringResource(id = R.string.password))
+                    },
+                    placeholder = {
+                        DefaultTextFieldPlaceholder(text = stringResource(id = R.string.password))
+                    },
                     visualTransformation = passwordVisualTransformation,
                     supportingText = {
                         if (isPwdError) {
@@ -173,8 +187,12 @@ private fun Join(
                         isCheckPwdError = checkCheckPassword(pwd, checkPwd)
                         check(!isEmailError && !isPwdError && !isCheckPwdError)
                     },
-                    labelText = stringResource(id = R.string.check_password),
-                    placeholderText = stringResource(id = R.string.check_password),
+                    label = {
+                        DefaultTextFieldLabel(text = stringResource(id = R.string.check_password))
+                    },
+                    placeholder = {
+                        DefaultTextFieldPlaceholder(text = stringResource(id = R.string.check_password))
+                    },
                     visualTransformation = passwordVisualTransformation,
                     supportingText = {
                         if (isCheckPwdError) {
