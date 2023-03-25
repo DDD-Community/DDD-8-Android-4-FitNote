@@ -22,6 +22,7 @@ import com.dogandpigs.fitnote.presentation.ui.component.DefaultText
 import com.dogandpigs.fitnote.presentation.ui.component.DefaultTextField
 import com.dogandpigs.fitnote.presentation.ui.component.DefaultTextFieldLabel
 import com.dogandpigs.fitnote.presentation.ui.component.DefaultTextFieldPlaceholder
+import com.dogandpigs.fitnote.presentation.ui.component.DefaultTextFieldSuffix
 import com.dogandpigs.fitnote.presentation.ui.component.HeightSpacer
 import com.dogandpigs.fitnote.presentation.ui.component.WidthSpacer
 import com.dogandpigs.fitnote.presentation.ui.theme.BrandPrimary
@@ -83,6 +84,9 @@ internal fun MemberInfoList(
             placeholder = {
                 DefaultTextFieldPlaceholder(text = stringResource(id = R.string.default_height))
             },
+            suffix = {
+                DefaultTextFieldSuffix(text = stringResource(id = R.string.height_unit))
+            },
             keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
         )
 
@@ -94,6 +98,9 @@ internal fun MemberInfoList(
             },
             placeholder = {
                 DefaultTextFieldPlaceholder(text = stringResource(id = R.string.default_weight))
+            },
+            suffix = {
+                DefaultTextFieldSuffix(text = stringResource(id = R.string.weight_unit))
             },
             keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
         )

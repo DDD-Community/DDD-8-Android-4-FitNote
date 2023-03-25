@@ -43,6 +43,9 @@
     <string name="height">키</string>
     <string name="weight">몸무게</string>
 
+    <string name="height_unit">cm</string>
+    <string name="weight_unit">kg</string>
+
     <string name="default_name">이름을 입력해주세요</string>
     <string name="default_height">키를 입력해주세요</string>
     <string name="default_weight">몸무게를 입력해주세요</string>
