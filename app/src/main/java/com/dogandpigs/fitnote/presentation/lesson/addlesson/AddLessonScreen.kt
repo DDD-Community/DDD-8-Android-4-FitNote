@@ -45,8 +45,10 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.dogandpigs.fitnote.R
+import com.dogandpigs.fitnote.presentation.MainViewModel
 import com.dogandpigs.fitnote.presentation.base.ComponentPreview
 import com.dogandpigs.fitnote.presentation.base.FigmaPreview
+import com.dogandpigs.fitnote.presentation.base.MainEvent
 import com.dogandpigs.fitnote.presentation.lesson.Exercise
 import com.dogandpigs.fitnote.presentation.lesson.LessonMode
 import com.dogandpigs.fitnote.presentation.lesson.component.ExerciseColumn
@@ -74,10 +76,11 @@ import com.dogandpigs.fitnote.presentation.util.format
 
 @Composable
 internal fun AddLessonScreen(
+    viewModel: AddLessonViewModel = hiltViewModel(),
+    mainViewModel: MainViewModel,
     memberId: Int,
     lessonId: Int = 0, // TODO
     mode: LessonMode = LessonMode.ADD,
-    viewModel: AddLessonViewModel = hiltViewModel(),
     popBackStack: () -> Unit,
     navigateToLoadLesson: () -> Unit,
     navigateToMemberLessonList: (Int) -> Unit,
@@ -101,6 +104,13 @@ internal fun AddLessonScreen(
             is AddLessonEvent.Toast -> {
                 val message = (eventStateFlow as AddLessonEvent.Toast).message
                 Toast.makeText(context, message, Toast.LENGTH_SHORT).show()
+            }
+            is AddLessonEvent.CustomToast -> {
+                mainViewModel.eventCustomToast(
+                    MainEvent.CustomToast(
+                        message = (eventStateFlow as AddLessonEvent.CustomToast).message
+                    )
+                )
             }
         }
     }

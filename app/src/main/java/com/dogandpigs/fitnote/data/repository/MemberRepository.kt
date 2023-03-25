@@ -5,22 +5,22 @@ import com.dogandpigs.fitnote.data.source.remote.api.MemberApi
 import com.dogandpigs.fitnote.data.source.remote.request.MemberRequest
 import com.dogandpigs.fitnote.data.source.remote.response.LessonResponse
 import com.dogandpigs.fitnote.data.source.remote.response.ListResponse
-import com.dogandpigs.fitnote.data.util.handleResponse
+import com.dogandpigs.fitnote.data.util.handleResponseResBase
 import javax.inject.Inject
 
 class MemberRepository @Inject constructor(
     private val memberApi: MemberApi
 ) {
     suspend fun getMemberList(): ListResponse? {
-        return handleResponse(memberApi.getMemberList())
+        return handleResponseResBase(memberApi.getMemberList())
     }
 
     suspend fun addMember(memberRequest: MemberRequest) {
-        handleResponse(memberApi.addMember(memberRequest))
+        handleResponseResBase(memberApi.addMember(memberRequest))
     }
 
     suspend fun editMember(memberRequest: MemberRequest) {
-        handleResponse(memberApi.putEditMember(memberRequest))
+        handleResponseResBase(memberApi.putEditMember(memberRequest))
     }
 
     suspend fun getMemberInfo(): LessonResponse? {

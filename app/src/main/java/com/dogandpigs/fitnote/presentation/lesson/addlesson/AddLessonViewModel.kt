@@ -82,6 +82,7 @@ internal class AddLessonViewModel @Inject constructor(
                     }
                 }
             }.onSuccess {
+                debugLog(it.toString())
                 setState {
                     copy(
                         isSuccess = true,
@@ -89,13 +90,23 @@ internal class AddLessonViewModel @Inject constructor(
                 }
             }.onFailure {
                 debugLog(it.toString())
-                showToast("저장", it.message)
+                when (it) {
+                    is AddLessonException -> {
+                        showCustomToast(message = it.message)
+                    }
+                    else -> {
+                        showToast("저장", it.message)
+                    }
+                }
             }
         }
     }
 
     private suspend fun addLesson() = currentState {
         exercises.forEach { exerciseList ->
+            if (exerciseList.sets.isEmpty()) {
+                throw AddLessonException("최소 하나의 운동을 작성해주세요")
+            }
             exerciseList.sets.forEachIndexed { index, exerciseSet ->
                 val lesson = exerciseSet.toLesson(
                     id = id,
@@ -484,5 +495,11 @@ internal class AddLessonViewModel @Inject constructor(
         message: String?,
     ) {
         _eventStateFlow.value = AddLessonEvent.Toast("$title 실패\n사유 : $message")
+    }
+
+    private fun showCustomToast(
+        message: String,
+    ) {
+        _eventStateFlow.value = AddLessonEvent.CustomToast(message = message)
     }
 }

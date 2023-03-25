@@ -6,6 +6,7 @@ import com.dogandpigs.fitnote.data.source.remote.model.LessonDetailResponse
 import com.dogandpigs.fitnote.data.source.remote.model.LessonIdRequest
 import com.dogandpigs.fitnote.data.source.remote.response.LessonResponse
 import com.dogandpigs.fitnote.data.util.handleResponse
+import com.dogandpigs.fitnote.data.util.handleResponseResBase
 import com.dogandpigs.fitnote.domain.model.Lesson
 import com.google.gson.JsonObject
 import javax.inject.Inject
@@ -13,17 +14,24 @@ import javax.inject.Inject
 class LessonRepository @Inject constructor(
     private val lessonApi: LessonApi
 ) {
-    suspend fun addLesson(lesson: Lesson): Int {
-        lessonApi.addLesson(lesson.toData()).run {
-            return body()?.data ?: -1
-        }
+    suspend fun addLesson(lesson: Lesson) {
+        handleResponse(
+            response = lessonApi.addLesson(lesson.toData()),
+            isCheck = false,
+        )?.let {
+            when (it.statusCode) {
+                "803" -> error("운동명을 입력해주세요.")
+                "805" -> error("횟수를 입력해주세요.")
+                else -> {}
+            }
+        } ?: error("ResBase is null")
     }
 
     suspend fun getIntendedLessons(id: Int): LessonResponse? {
         val json = JsonObject().apply {
             addProperty("id", id)
         }
-        return handleResponse(
+        return handleResponseResBase(
             response = lessonApi.getIntendedLessonList(json),
             isCheck = false,
         )
@@ -33,7 +41,7 @@ class LessonRepository @Inject constructor(
         val json = JsonObject().apply {
             addProperty("id", id)
         }
-        return handleResponse(
+        return handleResponseResBase(
             response = lessonApi.getCompletedLessonList(json),
             isCheck = false,
         )
@@ -48,7 +56,7 @@ class LessonRepository @Inject constructor(
             addProperty("today", today)
         }
 
-        return handleResponse(lessonApi.getLessonDetail(json))
+        return handleResponseResBase(lessonApi.getLessonDetail(json))
     }
 
     suspend fun putLessonComplete(

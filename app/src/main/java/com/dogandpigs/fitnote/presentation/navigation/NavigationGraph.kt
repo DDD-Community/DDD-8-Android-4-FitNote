@@ -77,7 +77,10 @@ internal fun NavigationGraph(
             navController = navController,
             mainViewModel = mainViewModel,
         )
-        addLesson(navController)
+        addLesson(
+            navController = navController,
+            mainViewModel = mainViewModel,
+        )
         addShare(
             route = "$ROUTE_SHARE/{$ARGUMENT_MEMBER_ID}/{$ARGUMENT_LESSON_DATE}",
         )
@@ -122,6 +125,7 @@ private fun NavGraphBuilder.addMember(
 
 private fun NavGraphBuilder.addLesson(
     navController: NavHostController,
+    mainViewModel: MainViewModel,
 ) {
     addMemberLessonListScreen(
         route = MemberLessonListNavRoute.route,
@@ -145,6 +149,7 @@ private fun NavGraphBuilder.addLesson(
     )
     addAddLessonScreen(
         route = AddLessonNavRoute.route,
+        mainViewModel = mainViewModel,
         popBackStack = { navController.popBackStack() },
         navigateToLoadLesson = { navController.navigateToLoadLesson() },
         navigateToMemberLessonList = { navController.navigateToMemberLessonListRoute(it) },
