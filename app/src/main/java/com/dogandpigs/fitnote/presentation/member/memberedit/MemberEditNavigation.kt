@@ -4,10 +4,12 @@ import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavType
 import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
+import com.dogandpigs.fitnote.presentation.MainViewModel
 import com.dogandpigs.fitnote.presentation.navigation.ARGUMENT_MEMBER_ID
 
 fun NavGraphBuilder.addMemberEdit(
     route: String,
+    mainViewModel: MainViewModel,
     popBackStack: () -> Unit,
     navigateToMemberDetail: (Int) -> Unit,
 ) {
@@ -22,6 +24,7 @@ fun NavGraphBuilder.addMemberEdit(
 
         MemberEditScreen(
             memberId = memberId,
+            mainViewModel = mainViewModel,
             popBackStack = popBackStack,
             navigateToMemberDetail = navigateToMemberDetail,
         )

@@ -102,6 +102,7 @@ private fun NavGraphBuilder.addMember(
     )
     addMemberEdit(
         route = "$ROUTE_MEMBER_EDIT/{$ARGUMENT_MEMBER_ID}",
+        mainViewModel = mainViewModel,
         popBackStack = { navController.popBackStack() },
         navigateToMemberDetail = {
             navController.navigate(

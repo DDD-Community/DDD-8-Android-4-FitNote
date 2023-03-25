@@ -36,11 +36,13 @@ internal fun MemberAddScreen(
     val context = LocalContext.current
     val uiState by viewModel.state.collectAsStateWithLifecycle()
 
+    val message = stringResource(id = R.string.member_add_complete_message)
+
     LaunchedEffect(uiState.isNext) {
         if (uiState.isNext) {
             mainViewModel.eventCustomToast(
                 MainEvent.CustomToast(
-                    message = "회원 등록이 완료되었습니다!",
+                    message = message,
                 )
             )
             navigateToHome()

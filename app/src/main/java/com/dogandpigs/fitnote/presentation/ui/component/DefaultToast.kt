@@ -36,7 +36,7 @@ internal fun DefaultToast(
     val timeMillis = 3_000L
     val paddingValues = PaddingValues(
         horizontal = LocalFitNoteSpacing.current.spacing4,
-        vertical = LocalFitNoteSpacing.current.spacing5,
+        vertical = LocalFitNoteSpacing.current.spacing5 + mainEvent.bottomPadding,
     )
 
     LaunchedEffect(visible.value) {

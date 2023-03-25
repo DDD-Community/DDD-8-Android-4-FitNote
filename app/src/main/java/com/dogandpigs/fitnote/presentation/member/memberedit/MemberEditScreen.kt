@@ -18,10 +18,12 @@ import androidx.compose.ui.res.stringResource
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.dogandpigs.fitnote.R
+import com.dogandpigs.fitnote.presentation.MainViewModel
 import com.dogandpigs.fitnote.presentation.base.ComponentPreview
+import com.dogandpigs.fitnote.presentation.base.MainEvent
 import com.dogandpigs.fitnote.presentation.member.MemberUiState
-import com.dogandpigs.fitnote.presentation.ui.component.BottomPositiveButton
 import com.dogandpigs.fitnote.presentation.member.component.MemberInfoList
+import com.dogandpigs.fitnote.presentation.ui.component.BottomPositiveButton
 import com.dogandpigs.fitnote.presentation.ui.component.DefaultDatePickerDialog
 import com.dogandpigs.fitnote.presentation.ui.component.FitNoteScaffold
 import com.dogandpigs.fitnote.presentation.ui.component.HeightSpacer
@@ -31,6 +33,7 @@ import com.dogandpigs.fitnote.presentation.ui.theme.LocalFitNoteSpacing
 @Composable
 internal fun MemberEditScreen(
     viewModel: MemberEditViewModel = hiltViewModel(),
+    mainViewModel: MainViewModel,
     memberId: Int,
     popBackStack: () -> Unit,
     navigateToMemberDetail: (Int) -> Unit,
@@ -44,9 +47,17 @@ internal fun MemberEditScreen(
         )
     }
 
+    val message = stringResource(id = R.string.member_edit_complete_message)
+    val bottomPadding = LocalFitNoteSpacing.current.spacing8
+
     LaunchedEffect(uiState.isNext) {
         if (uiState.isNext) {
-            Toast.makeText(context, "수정이 완료되었습니다.", Toast.LENGTH_SHORT).show()
+            mainViewModel.eventCustomToast(
+                MainEvent.CustomToast(
+                    message = message,
+                    bottomPadding = bottomPadding,
+                )
+            )
             navigateToMemberDetail(memberId)
         }
     }
