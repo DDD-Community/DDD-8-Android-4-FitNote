@@ -26,11 +26,12 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.dogandpigs.fitnote.R
 import com.dogandpigs.fitnote.presentation.base.ComponentPreview
-import com.dogandpigs.fitnote.presentation.ui.component.DefaultRedDialog
+import com.dogandpigs.fitnote.presentation.ui.component.DefaultDialog
 import com.dogandpigs.fitnote.presentation.ui.component.DefaultText
 import com.dogandpigs.fitnote.presentation.ui.component.FitNoteScaffold
 import com.dogandpigs.fitnote.presentation.ui.component.HeightSpacer
 import com.dogandpigs.fitnote.presentation.ui.component.WidthSpacer
+import com.dogandpigs.fitnote.presentation.ui.theme.Alert
 import com.dogandpigs.fitnote.presentation.ui.theme.FitNoteTheme
 import com.dogandpigs.fitnote.presentation.ui.theme.GrayScaleLightGray2
 import com.dogandpigs.fitnote.presentation.ui.theme.GrayScaleMidGray2
@@ -200,15 +201,15 @@ private fun LogoutDialog(
     onClickPositive: () -> Unit,
     onClickNegative: () -> Unit,
 ) {
-    DefaultRedDialog(
+    DefaultDialog(
         visible = visible,
         onDismissRequest = onClickNegative,
-        positiveText = stringResource(id = R.string.confirm),
-        onClickPositive = onClickPositive,
-        negativeText = stringResource(id = R.string.cancel),
-        onClickNegative = onClickNegative,
-        title = stringResource(id = R.string.info),
         message = stringResource(id = R.string.logout_message),
+        positiveText = stringResource(id = R.string.confirm),
+        onPositiveClick = onClickPositive,
+        positiveButtonColor = Alert,
+        negativeText = stringResource(id = R.string.cancel),
+        onNegativeClick = onClickNegative,
     )
 }
 
@@ -218,15 +219,15 @@ private fun WithdrawalDialog(
     onClickPositive: () -> Unit,
     onClickNegative: () -> Unit,
 ) {
-    DefaultRedDialog(
+    DefaultDialog(
         visible = visible,
         onDismissRequest = onClickNegative,
-        positiveText = stringResource(id = R.string.withdraw),
-        onClickPositive = onClickPositive,
-        negativeText = stringResource(id = R.string.cancel),
-        onClickNegative = onClickNegative,
-        title = stringResource(id = R.string.info),
         message = stringResource(id = R.string.withdraw_message),
+        positiveText = stringResource(id = R.string.withdraw),
+        onPositiveClick = onClickPositive,
+        positiveButtonColor = Alert,
+        negativeText = stringResource(id = R.string.cancel),
+        onNegativeClick = onClickNegative,
     )
 }
 

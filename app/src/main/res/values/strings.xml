@@ -72,6 +72,6 @@
     <string name="information_modification">회원 정보 수정</string>
     <string name="modification_completion">수정 완료</string>
 
-    <string name="logout_message">핏노트를 이용해주셔서 감사합니다</string>
+    <string name="logout_message">로그아웃 시 앱이 재시작됩니다</string>
     <string name="withdraw_message">핏노트를 이용해주셔서 감사합니다</string>
 </resources>

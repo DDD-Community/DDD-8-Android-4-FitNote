@@ -1,168 +1,104 @@
 package com.dogandpigs.fitnote.presentation.ui.component
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
+import com.dogandpigs.fitnote.R
 import com.dogandpigs.fitnote.presentation.base.FigmaPreview
 import com.dogandpigs.fitnote.presentation.ui.theme.Alert
+import com.dogandpigs.fitnote.presentation.ui.theme.GrayScaleDarkGray1
 import com.dogandpigs.fitnote.presentation.ui.theme.GrayScaleDarkGray2
 import com.dogandpigs.fitnote.presentation.ui.theme.GrayScaleWhite
+import com.dogandpigs.fitnote.presentation.ui.theme.LocalFitNoteTypography
 
 @Composable
-internal fun DefaultPositiveDialog(
+internal fun DefaultDialog(
     visible: Boolean,
     onDismissRequest: () -> Unit,
-    positiveText: String? = null,
-    onClickPositive: (() -> Unit)? = null,
-    title: String,
+    title: String = stringResource(id = R.string.info),
     message: String,
-) {
-    if (visible) {
-        Dialog(
-            onDismissRequest = onDismissRequest
-        ) {
-            DefaultDialog(
-                positiveText = positiveText,
-                onClickPositive = onClickPositive,
-                title = title,
-                message = message,
-            )
-        }
-    }
-}
 
-@Composable
-internal fun DefaultBlueDialog(
-    visible: Boolean,
-    onDismissRequest: () -> Unit,
     positiveText: String? = null,
-    onClickPositive: (() -> Unit)? = null,
+    onPositiveClick: (() -> Unit)? = null,
+    positiveButtonColor: Color? = null,
+
     negativeText: String? = null,
-    onClickNegative: (() -> Unit)? = null,
-    title: String,
-    message: String,
+    onNegativeClick: (() -> Unit)? = null,
 ) {
     if (visible) {
         Dialog(
             onDismissRequest = onDismissRequest
         ) {
             DefaultDialog(
-                positiveText = positiveText,
-                onClickPositive = onClickPositive,
-                negativeText = negativeText,
-                onClickNegative = onClickNegative,
                 title = title,
                 message = message,
-            )
-        }
-    }
-}
-
-@Composable
-internal fun DefaultRedDialog(
-    visible: Boolean,
-    onDismissRequest: () -> Unit,
-    positiveText: String? = null,
-    onClickPositive: (() -> Unit)? = null,
-    negativeText: String? = null,
-    onClickNegative: (() -> Unit)? = null,
-    title: String,
-    message: String,
-) {
-    if (visible) {
-        Dialog(
-            onDismissRequest = onDismissRequest
-        ) {
-            DefaultDialog(
-                positiveText = positiveText,
-                onClickPositive = onClickPositive,
-                negativeText = negativeText,
-                onClickNegative = onClickNegative,
-                title = title,
-                message = message,
-                positiveButtonColor = Alert,
-            )
+            ) {
+                DefaultTwoButton(
+                    positiveText = positiveText,
+                    onClickPositive = onPositiveClick,
+                    positiveTextStyle = LocalFitNoteTypography.current.buttonDefault.copy(
+                        color = GrayScaleWhite
+                    ),
+                    negativeText = negativeText,
+                    onClickNegative = onNegativeClick,
+                    negativeTextStyle = LocalFitNoteTypography.current.buttonDefault.copy(
+                        color = GrayScaleDarkGray1
+                    ),
+                    spaceBetweenButtons = 16.dp,
+                    positiveButtonColor = positiveButtonColor,
+                )
+            }
         }
     }
 }
 
 @Composable
 private fun DefaultDialog(
-    positiveText: String? = null,
-    onClickPositive: (() -> Unit)? = null,
-    negativeText: String? = null,
-    onClickNegative: (() -> Unit)? = null,
     title: String,
     message: String,
-    positiveButtonColor: Color? = null,
+    content: @Composable () -> Unit,
 ) {
-    Surface(
-        color = Color.Transparent,
+    Column(
         modifier = Modifier
-            .fillMaxSize()
+            .width(328.dp)
+            .wrapContentHeight()
+            .clip(RoundedCornerShape(10.dp))
+            .background(color = GrayScaleWhite)
             .padding(16.dp),
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.Center,
     ) {
-        Column(
-            horizontalAlignment = Alignment.CenterHorizontally,
-            modifier = Modifier
-                .wrapContentHeight()
-                .fillMaxWidth()
-                .clip(RoundedCornerShape(4.dp))
-                .background(color = GrayScaleWhite)
-                .padding(16.dp),
-        ) {
-            Column {
-                DialogText(
-                    text = title,
-                    fontSize = 20.sp,
-                )
-                HeightSpacer(height = 16.dp)
-                DialogText(
-                    text = message,
-                    fontSize = 16.sp,
-                )
-            }
-            HeightSpacer(height = 32.dp)
-            DefaultTwoButton(
-                positiveText = positiveText,
-                onClickPositive = onClickPositive,
-                negativeText = negativeText,
-                onClickNegative = onClickNegative,
-                spaceBetweenButtons = 16.dp,
-                positiveButtonColor = positiveButtonColor,
-            )
-        }
-    }
-}
+        Text(
+            text = title,
+            style = LocalFitNoteTypography.current.titleLarge,
+            color = GrayScaleDarkGray2,
+            textAlign = TextAlign.Center,
+        )
+        HeightSpacer(height = 16.dp)
+        Text(
+            text = message,
+            style = LocalFitNoteTypography.current.textDefault,
+            color = GrayScaleDarkGray2,
+            textAlign = TextAlign.Center,
+        )
+        HeightSpacer(height = 32.dp)
 
-@Composable
-private fun DialogText(
-    text: String,
-    fontSize: TextUnit,
-) {
-    Text(
-        modifier = Modifier.fillMaxWidth(),
-        text = text,
-        color = GrayScaleDarkGray2,
-        fontSize = fontSize,
-        textAlign = TextAlign.Center,
-    )
+        content()
+    }
 }
 
 private const val previewPositiveText: String = "확인"
@@ -173,11 +109,11 @@ private const val previewMessage: String = "인증번호가 일치하지 않습�
 @FigmaPreview
 @Composable
 private fun PreviewDefaultPositiveDialog() {
-    DefaultPositiveDialog(
+    DefaultDialog(
         visible = true,
         onDismissRequest = {},
         positiveText = previewPositiveText,
-        onClickPositive = {},
+        onPositiveClick = {},
         title = previewTitle,
         message = previewMessage,
     )
@@ -186,13 +122,13 @@ private fun PreviewDefaultPositiveDialog() {
 @FigmaPreview
 @Composable
 private fun PreviewDefaultBlueDialog() {
-    DefaultBlueDialog(
+    DefaultDialog(
         visible = true,
         onDismissRequest = {},
         positiveText = previewPositiveText,
-        onClickPositive = {},
+        onPositiveClick = {},
         negativeText = previewNegativeText,
-        onClickNegative = {},
+        onNegativeClick = {},
         title = previewTitle,
         message = previewMessage,
     )
@@ -201,13 +137,14 @@ private fun PreviewDefaultBlueDialog() {
 @FigmaPreview
 @Composable
 private fun PreviewDefaultRedDialog() {
-    DefaultRedDialog(
+    DefaultDialog(
         visible = true,
         onDismissRequest = {},
         positiveText = previewPositiveText,
-        onClickPositive = {},
+        onPositiveClick = {},
+        positiveButtonColor = Alert,
         negativeText = previewNegativeText,
-        onClickNegative = {},
+        onNegativeClick = {},
         title = previewTitle,
         message = previewMessage,
     )

@@ -68,8 +68,8 @@ internal fun DefaultTwoButton(
                     onClickNegative?.invoke()
                 },
             )
+            WidthSpacer(spaceBetweenButtons)
         }
-        WidthSpacer(spaceBetweenButtons)
         positiveText?.also {
             DefaultPositiveButton(
                 modifier = Modifier
