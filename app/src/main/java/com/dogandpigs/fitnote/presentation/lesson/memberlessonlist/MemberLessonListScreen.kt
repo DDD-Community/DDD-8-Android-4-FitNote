@@ -54,6 +54,7 @@ import com.dogandpigs.fitnote.presentation.ui.theme.GrayScaleLightGray1
 import com.dogandpigs.fitnote.presentation.ui.theme.GrayScaleLightGray2
 import com.dogandpigs.fitnote.presentation.ui.theme.GrayScaleMidGray2
 import com.dogandpigs.fitnote.presentation.ui.theme.GrayScaleMidGray3
+import com.dogandpigs.fitnote.presentation.ui.theme.LocalFitNoteSpacing
 import com.dogandpigs.fitnote.presentation.util.formatYMD
 
 @Composable
@@ -111,8 +112,8 @@ private fun MemberLessonList(
         Box(modifier = Modifier.padding(it)) {
             Column(
                 modifier = Modifier
-                    .background(Color.White)
                     .fillMaxSize()
+                    .background(Color.White)
             ) {
                 Spacer(modifier = Modifier.height(24.dp))
                 LessonTabList(
@@ -218,6 +219,8 @@ private fun LessonTabList(
                     onClickLessonStart = onClickLessonStart,
                     onClickShare = onClickShare,
                 )
+
+                HeightSpacer(height = LocalFitNoteSpacing.current.spacing10)
             }
         }
     }
