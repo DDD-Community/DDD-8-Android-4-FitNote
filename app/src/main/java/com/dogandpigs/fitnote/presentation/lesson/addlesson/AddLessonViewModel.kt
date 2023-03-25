@@ -2,6 +2,7 @@ package com.dogandpigs.fitnote.presentation.lesson.addlesson
 
 import androidx.lifecycle.viewModelScope
 import com.dogandpigs.fitnote.data.repository.LessonRepository
+import com.dogandpigs.fitnote.domain.model.Lesson
 import com.dogandpigs.fitnote.presentation.base.BaseViewModel
 import com.dogandpigs.fitnote.presentation.base.Event
 import com.dogandpigs.fitnote.presentation.lesson.Exercise
@@ -106,48 +107,59 @@ internal class AddLessonViewModel @Inject constructor(
     }
 
     private suspend fun editLesson() = currentState {
-        val originLessonIdList = originExerciseList?.flatMap {
-            it.sets.map { exerciseSet ->
-                exerciseSet.lessonId
+        val originLessonList = mutableListOf<Lesson>().apply {
+            originExerciseList?.forEach { exerciseList ->
+                exerciseList.sets.forEach { exerciseSet ->
+                    add(
+                        exerciseSet.toLesson(
+                            id = id,
+                            name = exerciseList.name,
+                            today = dateStringYYYYMMDD,
+                        )
+                    )
+                }
             }
         }
-        checkNotNull(originLessonIdList)
+        val originLessonIdList = originLessonList.map { it.lessonId }
+//        debugLog("originLessonList : $originLessonList")
 
-        val newLessonIdList = exercises.flatMap {
-            it.sets.map { exerciseSet ->
-                exerciseSet.lessonId
+        val currentLessonList = mutableListOf<Lesson>().apply {
+            exercises.forEach { exerciseList ->
+                exerciseList.sets.forEach { exerciseSet ->
+                    add(
+                        exerciseSet.toLesson(
+                            id = id,
+                            name = exerciseList.name,
+                            today = dateStringYYYYMMDD,
+                        )
+                    )
+                }
             }
-        }.toSet()
+        }
+        val currentLessonIdList = currentLessonList.map { it.lessonId }
+//        debugLog("currentLessonList : $currentLessonList")
 
-        val deleteLessonIdList = (originLessonIdList - newLessonIdList)
+        val deleteLessonIdList = (originLessonIdList - currentLessonIdList.toSet())
+//        debugLog("deleteLessonIdList : $deleteLessonIdList")
         deleteLessonIdList.forEach {
             lessonRepository.deleteLesson(it)
         }
 
-        (exercises - originExerciseList).also {
-            debugLog(it.toString())
+        val updateLessonList = currentLessonList.filter {
+            originLessonIdList.contains(it.lessonId) && !originLessonList.contains(it)
         }
-        // 수정
-        // 추가
+//        debugLog("updateLessonList : $updateLessonList")
+        updateLessonList.forEach {
+            lessonRepository.updateLesson(it)
+        }
 
-        // 추가할 것
-//        originExerciseList?.zipWithNext { a, b -> }
-//
-//        originExerciseList?.forEach { exerciseList ->
-//            exerciseList.sets.filter {
-//                it.id in
-//            }
-//        }
-//        exercises.forEach { exerciseList ->
-//            exerciseList.sets.forEachIndexed { index, exerciseSet ->
-//                exerciseSet.lessonId
-//                // 기존에 있으면 업데이트
-//                // 없어진 거 삭제
-//                // id를 비교해서 없으면 삽입, 있으면 비교해서 업데이트 id가 없어졌으면 삭제
-//
-//                lessonRepository.addLesson(routine)
-//            }
-//        }
+        val addLessonList = currentLessonList.filterNot {
+            originLessonIdList.contains(it.lessonId)
+        }
+        addLessonList.forEach {
+            lessonRepository.addLesson(it)
+        }
+//        debugLog("addLessonList : $addLessonList")
     }
 
     fun setDateMilliSeconds(dateMilliSeconds: Long?) = currentState {

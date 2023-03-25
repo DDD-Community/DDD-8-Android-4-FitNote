@@ -30,4 +30,7 @@ interface LessonApi {
 
     @HTTP(method = "DELETE", path = "/hypeboy/delete/", hasBody = true)
     suspend fun deleteLesson(@Body lessonId: LessonIdRequest): Response<ResBase<Int>>
+
+    @POST("/hypeboy/update/")
+    suspend fun updateLesson(@Body lesson: LessonRequest): Response<ResBase<Int>>
 }

@@ -62,6 +62,7 @@ internal fun Exercise.ExerciseSet.toLesson(
 ): Lesson =
     Lesson(
         id = id,
+        lessonId = this.lessonId,
         name = name,
         set = this.setIndex,
         weight = this.weight.toString(),

@@ -76,4 +76,10 @@ class LessonRepository @Inject constructor(
             return body()?.data ?: -1
         }
     }
+
+    suspend fun updateLesson(lesson: Lesson): Int {
+        lessonApi.updateLesson(lesson.toData()).run {
+            return body()?.data ?: -1
+        }
+    }
 }
