@@ -4,38 +4,53 @@ import android.os.Bundle
 import androidx.activity.compose.setContent
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
-import androidx.compose.foundation.layout.*
-import androidx.compose.material3.*
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.compose.rememberNavController
 import com.dogandpigs.fitnote.presentation.navigation.NavigationGraph
+import com.dogandpigs.fitnote.presentation.ui.component.DefaultToast
 import com.dogandpigs.fitnote.presentation.ui.theme.FitNoteTheme
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
 class MainActivity : AppCompatActivity() {
-    private val viewModel by viewModels<MainViewModel>()
+    private val mainViewModel by viewModels<MainViewModel>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
             FitNoteTheme {
-                FitNoteApp()
+                FitNoteApp(
+                    mainViewModel
+                )
             }
         }
     }
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
-private fun FitNoteApp() {
+private fun FitNoteApp(
+    mainViewModel: MainViewModel,
+) {
     val navController = rememberNavController()
+    val eventStateFlow by mainViewModel.eventStateFlow.collectAsStateWithLifecycle()
 
     Scaffold {
         Box(Modifier.padding(it)) {
-            NavigationGraph(navController)
+            NavigationGraph(
+                navController,
+                mainViewModel,
+            )
+
+            DefaultToast(
+                mainEvent = eventStateFlow,
+            )
         }
     }
 }
@@ -44,6 +59,8 @@ private fun FitNoteApp() {
 @Composable
 private fun DefaultMainActivity() {
     FitNoteTheme {
-        FitNoteApp()
+        FitNoteApp(
+            mainViewModel = MainViewModel()
+        )
     }
 }

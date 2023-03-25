@@ -17,10 +17,10 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.dogandpigs.fitnote.presentation.base.ComponentPreview
+import com.dogandpigs.fitnote.presentation.base.MainEvent
 import com.dogandpigs.fitnote.presentation.ui.theme.GrayScaleDarkGray1
 import com.dogandpigs.fitnote.presentation.ui.theme.GrayScaleWhite
 import com.dogandpigs.fitnote.presentation.ui.theme.LocalFitNoteSpacing
@@ -29,23 +29,24 @@ import kotlinx.coroutines.delay
 
 @Composable
 internal fun DefaultToast(
-    visible: Boolean,
-    text: String,
-    textColor: Color = GrayScaleWhite,
-    paddingValues: PaddingValues = PaddingValues(
+    mainEvent: MainEvent,
+) {
+    val customToastEvent = (mainEvent as? MainEvent.CustomToast) ?: return
+    val visible = remember { mutableStateOf(true) }
+    val timeMillis = 3_000L
+    val paddingValues = PaddingValues(
         horizontal = LocalFitNoteSpacing.current.spacing4,
         vertical = LocalFitNoteSpacing.current.spacing5,
-    ),
-    backgroundColor: Color = GrayScaleDarkGray1,
-    timeMillis: Long,
-    onFinish: () -> Unit,
-) {
-    LaunchedEffect(Unit) {
-        delay(timeMillis)
-        onFinish()
+    )
+
+    LaunchedEffect(visible.value) {
+        if (visible.value) {
+            delay(timeMillis)
+            visible.value = false
+        }
     }
 
-    if (visible) {
+    if (visible.value) {
         Column(
             modifier = Modifier
                 .fillMaxSize()
@@ -58,10 +59,10 @@ internal fun DefaultToast(
                     .fillMaxWidth()
                     .wrapContentHeight()
                     .clip(RoundedCornerShape(5.dp))
-                    .background(backgroundColor)
+                    .background(GrayScaleDarkGray1)
                     .padding(vertical = LocalFitNoteSpacing.current.spacing4),
-                text = text,
-                color = textColor,
+                text = customToastEvent.message,
+                color = GrayScaleWhite,
                 style = LocalFitNoteTypography.current.textDefault,
                 textAlign = TextAlign.Center,
             )
@@ -72,12 +73,9 @@ internal fun DefaultToast(
 @ComponentPreview
 @Composable
 private fun PreviewDefaultToast() {
-    val visible = remember { mutableStateOf(false) }
-
     DefaultToast(
-        visible = visible.value,
-        text = "회원 등록이 완료되었습니다!",
-        timeMillis = 5_000L,
-        onFinish = { visible.value = false },
+        mainEvent = MainEvent.CustomToast(
+            message = "회원 등록이 완료되었습니다!",
+        )
     )
 }

@@ -15,10 +15,12 @@ import androidx.compose.ui.res.stringResource
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.dogandpigs.fitnote.R
+import com.dogandpigs.fitnote.presentation.MainViewModel
 import com.dogandpigs.fitnote.presentation.base.ComponentPreview
+import com.dogandpigs.fitnote.presentation.base.MainEvent
 import com.dogandpigs.fitnote.presentation.member.MemberUiState
-import com.dogandpigs.fitnote.presentation.ui.component.BottomPositiveButton
 import com.dogandpigs.fitnote.presentation.member.component.MemberInfoList
+import com.dogandpigs.fitnote.presentation.ui.component.BottomPositiveButton
 import com.dogandpigs.fitnote.presentation.ui.component.DefaultDatePickerDialog
 import com.dogandpigs.fitnote.presentation.ui.component.FitNoteScaffold
 import com.dogandpigs.fitnote.presentation.ui.component.HeightSpacer
@@ -28,15 +30,20 @@ import com.dogandpigs.fitnote.presentation.ui.theme.LocalFitNoteSpacing
 @Composable
 internal fun MemberAddScreen(
     viewModel: MemberAddViewModel = hiltViewModel(),
+    mainViewModel: MainViewModel,
     navigateToHome: () -> Unit,
-    navigateToMemberListWithRegistration: (Boolean) -> Unit,
 ) {
     val context = LocalContext.current
     val uiState by viewModel.state.collectAsStateWithLifecycle()
 
     LaunchedEffect(uiState.isNext) {
         if (uiState.isNext) {
-            navigateToMemberListWithRegistration(true)
+            mainViewModel.eventCustomToast(
+                MainEvent.CustomToast(
+                    message = "회원 등록이 완료되었습니다!",
+                )
+            )
+            navigateToHome()
         }
     }
 

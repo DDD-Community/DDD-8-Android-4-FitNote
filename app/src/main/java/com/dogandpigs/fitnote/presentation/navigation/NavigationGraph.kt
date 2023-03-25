@@ -4,6 +4,7 @@ import androidx.compose.runtime.Composable
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
+import com.dogandpigs.fitnote.presentation.MainViewModel
 import com.dogandpigs.fitnote.presentation.join.addJoin
 import com.dogandpigs.fitnote.presentation.lesson.LessonMode
 import com.dogandpigs.fitnote.presentation.lesson.addlesson.AddLessonNavRoute
@@ -18,13 +19,15 @@ import com.dogandpigs.fitnote.presentation.member.memberdetail.addMemberDetail
 import com.dogandpigs.fitnote.presentation.member.memberedit.addMemberEdit
 import com.dogandpigs.fitnote.presentation.member.memberlist.MemberListNavRoute
 import com.dogandpigs.fitnote.presentation.member.memberlist.addMemberList
-import com.dogandpigs.fitnote.presentation.member.memberlist.addMemberListWithRegistration
 import com.dogandpigs.fitnote.presentation.setting.addSettingScreen
 import com.dogandpigs.fitnote.presentation.share.addShare
 import com.dogandpigs.fitnote.presentation.splash.addSplash
 
 @Composable
-internal fun NavigationGraph(navController: NavHostController) {
+internal fun NavigationGraph(
+    navController: NavHostController,
+    mainViewModel: MainViewModel,
+) {
     NavHost(
         navController = navController,
         startDestination = ROUTE_SPLASH
@@ -70,7 +73,10 @@ internal fun NavigationGraph(navController: NavHostController) {
                 }
             },
         )
-        addMember(navController)
+        addMember(
+            navController = navController,
+            mainViewModel = mainViewModel,
+        )
         addLesson(navController)
         addShare(
             route = "$ROUTE_SHARE/{$ARGUMENT_MEMBER_ID}/{$ARGUMENT_LESSON_DATE}",
@@ -80,6 +86,7 @@ internal fun NavigationGraph(navController: NavHostController) {
 
 private fun NavGraphBuilder.addMember(
     navController: NavHostController,
+    mainViewModel: MainViewModel,
 ) {
     addMemberList(
         route = MemberListNavRoute.path,
@@ -88,23 +95,10 @@ private fun NavGraphBuilder.addMember(
         navigateToMemberLessonList = { navController.navigateToMemberLessonListRoute(it) },
         navigateToSetting = { navController.navigate(ROUTE_SETTING) }
     )
-    addMemberListWithRegistration(
-        route = "${MemberListNavRoute.path}/{$ARGUMENT_REGISTRATION}",
-        navigateToMemberDetail = { navController.navigate("$ROUTE_MEMBER_DETAIL/$it") },
-        navigateToMemberAdd = { navController.navigate(ROUTE_MEMBER_ADD) },
-        navigateToMemberLessonList = { navController.navigateToMemberLessonListRoute(it) },
-        navigateToSetting = { navController.navigate(ROUTE_SETTING) }
-    )
     addMemberAdd(
         route = ROUTE_MEMBER_ADD,
+        mainViewModel = mainViewModel,
         navigateToHome = { navController.navigateToHome() },
-        navigateToMemberListWithRegistration = {
-            navController.navigate(
-                route = "${MemberListNavRoute.path}/$it"
-            ) {
-                popUpTo(MemberListNavRoute.path) { inclusive = true }
-            }
-        }
     )
     addMemberEdit(
         route = "$ROUTE_MEMBER_EDIT/{$ARGUMENT_MEMBER_ID}",

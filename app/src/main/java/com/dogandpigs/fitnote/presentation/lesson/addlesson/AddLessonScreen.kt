@@ -46,7 +46,6 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.dogandpigs.fitnote.R
 import com.dogandpigs.fitnote.presentation.base.ComponentPreview
-import com.dogandpigs.fitnote.presentation.base.Event
 import com.dogandpigs.fitnote.presentation.base.FigmaPreview
 import com.dogandpigs.fitnote.presentation.lesson.Exercise
 import com.dogandpigs.fitnote.presentation.lesson.LessonMode
@@ -98,9 +97,9 @@ internal fun AddLessonScreen(
 
     LaunchedEffect(eventStateFlow) {
         when (eventStateFlow) {
-            Event.None -> {}
-            is Event.Toast -> {
-                val message = (eventStateFlow as Event.Toast).message
+            AddLessonEvent.None -> {}
+            is AddLessonEvent.Toast -> {
+                val message = (eventStateFlow as AddLessonEvent.Toast).message
                 Toast.makeText(context, message, Toast.LENGTH_SHORT).show()
             }
         }

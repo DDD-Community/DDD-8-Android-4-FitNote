@@ -27,7 +27,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
@@ -44,7 +43,6 @@ import com.dogandpigs.fitnote.presentation.base.ComponentPreview
 import com.dogandpigs.fitnote.presentation.ui.component.BottomPositiveButton
 import com.dogandpigs.fitnote.presentation.ui.component.DebugMenu
 import com.dogandpigs.fitnote.presentation.ui.component.DefaultText
-import com.dogandpigs.fitnote.presentation.ui.component.DefaultToast
 import com.dogandpigs.fitnote.presentation.ui.component.FitNoteScaffold
 import com.dogandpigs.fitnote.presentation.ui.component.HeightSpacer
 import com.dogandpigs.fitnote.presentation.ui.component.WidthSpacer
@@ -58,7 +56,6 @@ import com.dogandpigs.fitnote.presentation.ui.theme.LocalFitNoteTypography
 @Composable
 internal fun MemberListScreen(
     viewModel: MemberListViewModel = hiltViewModel(),
-    registration: Boolean = false,
     navigateToMemberDetail: (Int) -> Unit,
     navigateToMemberAdd: () -> Unit,
     navigateToMemberLessonList: (Int) -> Unit,
@@ -66,7 +63,6 @@ internal fun MemberListScreen(
 ) {
     val uiState by viewModel.state.collectAsStateWithLifecycle()
 
-    val visibleToast = remember { mutableStateOf(registration) }
     var isShowDebugMenu by rememberSaveable { mutableStateOf(false) }
 
     // FIXME registration true일 경우 MemberListScreen -> 다른 화면 -> Back 시 토스트가 계속 보여지는 이슈
@@ -119,13 +115,6 @@ internal fun MemberListScreen(
             BottomPositiveButton(
                 text = stringResource(id = R.string.btn_add_member),
                 onClick = navigateToMemberAdd,
-            )
-
-            DefaultToast(
-                visible = visibleToast.value,
-                text = "회원 등록이 완료되었습니다!",
-                timeMillis = 3_000L,
-                onFinish = { visibleToast.value = false },
             )
 
             if (isShowDebugMenu && BuildConfig.DEBUG) {
