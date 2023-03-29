@@ -79,4 +79,5 @@
     <string name="withdraw_message">핏노트를 이용해주셔서 감사합니다</string>
     <string name="member_add_complete_message">회원 등록이 완료되었습니다!</string>
     <string name="member_edit_complete_message">회원 정보 수정이 완료되었습니다!</string>
+    <string name="login_failed_message">아이디와 비밀번호를 확인해주세요</string>
 </resources>

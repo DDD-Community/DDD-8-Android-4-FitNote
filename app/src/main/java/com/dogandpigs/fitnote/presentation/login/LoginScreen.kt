@@ -1,5 +1,6 @@
 package com.dogandpigs.fitnote.presentation.login
 
+import android.widget.Toast
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -17,6 +18,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -41,13 +43,28 @@ internal fun LoginScreen(
     popBackStack: () -> Unit,
     navigateToHome: () -> Unit
 ) {
+    val context = LocalContext.current
     val state by viewModel.state.collectAsStateWithLifecycle()
 
+    val message = stringResource(id = R.string.login_failed_message)
+    LaunchedEffect(Unit) {
+        viewModel.eventSharedFlow.collect {
+            when (it) {
+                is LoginEvent.None -> {}
+                is LoginEvent.Toast -> {
+                    Toast.makeText(context, message, Toast.LENGTH_SHORT).show()
+                }
+            }
+        }
+    }
+
     LaunchedEffect(state.loginState) {
-        if (state.loginState == LoginState.Success) {
-            navigateToHome()
-        } else if (state.loginState == LoginState.Failed) {
-            // TODO: 로그인 실패 처리
+        when (state.loginState) {
+            is LoginUiState.LoginState.Success -> {
+                navigateToHome()
+            }
+            is LoginUiState.LoginState.Failed -> {}
+            is LoginUiState.LoginState.Loading -> {}
         }
     }
 

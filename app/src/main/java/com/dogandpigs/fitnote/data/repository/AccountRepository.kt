@@ -18,15 +18,15 @@ class AccountRepository @Inject constructor(
             return body()
         }
     }
-    
+
     suspend fun login(data: LoginRequest): UserDTO? {
         api.login(data).run {
-            if (!isSuccessful || body() == null || body()?.accessToken == null) {
-                return null
-            }
-            body()?.accessToken?.let {
-                TokenManager.setAccessToken(it)
-            }
+            check(isSuccessful)
+            val body = body()
+            checkNotNull(body)
+            val accessToken = body.accessToken
+            checkNotNull(accessToken)
+            TokenManager.setAccessToken(accessToken)
             return body()
         }
     }

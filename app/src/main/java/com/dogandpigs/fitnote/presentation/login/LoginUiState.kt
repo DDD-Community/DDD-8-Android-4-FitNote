@@ -4,10 +4,11 @@ internal data class LoginUiState(
     val title: String = "",
     val email: String = "",
     val password: String = "",
-    val loginState: LoginState = LoginState.Failed
-)
-
-sealed class LoginState {
-    object Success: LoginState()
-    object Failed: LoginState()
+    val loginState: LoginState = LoginState.Loading
+) {
+    sealed interface LoginState {
+        object Loading : LoginState
+        object Success : LoginState
+        object Failed : LoginState
+    }
 }
