@@ -51,6 +51,14 @@ internal fun DefaultTwoButton(
     positiveButtonColor: Color? = null,
     spaceBetweenButtons: Dp = 0.dp,
 ) {
+    val buttonPadding = PaddingValues(
+        horizontal = if (negativeText == null || positiveText == null) {
+            LocalFitNoteSpacing.current.spacing3
+        } else {
+            LocalFitNoteSpacing.current.spacing4
+        }
+    )
+
     Row(
         modifier = modifier
             .wrapContentHeight()
@@ -64,6 +72,7 @@ internal fun DefaultTwoButton(
                 paddingValues = negativePaddingValues,
                 negativeText = it,
                 buttonTextStyle = negativeTextStyle,
+                buttonPadding = buttonPadding,
                 onClickNegative = {
                     onClickNegative?.invoke()
                 },
@@ -79,6 +88,7 @@ internal fun DefaultTwoButton(
                 positiveText = it,
                 buttonTextStyle = positiveTextStyle,
                 positiveButtonColor = positiveButtonColor,
+                buttonPadding = buttonPadding,
                 onClickPositive = {
                     onClickPositive?.invoke()
                 },
