@@ -191,7 +191,7 @@ private fun ExerciseSetItem(
         )
         WidthSpacer(width = LocalFitNoteSpacing.current.spacing4)
 
-        LessonWeightTextField(
+        LessonCountTextField(
             modifier = Modifier
                 .weight(1f)
                 .wrapContentHeight(),
