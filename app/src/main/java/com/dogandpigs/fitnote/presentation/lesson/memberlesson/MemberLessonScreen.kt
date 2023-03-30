@@ -19,6 +19,8 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -34,9 +36,11 @@ import com.dogandpigs.fitnote.presentation.lesson.Exercise
 import com.dogandpigs.fitnote.presentation.lesson.component.ExerciseColumn
 import com.dogandpigs.fitnote.presentation.ui.component.BottomPositiveButton
 import com.dogandpigs.fitnote.presentation.ui.component.DefaultCheckbox
+import com.dogandpigs.fitnote.presentation.ui.component.DefaultDialog
 import com.dogandpigs.fitnote.presentation.ui.component.FitNoteScaffold
 import com.dogandpigs.fitnote.presentation.ui.component.HeightSpacer
 import com.dogandpigs.fitnote.presentation.ui.component.WidthSpacer
+import com.dogandpigs.fitnote.presentation.ui.theme.BrandPrimary
 import com.dogandpigs.fitnote.presentation.ui.theme.FitNoteTheme
 import com.dogandpigs.fitnote.presentation.ui.theme.GrayScaleDarkGray2
 import com.dogandpigs.fitnote.presentation.ui.theme.GrayScaleLightGray1
@@ -77,7 +81,7 @@ internal fun MemberLessonScreen(
         onClickSetCheckbox = viewModel::toggleExerciseSetIsDone,
         onChangeWeight = viewModel::changeWeight,
         onChangeCount = viewModel::changeCount,
-        onClickComplete = viewModel::complete,
+        onLessonComplete = viewModel::complete,
     )
 }
 
@@ -90,8 +94,10 @@ private fun MemberLessonList(
     onClickSetCheckbox: (Int, Int) -> Unit,
     onChangeWeight: (String, Int, Int) -> Unit,
     onChangeCount: (String, Int, Int) -> Unit,
-    onClickComplete: () -> Unit,
+    onLessonComplete: () -> Unit,
 ) {
+    val visibleCompleteDialog = remember { mutableStateOf(false) }
+
     FitNoteScaffold(
         topBarTitle = "${
             stringResource(
@@ -156,9 +162,22 @@ private fun MemberLessonList(
 
         BottomPositiveButton(
             text = "수업 완료",
-            onClick = onClickComplete,
+            onClick = {
+                visibleCompleteDialog.value = true
+            },
         )
     }
+
+    CompleteDialog(
+        visible = visibleCompleteDialog.value,
+        onClickPositive = {
+            visibleCompleteDialog.value = false
+            onLessonComplete()
+        },
+        onClickNegative = {
+            visibleCompleteDialog.value = false
+        },
+    )
 }
 
 @Composable
@@ -252,6 +271,25 @@ private fun ExerciseTitle(
     }
 }
 
+@Composable
+private fun CompleteDialog(
+    visible: Boolean,
+    onClickPositive: () -> Unit,
+    onClickNegative: () -> Unit,
+) {
+    DefaultDialog(
+        visible = visible,
+        onDismissRequest = onClickNegative,
+        title = stringResource(id = R.string.lesson_complete),
+        message = stringResource(id = R.string.lesson_complete_message),
+        positiveText = stringResource(id = R.string.confirm),
+        onPositiveClick = onClickPositive,
+        positiveButtonColor = BrandPrimary,
+        negativeText = stringResource(id = R.string.cancel),
+        onNegativeClick = onClickNegative,
+    )
+}
+
 internal val previewUiState = MemberLessonUiState(
     userName = "나초보",
     exercises = listOf(
@@ -300,7 +338,7 @@ private fun PreviewLesson() {
             onClickSetCheckbox = { _: Int, _: Int -> },
             onChangeWeight = { _: String, _: Int, _: Int -> },
             onChangeCount = { _: String, _: Int, _: Int -> },
-            onClickComplete = {},
+            onLessonComplete = {},
         )
     }
 }
