@@ -230,6 +230,8 @@ internal class AddLessonViewModel @Inject constructor(
         exerciseSetList.add(
             Exercise.ExerciseSet(
                 setIndex = exerciseSetList.size + 1,
+                weight = exerciseList[exerciseIndex].mainWeight,
+                count = exerciseList[exerciseIndex].mainCount,
             )
         )
 
@@ -340,6 +342,8 @@ internal class AddLessonViewModel @Inject constructor(
                     exerciseSetList.add(
                         Exercise.ExerciseSet(
                             setIndex = exerciseSetList.size + 1,
+                            weight = exerciseList[exerciseIndex].mainWeight,
+                            count = exerciseList[exerciseIndex].mainCount,
                         )
                     )
                 }
@@ -372,11 +376,12 @@ internal class AddLessonViewModel @Inject constructor(
             mutableListOf<Exercise>().apply {
                 addAll(exercises)
                 this[exerciseIndex] = exercises[exerciseIndex].copy(
+                    mainWeight = newWeight,
                     sets = exercises[exerciseIndex].sets.map {
                         it.copy(
                             weight = newWeight
                         )
-                    }
+                    },
                 )
             }.toList()
         }.onSuccess {
@@ -400,11 +405,12 @@ internal class AddLessonViewModel @Inject constructor(
             mutableListOf<Exercise>().apply {
                 addAll(exercises)
                 this[exerciseIndex] = exercises[exerciseIndex].copy(
+                    mainCount = newCount,
                     sets = exercises[exerciseIndex].sets.map {
                         it.copy(
                             count = newCount
                         )
-                    }
+                    },
                 )
             }.toList()
         }.onSuccess {

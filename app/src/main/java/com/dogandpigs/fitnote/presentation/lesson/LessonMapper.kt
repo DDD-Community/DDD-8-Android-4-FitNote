@@ -23,9 +23,16 @@ internal fun LessonDetailResponse?.toPresentation(
         }.let { maps ->
             val exerciseList = mutableListOf<Exercise>()
             maps.forEach { (name, lessonDescriptionList) ->
+                val mainExerciseSet = lessonDescriptionList.maxByOrNull {
+                    it.weight.toDouble()
+                }
+
                 exerciseList.add(
                     Exercise(
                         name = name,
+                        numberOfSets = lessonDescriptionList.size,
+                        mainWeight = mainExerciseSet?.weight?.toDoubleOrNull() ?: 0.0,
+                        mainCount = mainExerciseSet?.count ?: 0,
                         sets = lessonDescriptionList.let {
                             val list = mutableListOf<Exercise.ExerciseSet>()
                             it.forEach { lessonDescription ->
