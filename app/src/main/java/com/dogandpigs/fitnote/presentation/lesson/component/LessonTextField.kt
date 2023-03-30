@@ -55,6 +55,7 @@ internal fun LessonTextField(
             color = GrayScaleMidGray3,
         ),
         keyboardOptions = keyboardOptions,
+        singleLine = true,
         visualTransformation = visualTransformation,
         maxLines = 1,
         cursorBrush = SolidColor(BrandPrimary),
