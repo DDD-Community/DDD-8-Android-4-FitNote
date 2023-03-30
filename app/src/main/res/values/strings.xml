@@ -81,4 +81,5 @@
     <string name="member_edit_complete_message">회원 정보 수정이 완료되었습니다!</string>
     <string name="login_failed_message">아이디와 비밀번호를 확인해주세요</string>
     <string name="find_password_message">이메일로 문의부탁드립니다</string>
+    <string name="lesson_delete_message">수업을 삭제할까요?</string>
 </resources>

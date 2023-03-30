@@ -45,12 +45,14 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.dogandpigs.fitnote.R
 import com.dogandpigs.fitnote.presentation.base.FigmaPreview
+import com.dogandpigs.fitnote.presentation.ui.component.DefaultDialog
 import com.dogandpigs.fitnote.presentation.ui.component.DefaultPositiveButton
 import com.dogandpigs.fitnote.presentation.ui.component.DefaultTwoButton
 import com.dogandpigs.fitnote.presentation.ui.component.FitNoteScaffold
 import com.dogandpigs.fitnote.presentation.ui.component.HeightSpacer
 import com.dogandpigs.fitnote.presentation.ui.component.WidthSpacer
 import com.dogandpigs.fitnote.presentation.ui.component.defaultBorder
+import com.dogandpigs.fitnote.presentation.ui.theme.Alert
 import com.dogandpigs.fitnote.presentation.ui.theme.BrandPrimary
 import com.dogandpigs.fitnote.presentation.ui.theme.FitNoteTheme
 import com.dogandpigs.fitnote.presentation.ui.theme.GrayScaleLightGray1
@@ -91,6 +93,7 @@ internal fun MemberLessonListScreen(
         onEditButtonClick = { lessonDate ->
             navigateToEdit(memberId, lessonDate)
         },
+        onDeleteIconClick = viewModel::setSelectedLessonDate,
         onItemDelete = viewModel::deleteLesson,
     )
 }
@@ -103,8 +106,10 @@ private fun MemberLessonList(
     onClickStartLesson: (Int) -> Unit,
     onClickShare: (lessonId: Int) -> Unit,
     onEditButtonClick: (lessonId: Int) -> Unit,
-    onItemDelete: (lessonDate: String) -> Unit,
+    onDeleteIconClick: (lessonDate: String) -> Unit,
+    onItemDelete: () -> Unit,
 ) {
+    val visibleLessonDeleteDialog = remember { mutableStateOf(false) }
     var selectedTabType by remember { mutableStateOf(MemberLessonListUiState.Tab.TabType.SCHEDULED) }
 
     FitNoteScaffold(
@@ -131,7 +136,10 @@ private fun MemberLessonList(
                     onEditButtonClick = onEditButtonClick,
                     onClickLessonStart = onClickStartLesson,
                     onClickShare = onClickShare,
-                    onItemDelete = onItemDelete,
+                    onDeleteIconClick = { lessonDate ->
+                        visibleLessonDeleteDialog.value = true
+                        onDeleteIconClick(lessonDate)
+                    },
                 )
             }
 
@@ -141,6 +149,17 @@ private fun MemberLessonList(
                     onClickAddLesson
                 )
             }
+
+            LessonDeleteDialog(
+                visible = visibleLessonDeleteDialog.value,
+                onClickPositive = {
+                    visibleLessonDeleteDialog.value = false
+                    onItemDelete()
+                },
+                onClickNegative = {
+                    visibleLessonDeleteDialog.value = false
+                },
+            )
         }
     }
 }
@@ -154,7 +173,7 @@ private fun LessonTabList(
     onEditButtonClick: (lessonId: Int) -> Unit,
     onClickLessonStart: (Int) -> Unit,
     onClickShare: (lessonId: Int) -> Unit,
-    onItemDelete: (lessonDate: String) -> Unit,
+    onDeleteIconClick: (lessonDate: String) -> Unit,
 ) {
     val tabHeight = 42.dp
 
@@ -225,7 +244,7 @@ private fun LessonTabList(
                     onEditButtonClick = onEditButtonClick,
                     onClickLessonStart = onClickLessonStart,
                     onClickShare = onClickShare,
-                    onItemDelete = onItemDelete,
+                    onDeleteIconClick = onDeleteIconClick,
                 )
 
                 HeightSpacer(height = LocalFitNoteSpacing.current.spacing10)
@@ -289,7 +308,7 @@ private fun LessonList(
     onEditButtonClick: (lessonId: Int) -> Unit,
     onClickLessonStart: (Int) -> Unit,
     onClickShare: (lessonId: Int) -> Unit,
-    onItemDelete: (lessonDate: String) -> Unit,
+    onDeleteIconClick: (lessonDate: String) -> Unit,
 ) {
     for (lesson in lessons) {
         HeightSpacer(height = 24.dp)
@@ -299,7 +318,7 @@ private fun LessonList(
             onEditButtonClick = onEditButtonClick,
             onClickLessonStart = onClickLessonStart,
             onClickShare = onClickShare,
-            onItemDelete = onItemDelete,
+            onDeleteIconClick = onDeleteIconClick,
         )
     }
 }
@@ -311,7 +330,7 @@ private fun LessonItem(
     onEditButtonClick: (lessonId: Int) -> Unit,
     onClickLessonStart: (Int) -> Unit,
     onClickShare: (lessonId: Int) -> Unit,
-    onItemDelete: (lessonDate: String) -> Unit,
+    onDeleteIconClick: (lessonDate: String) -> Unit,
 ) {
     Column(
         modifier = Modifier
@@ -336,7 +355,7 @@ private fun LessonItem(
                 modifier = Modifier
                     .size(20.dp)
                     .clickable {
-                        onItemDelete(lesson.dateString)
+                        onDeleteIconClick(lesson.dateString)
                     },
             )
         }
@@ -458,6 +477,24 @@ private fun AddLessonButton(
     }
 }
 
+@Composable
+private fun LessonDeleteDialog(
+    visible: Boolean,
+    onClickPositive: () -> Unit,
+    onClickNegative: () -> Unit,
+) {
+    DefaultDialog(
+        visible = visible,
+        onDismissRequest = onClickNegative,
+        message = stringResource(id = R.string.lesson_delete_message),
+        positiveText = stringResource(id = R.string.confirm),
+        onPositiveClick = onClickPositive,
+        positiveButtonColor = Alert,
+        negativeText = stringResource(id = R.string.cancel),
+        onNegativeClick = onClickNegative,
+    )
+}
+
 internal val previewScheduledLessonTab = MemberLessonListUiState.Tab(
     tabType = MemberLessonListUiState.Tab.TabType.SCHEDULED,
     lessons = listOf(
@@ -510,6 +547,7 @@ private fun PreviewLesson() {
             onClickStartLesson = {},
             onClickShare = {},
             onEditButtonClick = {},
+            onDeleteIconClick = {},
             onItemDelete = {},
         )
     }

@@ -5,6 +5,7 @@ internal data class MemberLessonListUiState(
     val userName: String = "",
     val scheduledLessonTab: Tab = Tab(Tab.TabType.SCHEDULED),
     val completedLessonTab: Tab = Tab(Tab.TabType.COMPLETED),
+    val selectedLessonDate: String? = null,
 ) {
     data class Tab(
         val tabType: TabType,

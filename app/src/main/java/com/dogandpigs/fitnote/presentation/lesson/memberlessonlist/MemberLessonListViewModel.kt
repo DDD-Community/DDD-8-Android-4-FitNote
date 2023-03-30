@@ -103,12 +103,20 @@ internal class MemberLessonListViewModel @Inject constructor(
         }
     }
 
-    internal fun deleteLesson(
+    internal fun setSelectedLessonDate(
         lessonDate: String,
     ) {
+        setState {
+            copy(
+                selectedLessonDate = lessonDate,
+            )
+        }
+    }
+
+    internal fun deleteLesson() {
         viewModelScope.launch {
             runCatching {
-                val lessonDateId = lessonDate.toIntOrNull()
+                val lessonDateId = state.value.selectedLessonDate?.toIntOrNull()
                 checkNotNull(lessonDateId)
 
                 lessonRepository.getLessonDetail(
