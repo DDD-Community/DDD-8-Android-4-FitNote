@@ -5,6 +5,7 @@ import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.ButtonDefaults
@@ -100,6 +101,7 @@ internal fun DefaultTwoButton(
 @Composable
 internal fun DefaultNegativeButton(
     modifier: Modifier = Modifier,
+    width: Dp? = null,
     paddingValues: PaddingValues = PaddingValues(
         horizontal = LocalFitNoteSpacing.current.spacing4,
     ),
@@ -108,10 +110,15 @@ internal fun DefaultNegativeButton(
     buttonPadding: PaddingValues = getButtonPadding(),
     onClickNegative: () -> Unit,
 ) {
-    val buttonModifier = modifier
-        .padding(paddingValues)
-        .fillMaxWidth()
-        .wrapContentHeight()
+    val buttonModifier = if (width != null) {
+        modifier
+            .padding(paddingValues)
+            .width(width)
+    } else {
+        modifier
+            .padding(paddingValues)
+            .fillMaxWidth()
+    }.wrapContentHeight()
 
     if (buttonTextStyle != null) {
         DefaultTextButton(
@@ -140,6 +147,7 @@ internal fun DefaultNegativeButton(
 @Composable
 internal fun DefaultPositiveButton(
     modifier: Modifier = Modifier,
+    width: Dp? = null,
     enabled: Boolean = true,
     paddingValues: PaddingValues = PaddingValues(
         horizontal = LocalFitNoteSpacing.current.spacing4,
@@ -150,10 +158,15 @@ internal fun DefaultPositiveButton(
     buttonPadding: PaddingValues = getButtonPadding(),
     onClickPositive: () -> Unit,
 ) {
-    val buttonModifier = modifier
-        .padding(paddingValues)
-        .fillMaxWidth()
-        .wrapContentHeight()
+    val buttonModifier = if (width != null) {
+        modifier
+            .padding(paddingValues)
+            .width(width)
+    } else {
+        modifier
+            .padding(paddingValues)
+            .fillMaxWidth()
+    }.wrapContentHeight()
 
     if (buttonTextStyle != null) {
         DefaultTextButton(

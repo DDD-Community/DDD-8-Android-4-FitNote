@@ -1,8 +1,6 @@
 package com.dogandpigs.fitnote.presentation.ui.component
 
 import android.annotation.SuppressLint
-import androidx.compose.foundation.layout.fillMaxHeight
-import androidx.compose.foundation.layout.width
 import androidx.compose.material3.DatePicker
 import androidx.compose.material3.DatePickerDefaults
 import androidx.compose.material3.DatePickerDialog
@@ -13,7 +11,6 @@ import androidx.compose.material3.rememberDatePickerState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalView
 import androidx.compose.ui.unit.dp
 import com.dogandpigs.fitnote.presentation.ui.theme.BrandPrimary
 import com.dogandpigs.fitnote.presentation.ui.theme.GrayScaleWhite
@@ -30,7 +27,7 @@ internal fun DefaultDatePickerDialog(
     val snackState = remember { SnackbarHostState() }
     SnackbarHost(hostState = snackState, Modifier)
 
-    val width = (LocalView.current.width.dp / 4) - 12.dp
+    val width = 120.dp // TODO 추후 버튼 크기가 자동으로 계산되게 수정
 
     if (visible) {
         // TODO 시간 보정
@@ -41,9 +38,7 @@ internal fun DefaultDatePickerDialog(
             onDismissRequest = onDismissRequest,
             confirmButton = {
                 DefaultPositiveButton(
-                    modifier = Modifier
-                        .width(width)
-                        .fillMaxHeight(),
+                    width = width,
                     positiveText = "확인",
                     onClickPositive = {
                         onClickConfirmButton(datePickerState.selectedDateMillis)
@@ -53,9 +48,7 @@ internal fun DefaultDatePickerDialog(
             },
             dismissButton = {
                 DefaultNegativeButton(
-                    modifier = Modifier
-                        .width(width)
-                        .fillMaxHeight(),
+                    width = width,
                     negativeText = "취소",
                     onClickNegative = onDismissRequest,
                 )
