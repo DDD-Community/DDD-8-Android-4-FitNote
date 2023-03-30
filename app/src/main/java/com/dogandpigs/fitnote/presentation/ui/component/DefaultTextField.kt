@@ -55,6 +55,7 @@ internal fun DefaultTextField(
         keyboardOptions = keyboardOptions,
         colors = TextFieldDefaults.textFieldColors(
             containerColor = Color.Transparent,
+            errorContainerColor = Color.Transparent,
             errorCursorColor = Alert,
             errorIndicatorColor = Alert,
             focusedIndicatorColor = BrandPrimary,
