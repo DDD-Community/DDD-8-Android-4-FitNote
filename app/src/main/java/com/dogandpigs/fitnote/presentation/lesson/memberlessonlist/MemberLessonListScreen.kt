@@ -19,8 +19,11 @@ import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Close
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Divider
+import androidx.compose.material3.Icon
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -88,6 +91,7 @@ internal fun MemberLessonListScreen(
         onEditButtonClick = { lessonDate ->
             navigateToEdit(memberId, lessonDate)
         },
+        onItemDelete = viewModel::deleteLesson,
     )
 }
 
@@ -99,6 +103,7 @@ private fun MemberLessonList(
     onClickStartLesson: (Int) -> Unit,
     onClickShare: (lessonId: Int) -> Unit,
     onEditButtonClick: (lessonId: Int) -> Unit,
+    onItemDelete: (lessonDate: String) -> Unit,
 ) {
     var selectedTabType by remember { mutableStateOf(MemberLessonListUiState.Tab.TabType.SCHEDULED) }
 
@@ -126,6 +131,7 @@ private fun MemberLessonList(
                     onEditButtonClick = onEditButtonClick,
                     onClickLessonStart = onClickStartLesson,
                     onClickShare = onClickShare,
+                    onItemDelete = onItemDelete,
                 )
             }
 
@@ -148,6 +154,7 @@ private fun LessonTabList(
     onEditButtonClick: (lessonId: Int) -> Unit,
     onClickLessonStart: (Int) -> Unit,
     onClickShare: (lessonId: Int) -> Unit,
+    onItemDelete: (lessonDate: String) -> Unit,
 ) {
     val tabHeight = 42.dp
 
@@ -218,6 +225,7 @@ private fun LessonTabList(
                     onEditButtonClick = onEditButtonClick,
                     onClickLessonStart = onClickLessonStart,
                     onClickShare = onClickShare,
+                    onItemDelete = onItemDelete,
                 )
 
                 HeightSpacer(height = LocalFitNoteSpacing.current.spacing10)
@@ -281,6 +289,7 @@ private fun LessonList(
     onEditButtonClick: (lessonId: Int) -> Unit,
     onClickLessonStart: (Int) -> Unit,
     onClickShare: (lessonId: Int) -> Unit,
+    onItemDelete: (lessonDate: String) -> Unit,
 ) {
     for (lesson in lessons) {
         HeightSpacer(height = 24.dp)
@@ -290,6 +299,7 @@ private fun LessonList(
             onEditButtonClick = onEditButtonClick,
             onClickLessonStart = onClickLessonStart,
             onClickShare = onClickShare,
+            onItemDelete = onItemDelete,
         )
     }
 }
@@ -301,6 +311,7 @@ private fun LessonItem(
     onEditButtonClick: (lessonId: Int) -> Unit,
     onClickLessonStart: (Int) -> Unit,
     onClickShare: (lessonId: Int) -> Unit,
+    onItemDelete: (lessonDate: String) -> Unit,
 ) {
     Column(
         modifier = Modifier
@@ -314,8 +325,19 @@ private fun LessonItem(
         HeightSpacer(height = 16.dp)
         Row {
             Text(
+                modifier = Modifier.weight(1f),
                 text = lesson.dateString.formatYMD(),
                 fontSize = 16.sp,
+            )
+
+            Icon(
+                imageVector = Icons.Filled.Close,
+                contentDescription = stringResource(id = R.string.delete),
+                modifier = Modifier
+                    .size(20.dp)
+                    .clickable {
+                        onItemDelete(lesson.dateString)
+                    },
             )
         }
         HeightSpacer(height = 24.dp)
@@ -488,6 +510,7 @@ private fun PreviewLesson() {
             onClickStartLesson = {},
             onClickShare = {},
             onEditButtonClick = {},
+            onItemDelete = {},
         )
     }
 }

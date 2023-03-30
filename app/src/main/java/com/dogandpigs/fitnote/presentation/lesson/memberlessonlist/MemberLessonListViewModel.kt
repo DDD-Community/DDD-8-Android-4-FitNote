@@ -4,6 +4,7 @@ import androidx.lifecycle.viewModelScope
 import com.dogandpigs.fitnote.data.repository.LessonRepository
 import com.dogandpigs.fitnote.data.repository.MemberRepository
 import com.dogandpigs.fitnote.presentation.base.BaseViewModel
+import com.dogandpigs.fitnote.util.debugLog
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -20,6 +21,10 @@ internal class MemberLessonListViewModel @Inject constructor(
             copy(memberId = memberId)
         }
         getMemberName()
+        fetchLessonList()
+    }
+
+    private fun fetchLessonList() {
         getIntendedLessonList()
         getCompletedLessonList()
     }
@@ -98,9 +103,29 @@ internal class MemberLessonListViewModel @Inject constructor(
         }
     }
 
-    fun getMemberInfo() = currentState {
+    internal fun deleteLesson(
+        lessonDate: String,
+    ) {
         viewModelScope.launch {
-            memberRepository.getMemberInfo()
+            runCatching {
+                val lessonDateId = lessonDate.toIntOrNull()
+                checkNotNull(lessonDateId)
+
+                lessonRepository.getLessonDetail(
+                    id = state.value.memberId,
+                    today = lessonDateId,
+                )?.lessonInfo?.flatten()?.filter { lessonDescription ->
+                    lessonDescription.startDate == lessonDateId
+                }?.map {
+                    it.lessonId
+                }?.forEach {
+                    lessonRepository.deleteLesson(it)
+                }
+            }.onSuccess {
+                fetchLessonList()
+            }.onFailure {
+                debugLog(it.toString())
+            }
         }
     }
 }
