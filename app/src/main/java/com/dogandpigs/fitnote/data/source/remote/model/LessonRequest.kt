@@ -15,5 +15,7 @@ data class LessonRequest(
     var weight: String,
     @SerializedName("count")
     var count: Int,
+    @SerializedName("lesson_id")
+    val lessonId: Int,
 )
 

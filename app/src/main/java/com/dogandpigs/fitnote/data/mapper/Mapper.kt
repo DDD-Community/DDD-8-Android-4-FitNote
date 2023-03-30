@@ -11,4 +11,5 @@ internal fun Lesson.toData(): LessonRequest =
         name = name,
         weight = weight,
         count = count,
+        lessonId = lessonId,
     )
