@@ -56,7 +56,9 @@ internal class MemberLessonListViewModel @Inject constructor(
             }.onSuccess {
                 it?.run {
                     val lessonList = mutableListOf<MemberLessonListUiState.Tab.Lesson>()
-                    lessonInfo.forEach { lesson ->
+                    lessonInfo.filter { lessonInfo ->
+                        lessonInfo.lessonsName.isNotEmpty()
+                    }.forEach { lesson ->
                         lessonList.add(
                             MemberLessonListUiState.Tab.Lesson(
                                 dateString = lesson.lessonsDate.toString(),
