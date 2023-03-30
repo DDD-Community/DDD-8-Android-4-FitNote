@@ -37,9 +37,6 @@ internal fun NavigationGraph(
             navigateToHome = { navController.navigateToHome() },
             navigateToJoin = { navController.navigate(ROUTE_JOIN) },
             navigateToLogin = { navController.navigate(ROUTE_LOGIN) },
-            navigateToLesson = { navController.navigateToMemberLessonListRoute(0) },
-            navigateToMemberList = { navController.navigate(MemberListNavRoute.path) },
-            navigateToMemberLesson = { navController.navigate(ROUTE_MEMBER_LESSON) },
         )
         addJoin(
             route = ROUTE_JOIN,

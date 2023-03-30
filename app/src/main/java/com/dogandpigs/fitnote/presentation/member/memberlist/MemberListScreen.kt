@@ -63,8 +63,6 @@ internal fun MemberListScreen(
 ) {
     val uiState by viewModel.state.collectAsStateWithLifecycle()
 
-    var isShowDebugMenu by rememberSaveable { mutableStateOf(false) }
-
     // FIXME registration true일 경우 MemberListScreen -> 다른 화면 -> Back 시 토스트가 계속 보여지는 이슈
     LaunchedEffect(Unit) {
         viewModel.initialize()
@@ -74,9 +72,6 @@ internal fun MemberListScreen(
         topBarTitle = "회원목록",
         topBarActions = {
             IconButton(onClick = {
-                if (BuildConfig.DEBUG) {
-                    isShowDebugMenu = !isShowDebugMenu
-                }
                 navigateToSetting()
             }) {
                 Icon(
@@ -116,15 +111,6 @@ internal fun MemberListScreen(
                 text = stringResource(id = R.string.btn_add_member),
                 onClick = navigateToMemberAdd,
             )
-
-            if (isShowDebugMenu && BuildConfig.DEBUG) {
-                DebugMenu(
-                    "회원 상세 정보" to { navigateToMemberDetail(0) },
-                    "회원 추가" to navigateToMemberAdd,
-                    "수업" to { navigateToMemberLessonList(0) },
-                    "설정" to navigateToSetting,
-                )
-            }
         }
     }
 }
