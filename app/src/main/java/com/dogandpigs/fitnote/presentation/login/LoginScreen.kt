@@ -46,13 +46,17 @@ internal fun LoginScreen(
     val context = LocalContext.current
     val state by viewModel.state.collectAsStateWithLifecycle()
 
-    val message = stringResource(id = R.string.login_failed_message)
+    val loginFailMessage = stringResource(id = R.string.login_failed_message)
+    val findPasswordMessage = stringResource(id = R.string.find_password_message)
     LaunchedEffect(Unit) {
         viewModel.eventSharedFlow.collect {
             when (it) {
                 is LoginEvent.None -> {}
-                is LoginEvent.Toast -> {
-                    Toast.makeText(context, message, Toast.LENGTH_SHORT).show()
+                is LoginEvent.LoginFail -> {
+                    Toast.makeText(context, loginFailMessage, Toast.LENGTH_SHORT).show()
+                }
+                is LoginEvent.FindPassword -> {
+                    Toast.makeText(context, findPasswordMessage, Toast.LENGTH_LONG).show()
                 }
             }
         }
@@ -87,6 +91,10 @@ internal fun LoginScreen(
             viewModel.login()
 //            navigateToHome()
         },
+        onFindPasswordClick = {
+            // TODO 0.2.0 개발예정
+            viewModel.showToastFindPassword()
+        },
     )
 }
 
@@ -97,6 +105,7 @@ private fun Login(
     onEmailValueChange: (String) -> Unit,
     onPasswordValueChange: (String) -> Unit,
     onClickLoginButton: () -> Unit,
+    onFindPasswordClick: () -> Unit,
 ) {
     FitNoteScaffold(
         topBarTitle = "로그인",
@@ -148,7 +157,9 @@ private fun Login(
                         style = LocalFitNoteTypography.current.textSmall,
                     )
 
-                    TextButton(onClick = {}) {
+                    TextButton(
+                        onClick = onFindPasswordClick,
+                    ) {
                         Text(
                             text = stringResource(id = R.string.btn_forget_pwd), color = Color.Blue
                         )
@@ -173,10 +184,11 @@ private fun PreviewLogin() {
     FitNoteTheme {
         Login(
             state = mockUiState,
+            popBackStack = {},
             onEmailValueChange = {},
             onPasswordValueChange = {},
             onClickLoginButton = {},
-            popBackStack = {},
+            onFindPasswordClick = {},
         )
     }
 }

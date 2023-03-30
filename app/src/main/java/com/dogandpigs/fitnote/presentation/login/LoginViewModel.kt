@@ -31,8 +31,14 @@ internal class LoginViewModel @Inject constructor(
                 setState { copy(loginState = LoginUiState.LoginState.Success) }
             }.onFailure {
                 setState { copy(loginState = LoginUiState.LoginState.Failed) }
-                _eventSharedFlow.emit(LoginEvent.Toast)
+                _eventSharedFlow.emit(LoginEvent.LoginFail)
             }
+        }
+    }
+
+    internal fun showToastFindPassword() {
+        viewModelScope.launch {
+            _eventSharedFlow.emit(LoginEvent.FindPassword)
         }
     }
 }
