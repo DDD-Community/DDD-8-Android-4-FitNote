@@ -10,9 +10,9 @@ import com.dogandpigs.fitnote.presentation.lesson.toLesson
 import com.dogandpigs.fitnote.presentation.lesson.toPresentation
 import com.dogandpigs.fitnote.util.debugLog
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.flow.SharedFlow
+import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -22,9 +22,9 @@ internal class AddLessonViewModel @Inject constructor(
 ) : BaseViewModel<AddLessonUiState>() {
     override fun createInitialState(): AddLessonUiState = AddLessonUiState()
 
-    private val _eventStateFlow: MutableStateFlow<AddLessonEvent> =
-        MutableStateFlow(AddLessonEvent.None)
-    internal val eventStateFlow: StateFlow<AddLessonEvent> = _eventStateFlow.asStateFlow()
+    private val _eventSharedFlow: MutableSharedFlow<AddLessonEvent> =
+        MutableSharedFlow()
+    internal val eventSharedFlow: SharedFlow<AddLessonEvent> = _eventSharedFlow.asSharedFlow()
 
     private var originExerciseList: List<Exercise>? = null
 
@@ -494,12 +494,16 @@ internal class AddLessonViewModel @Inject constructor(
         title: String,
         message: String?,
     ) {
-        _eventStateFlow.value = AddLessonEvent.Toast("$title 실패\n사유 : $message")
+        viewModelScope.launch {
+            _eventSharedFlow.emit(AddLessonEvent.Toast("$title 실패\n사유 : $message"))
+        }
     }
 
     private fun showCustomToast(
         message: String,
     ) {
-        _eventStateFlow.value = AddLessonEvent.CustomToast(message = message)
+        viewModelScope.launch {
+            _eventSharedFlow.emit(AddLessonEvent.CustomToast(message = message))
+        }
     }
 }

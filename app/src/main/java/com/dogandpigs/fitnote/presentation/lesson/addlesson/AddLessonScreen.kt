@@ -88,7 +88,6 @@ internal fun AddLessonScreen(
     val context = LocalContext.current
 
     val uiState by viewModel.state.collectAsStateWithLifecycle()
-    val eventStateFlow by viewModel.eventStateFlow.collectAsStateWithLifecycle()
 
     LaunchedEffect(Unit) {
         viewModel.initialize(
@@ -96,21 +95,21 @@ internal fun AddLessonScreen(
             lessonId = lessonId,
             mode = mode,
         )
-    }
 
-    LaunchedEffect(eventStateFlow) {
-        when (eventStateFlow) {
-            AddLessonEvent.None -> {}
-            is AddLessonEvent.Toast -> {
-                val message = (eventStateFlow as AddLessonEvent.Toast).message
-                Toast.makeText(context, message, Toast.LENGTH_SHORT).show()
-            }
-            is AddLessonEvent.CustomToast -> {
-                mainViewModel.eventCustomToast(
-                    MainEvent.CustomToast(
-                        message = (eventStateFlow as AddLessonEvent.CustomToast).message
+        viewModel.eventSharedFlow.collect {
+            when (it) {
+                AddLessonEvent.None -> {}
+                is AddLessonEvent.Toast -> {
+                    val message = it.message
+                    Toast.makeText(context, message, Toast.LENGTH_SHORT).show()
+                }
+                is AddLessonEvent.CustomToast -> {
+                    mainViewModel.eventCustomToast(
+                        MainEvent.CustomToast(
+                            message = it.message
+                        )
                     )
-                )
+                }
             }
         }
     }
